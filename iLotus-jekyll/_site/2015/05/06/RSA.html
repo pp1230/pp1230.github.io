@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            RSA加密算法
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="PIZn" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="all" href="http://localhost:4000/static/style.css" />
+    <!--[if lt IE 9]>
+    <script src="http://localhost:4000/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://localhost:4000/static/js/jquery.js" type="text/javascript"></script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="http://github.com/qq472220372" rel="bookmark" title="联系我">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <h3>Https中的RSA算法</h3>
+
+<p>百度自2014年底起，开始对部分地区开放了HTTPS加密搜索服务。直到上周，百度表示全站开启了HTTPS安全加密搜索，而其中的核心算法就是RSA。它是计算机通信安全的基石，保证了加密数据不会被破解。</p>
+<p><img alt="" src="http://image.beekka.com/blog/201306/bg2013062701.jpg" style="height:350px; width:350px" /></p>
+
+<p>它的加密解密过程为：</p>
+
+<p>（1）乙方生成两把密钥（公钥和私钥）。公钥是公开的，任何人都可以获得，私钥则是保密的。</p>
+
+<p>（2）甲方获取乙方的公钥，然后用它对信息加密。</p>
+
+<p>（3）乙方得到加密后的信息，用私钥解密。</p>
+
+<h3>RSA算法原理</h3>
+
+<p>1.取两个互质的数并计算出他们的乘积n：</p>
+<pre><code>
+<p><strong>n=3*5=15</strong></p>
+</code></pre>
+<p>2.根据欧拉定理求出&phi;(n)</p>
+<pre><code>
+<p><strong>&phi;(n)=2*4=8</strong></p>
+</code></pre>
+<p>3.取任意和&phi;(n)互质的数e=7</p>
+<p>4.得到公钥（n,e）= (15,7)</p>
+<p>5.得到密钥（n，d）</p>
+<pre><code>
+<p><strong>e*d mod &phi;(n) = 1</strong></p>
+</code></pre>
+<p>得到一个密钥为（15,15）</p>
+
+<h3>加密算法的使用</h3>
+
+<p>假设Client要将x=3的值发送给Server，所经历的步骤为:</p>
+
+<p>1.使用公钥(15,7)加密x，并发送给Server</p>
+<pre><code>
+<p>x^7 mod 15 = 12 = m</p>
+</code></pre>
+<p>2.Server接收到密文m后，使用密钥解密</p>
+<pre><code>
+<p>m^15 mod 15 = 3</p>
+</code></pre>
+<p>最终解密的到原始值3</p>
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://localhost:4000/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://localhost:4000/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>
