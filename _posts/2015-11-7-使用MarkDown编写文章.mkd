@@ -1,0 +1,37 @@
+---
+layout: default
+title: 使用MarkDown语言编辑文章
+---
+
+#使用MarkDown语言编辑文章
+
+##MarkDown的基本用法
+
+###1.文本样式
+
+  MarkDown的基本样式大概包括了以下几个符号
+
+* 段落使用`>`符号就可以另取一段
+* 使用`` `符号就可以将文字加亮显示
+* 使用`[文字](网址)`就可以[外链](http://wowubuntu.com/markdown/basic.html)
+* 使用`![文字][路径]`就可以引用图片
+
+###2.代码样式
+
+MarkDown可以显示多种代码样式
+
+* 使用Tab按键可以显示出代码框
+* 使用```可以显示出高亮代码
+
+```java
+
+//This is my java code.
+public class hello{
+}
+
+```
+
+    This is my markdown document.
+
+
+![markdown](../../../static/images/markdown.jpg)
