@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 使用SpringData简化项目开发
+description: SpringData简化项目开发
+keywords: java
 ---
 
 #使用SpringData简化项目开发

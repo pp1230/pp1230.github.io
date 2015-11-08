@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 使用JUnit进行功能测试
+description: 使用JUnit测试java功能模块：导入相应jar包、编写测试类
+keywords: java
 ---
 
 #使用JUnit进行功能测试
