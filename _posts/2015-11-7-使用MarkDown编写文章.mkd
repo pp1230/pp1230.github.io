@@ -1,11 +1,9 @@
 ---
-layout: default
+layout: post
 title: 使用MarkDown语言编辑文章
 description: MarkDown可以显示多种文本代码样式，用于快速编辑生成文档
 keywords: write
 ---
-
-#使用MarkDown语言编辑文章
 
 ##MarkDown的基本用法
 

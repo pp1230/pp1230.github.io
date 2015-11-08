@@ -1,11 +1,9 @@
 ---
-layout: default
+layout: post
 title: 使用JUnit进行功能测试
-description: 使用JUnit测试java功能模块：导入相应jar包、编写测试类
+description: 使用JUnit测试java功能模块：导入相应jar包、编写测试、测试结果
 keywords: java
 ---
-
-#使用JUnit进行功能测试
 
 ##1.导入相应jar包
 
@@ -45,7 +43,7 @@ keywords: java
 
 ##3.测试结果
 
-![junit](../../../static/images/taskend.png)
+![taskend](../../../static/images/taskend.png)
 
 PS：
    

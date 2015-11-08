@@ -1,11 +1,9 @@
 ---
-layout: default
+layout: post
 title: 使用SpringData简化项目开发
 description: SpringData简化项目开发
 keywords: java
 ---
-
-#使用SpringData简化项目开发
 
 ##1.SpringData和Jpa需要的包
 
