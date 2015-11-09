@@ -1,0 +1,66 @@
+---
+layout: post
+title: Hibernate-Jpa中的外键关联实例
+description: 注解@ManytoOne，实体类映射到数据库中的表关联写法。使用外键关联表。
+keywords: java
+---
+
+##1.什么是外键？
+
+* 简介：如果公共关键字在一个关系中是`主关键字`，那么这个公共关键字被称为另一个关系的`外键`。由此可见，外键表示了两个关系之间的相关联系。以另一个关系的外键作主关键字的表被称为**主表**，具有此外键的表被称为主表的**从表**。外键又称作外关键字。
+* 作用：保持数据一致性，完整性，主要目的是控制存储在外键表中的数据。 使两张表形成关联，外键只能引用外表中的列的值或使用空值。
+
+##2.数据库表实例
+
+* 班级表
+
+![classform](../../../static/images/classform.png)
+
+* 学校表
+
+![schoolform](../../../static/images/schoolform.png)
+
+* 其中班级表的`school_id`为**外键**，学校表的`uid`为**主键**。
+
+##3.实体类代码表示
+
+* `BaseClass类`的BaseSchool属性
+
+        @ManyToOne(fetch=FetchType.LAZY)
+        @JoinColumn(name="school_id", referencedColumnName="uid")
+         private BaseSchool baseSchool;
+
+* `BaseSchool类`中不需要写BaseClass类相关的代码。在数据库中，BaseClass表只需要储存BaseSchool的主键即可，需要时Hibernate可使用主键级联取出。
+
+![schoolid](../../../static/images/schoolid.png)
+
+##4.测试
+使用JUnit4进行单元测试
+
+* 非主键测试
+
+测试结果：
+![schoolform](../../../static/images/JUnitFail.png)
+
+不能保存没有主键的`BaseSchool`对象
+
+* 添加主键测试
+
+       @Test
+    public void testCascade2(){
+        BaseClass baseClass = new BaseClass();
+        baseClass.setUidAuto();
+		baseClass.setClassName("TestCascade");
+		baseClass.setClassId("1000");
+		BaseSchool baseSchool =new BaseSchool();
+		baseSchool.setUid("21f5c999-94c4-48a6-ac72-ac94f2cca3a6");
+		baseClass.setBaseSchool(baseSchool);
+		System.out.println(baseClass.getBaseSchool().toString());
+		baseClassRepository.save(baseClass);
+    }
+    
+测试结果：
+
+![schoolform](../../../static/images/JUnitsu.png)
+
+ 添加逐渐后测试成功！
