@@ -1,0 +1,33 @@
+---
+layout: post
+title: Linux下使用GCC进行C语言编程
+description: 通过Linux中的Vim编辑代码和gcc命令编译，进行简单的C语言算法实现。
+keywords: C
+---
+##1.安装gcc使用Vim编写代码
+
+* 安装使用Ubuntu常用的**apt**命令
+
+        sudo apt-get install gcc
+
+* 使用Vim编辑器进行代码编写
+
+        vim method.c
+
+创建了一个名为`method.c`的文件
+
+![cmethod](../../../static/images/cmethod.png)
+
+##2.运行编译好的文件
+
+* 使用**gcc**命令进行文件的编译
+
+        gcc method.c -o method
+
+* 运行`method`的结果
+
+![method](../../../static/images/method.png)
+
+
+
+
