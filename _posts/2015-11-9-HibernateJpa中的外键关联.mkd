@@ -25,7 +25,7 @@ keywords: java
 ##3.实体类代码表示
 
 * `BaseClass类`的BaseSchool属性
-{% highlight java %}
+{% highlight java linenos%}
         @ManyToOne(fetch=FetchType.LAZY)
         @JoinColumn(name="school_id", referencedColumnName="uid")
          private BaseSchool baseSchool;
@@ -45,7 +45,7 @@ keywords: java
 不能保存没有主键的`BaseSchool`对象
 
 * 添加主键测试
-{% highlight java %}
+{% highlight java linenos%}
        @Test
     public void testCascade2(){
         BaseClass baseClass = new BaseClass();

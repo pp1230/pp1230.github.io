@@ -20,7 +20,7 @@ keywords: java
 SpringData需要在`applicationContext.xml`中进行配置
 
 *  配置 JPA 的 EntityManagerFactory
-    
+{%highlight xml linenos%}
         <bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
@@ -43,18 +43,17 @@ SpringData需要在`applicationContext.xml`中进行配置
 		<property name="sharedCacheMode" value="ENABLE_SELECTIVE"></property>
     	</bean>
 	
-	
+{%endhighlight%}
 * 配置 SpringData
-
+{%highlight xml%}
         <jpa:repositories base-package="com.bcts.platform"
 		entity-manager-factory-ref="entityManagerFactory"></jpa:repositories>
-
+{%endhighlight%}
 ##3.SpringData的使用
 
 继承`JpaRepository`接口，可以自动实现多种方法
-
+{%highlight java%}
     public interface BaseClassRepository extends JpaRepository<BaseClass, String> {
-    
     }
-
+{%endhighlight%}
 ![jpaRep](../../../static/images/jpaRep.png)

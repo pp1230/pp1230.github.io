@@ -15,9 +15,8 @@ keywords: java
 
 测试类中直接在方法名上加上`@Test`标签即可使用方法直接运行测试
 
-    
+{%highlight java linenos%}
     public class DataSourceTest {
-
 	private ApplicationContext ctx =null;
 	
 	@Before
@@ -29,16 +28,14 @@ keywords: java
 	public void DataSourceTest() throws SQLException {
 		DataSource dataSource = ctx.getBean(DataSource.class);
 		System.out.println(dataSource.getConnection());
-		
 	}
 	@After
 	public void end(){
 		System.out.println("-----------Task End------------");
 	}
-    
     }
 
-
+{%endhighlight%}
 在junit4中，一个POJO类就是一个测试类，测试方法通过`@Test`来标识，初始化方法通过`@Before`来标识，释放资源的方法通过`@After`来标识.
 
 ##3.测试结果

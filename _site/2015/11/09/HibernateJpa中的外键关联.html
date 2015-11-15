@@ -125,9 +125,9 @@
   <li><code>BaseClass类</code>的BaseSchool属性</li>
 </ul>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span><span class="o">=</span><span class="n">FetchType</span><span class="o">.</span><span class="na">LAZY</span><span class="o">)</span>
-        <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;school_id&quot;</span><span class="o">,</span> <span class="n">referencedColumnName</span><span class="o">=</span><span class="s">&quot;uid&quot;</span><span class="o">)</span>
-         <span class="kd">private</span> <span class="n">BaseSchool</span> <span class="n">baseSchool</span><span class="o">;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span><span class="o">=</span><span class="n">FetchType</span><span class="o">.</span><span class="na">LAZY</span><span class="o">)</span>
+<span class="lineno">2</span>         <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;school_id&quot;</span><span class="o">,</span> <span class="n">referencedColumnName</span><span class="o">=</span><span class="s">&quot;uid&quot;</span><span class="o">)</span>
+<span class="lineno">3</span>          <span class="kd">private</span> <span class="n">BaseSchool</span> <span class="n">baseSchool</span><span class="o">;</span></code></pre></div>
 
 <ul>
   <li><code>BaseSchool类</code>中不需要写BaseClass类相关的代码。在数据库中，BaseClass表只需要储存BaseSchool的主键即可，需要时Hibernate可使用主键级联取出。</li>
@@ -151,18 +151,18 @@
   <li>添加主键测试</li>
 </ul>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Test</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testCascade2</span><span class="o">(){</span>
-        <span class="n">BaseClass</span> <span class="n">baseClass</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">BaseClass</span><span class="o">();</span>
-        <span class="n">baseClass</span><span class="o">.</span><span class="na">setUidAuto</span><span class="o">();</span>
-		<span class="n">baseClass</span><span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="s">&quot;TestCascade&quot;</span><span class="o">);</span>
-		<span class="n">baseClass</span><span class="o">.</span><span class="na">setClassId</span><span class="o">(</span><span class="s">&quot;1000&quot;</span><span class="o">);</span>
-		<span class="n">BaseSchool</span> <span class="n">baseSchool</span> <span class="o">=</span><span class="k">new</span> <span class="nf">BaseSchool</span><span class="o">();</span>
-		<span class="n">baseSchool</span><span class="o">.</span><span class="na">setUid</span><span class="o">(</span><span class="s">&quot;21f5c999-94c4-48a6-ac72-ac94f2cca3a6&quot;</span><span class="o">);</span>
-		<span class="n">baseClass</span><span class="o">.</span><span class="na">setBaseSchool</span><span class="o">(</span><span class="n">baseSchool</span><span class="o">);</span>
-		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">baseClass</span><span class="o">.</span><span class="na">getBaseSchool</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
-		<span class="n">baseClassRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">baseClass</span><span class="o">);</span>
-    <span class="o">}</span></code></pre></div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Test</span>
+<span class="lineno"> 2</span>     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testCascade2</span><span class="o">(){</span>
+<span class="lineno"> 3</span>         <span class="n">BaseClass</span> <span class="n">baseClass</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">BaseClass</span><span class="o">();</span>
+<span class="lineno"> 4</span>         <span class="n">baseClass</span><span class="o">.</span><span class="na">setUidAuto</span><span class="o">();</span>
+<span class="lineno"> 5</span> 		<span class="n">baseClass</span><span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="s">&quot;TestCascade&quot;</span><span class="o">);</span>
+<span class="lineno"> 6</span> 		<span class="n">baseClass</span><span class="o">.</span><span class="na">setClassId</span><span class="o">(</span><span class="s">&quot;1000&quot;</span><span class="o">);</span>
+<span class="lineno"> 7</span> 		<span class="n">BaseSchool</span> <span class="n">baseSchool</span> <span class="o">=</span><span class="k">new</span> <span class="nf">BaseSchool</span><span class="o">();</span>
+<span class="lineno"> 8</span> 		<span class="n">baseSchool</span><span class="o">.</span><span class="na">setUid</span><span class="o">(</span><span class="s">&quot;21f5c999-94c4-48a6-ac72-ac94f2cca3a6&quot;</span><span class="o">);</span>
+<span class="lineno"> 9</span> 		<span class="n">baseClass</span><span class="o">.</span><span class="na">setBaseSchool</span><span class="o">(</span><span class="n">baseSchool</span><span class="o">);</span>
+<span class="lineno">10</span> 		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">baseClass</span><span class="o">.</span><span class="na">getBaseSchool</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+<span class="lineno">11</span> 		<span class="n">baseClassRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">baseClass</span><span class="o">);</span>
+<span class="lineno">12</span>     <span class="o">}</span></code></pre></div>
 
 <p>测试结果：</p>
 

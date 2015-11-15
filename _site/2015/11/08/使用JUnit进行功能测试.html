@@ -104,28 +104,24 @@
 
 <p>测试类中直接在方法名上加上<code>@Test</code>标签即可使用方法直接运行测试</p>
 
-<pre><code>public class DataSourceTest {
-
-private ApplicationContext ctx =null;
-
-@Before
-public void setUp()
-{
-	ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-}
-@Test
-public void DataSourceTest() throws SQLException {
-	DataSource dataSource = ctx.getBean(DataSource.class);
-	System.out.println(dataSource.getConnection());
-	
-}
-@After
-public void end(){
-	System.out.println("-----------Task End------------");
-}
-
-}
-</code></pre>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataSourceTest</span> <span class="o">{</span>
+<span class="lineno"> 2</span> 	<span class="kd">private</span> <span class="n">ApplicationContext</span> <span class="n">ctx</span> <span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+<span class="lineno"> 3</span> 	
+<span class="lineno"> 4</span> 	<span class="nd">@Before</span>
+<span class="lineno"> 5</span> 	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span>
+<span class="lineno"> 6</span> 	<span class="o">{</span>
+<span class="lineno"> 7</span> 		<span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&quot;applicationContext.xml&quot;</span><span class="o">);</span>
+<span class="lineno"> 8</span> 	<span class="o">}</span>
+<span class="lineno"> 9</span> 	<span class="nd">@Test</span>
+<span class="lineno">10</span> 	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">DataSourceTest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">SQLException</span> <span class="o">{</span>
+<span class="lineno">11</span> 		<span class="n">DataSource</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">DataSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="lineno">12</span> 		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">dataSource</span><span class="o">.</span><span class="na">getConnection</span><span class="o">());</span>
+<span class="lineno">13</span> 	<span class="o">}</span>
+<span class="lineno">14</span> 	<span class="nd">@After</span>
+<span class="lineno">15</span> 	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">end</span><span class="o">(){</span>
+<span class="lineno">16</span> 		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;-----------Task End------------&quot;</span><span class="o">);</span>
+<span class="lineno">17</span> 	<span class="o">}</span>
+<span class="lineno">18</span>     <span class="o">}</span></code></pre></div>
 
 <p>在junit4中，一个POJO类就是一个测试类，测试方法通过<code>@Test</code>来标识，初始化方法通过<code>@Before</code>来标识，释放资源的方法通过<code>@After</code>来标识.</p>
 

@@ -41,9 +41,9 @@ return 0;
 }
 {% endhighlight %}
 
-
+{%highlight css%}
     This is my markdown document.
-    
+ {%endhighlight%}
 尝试在github上在线编辑显示高亮代码。
 
 
