@@ -25,11 +25,11 @@ keywords: java
 ##3.实体类代码表示
 
 * `BaseClass类`的BaseSchool属性
-
+{% highlight java %}
         @ManyToOne(fetch=FetchType.LAZY)
         @JoinColumn(name="school_id", referencedColumnName="uid")
          private BaseSchool baseSchool;
-
+{% endhighlight %}
 * `BaseSchool类`中不需要写BaseClass类相关的代码。在数据库中，BaseClass表只需要储存BaseSchool的主键即可，需要时Hibernate可使用主键级联取出。
 
 ![schoolid](../../../static/images/schoolid.png)
@@ -45,7 +45,7 @@ keywords: java
 不能保存没有主键的`BaseSchool`对象
 
 * 添加主键测试
-
+{% highlight java %}
        @Test
     public void testCascade2(){
         BaseClass baseClass = new BaseClass();
@@ -58,7 +58,7 @@ keywords: java
 		System.out.println(baseClass.getBaseSchool().toString());
 		baseClassRepository.save(baseClass);
     }
-    
+{% endhighlight %}
 测试结果：
 
 ![schoolform](../../../static/images/JUnitsu.png)

@@ -23,23 +23,24 @@ MarkDown可以显示多种代码样式
 * 使用Tab按键可以显示出代码框
 * 使用```可以显示出高亮代码
 
-```java
+{% highlight java %}
 
 //This is my java code.
 public class hello{
 System.out.println("Hello world");
 }
 
-```
+{% endhighlight %}
 
-```c
+{% highlight c %}
 #include<stdio.h>
 int main(void)
 {
 printf("Hello wrold");
 return 0;
 }
-```
+{% endhighlight %}
+
 
     This is my markdown document.
     
