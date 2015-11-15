@@ -27,13 +27,23 @@ MarkDown可以显示多种代码样式
 
 //This is my java code.
 public class hello{
+System.out.println("Hello world");
 }
 
 ```
 
+```c
+#include<stdio.h>
+int main(void)
+{
+printf("Hello wrold");
+return 0;
+}
+```
+
     This is my markdown document.
     
-尝试在github上在线编辑。
+尝试在github上在线编辑显示高亮代码。
 
 
 ![markdown](../../../static/images/markdown.jpg)
