@@ -43,7 +43,7 @@ return 0;
 
     This is my markdown document.
     
-尝试在github上在线编辑。
+尝试在github上在线编辑显示高亮代码。
 
 
 ![markdown](../../../static/images/markdown.jpg)
