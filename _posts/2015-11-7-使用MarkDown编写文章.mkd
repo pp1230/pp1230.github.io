@@ -27,8 +27,18 @@ MarkDown可以显示多种代码样式
 
 //This is my java code.
 public class hello{
+System.out.println("Hello world");
 }
 
+```
+
+```c
+#include<stdio.h>
+int main(void)
+{
+printf("Hello wrold");
+return 0;
+}
 ```
 
     This is my markdown document.
