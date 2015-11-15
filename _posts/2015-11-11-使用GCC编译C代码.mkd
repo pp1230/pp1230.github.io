@@ -7,23 +7,53 @@ keywords: C
 ##1.安装gcc使用Vim编写代码
 
 * 安装使用Ubuntu常用的**apt**命令
-
-        sudo apt-get install gcc
-
+{%highlight css%}
+      $  sudo apt-get install gcc
+{%endhighlight%}
 * 使用Vim编辑器进行代码编写
-
-        vim method.c
-
+{%highlight css%}
+      $  vim method.c
+{%endhighlight%}
 创建了一个名为`method.c`的文件
-
-![cmethod](../../../static/images/cmethod.png)
+{%highlight c linenos%}
+#include <stdio.h>
+//放在main函数后面的函数需要申明
+void printfInts(int *);
+void printfInt(int a)
+{
+    printf("输出：\n%d\n",a);
+}
+int main(void)
+{
+    int a,i;
+    int b[5];
+    printf("请输入一个整数：\n");
+    scanf("%d",&a);
+    printfInt(a);
+    printf("请输入五个整数：\n");
+    for(i=0;i<5;i++)
+        scanf("%d",&b[i]);
+    //int数组址传递
+    printfInts(b);
+    return 0;
+}
+//输出int数组的值
+void printfInts(int *a)
+{
+    int i;
+    printf("输出:\n");
+    for(i=0;i<5;i++)
+        printf("%d ",a[i]);
+    printf("\n");
+}
+{%endhighlight%}
 
 ##2.运行编译好的文件
 
 * 使用**gcc**命令进行文件的编译
-
-        gcc method.c -o method
-
+{%highlight css%}
+      $  gcc method.c -o method
+{%endhighlight%}
 * 运行`method`的结果
 
 ![method](../../../static/images/method.png)
