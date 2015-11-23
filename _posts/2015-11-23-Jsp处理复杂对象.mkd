@@ -1,0 +1,426 @@
+---
+layout: post
+title: Jsp处理复杂对象
+description: 在页面中，许多功能往往需要多个基础类的查询。可以构建一个基于页面的复杂类，来处理页面的功能需求。这里以一个User对应多个Role对象为例，创建UserRoleList视图类。
+keywords: java,jsp,spring
+---
+
+##1.数据库表结构
+SecurityUser和SecurityRole是多对多的关系，其中SecurityUserRole使关联对象。对应到数据库中：
+
+![securityrole](../../../static/images/securityrole.png)
+![securityuser](../../../static/images/securityuser.png)
+![securityuserrole](../../../static/images/securityuserrole.png)
+
+##2.实体类和视图类
+
+User和Role的关联类，User类。（Role类省略）
+{%highlight java linenos%}
+@Entity
+@Table(name="security_user")
+@NamedQuery(name="SecurityUser.findAll", query="SELECT s FROM SecurityUser s")
+public class SecurityUser implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false, length=48)
+	private String uid;
+	
+	@Column(insertable = false,nullable = false)
+	@SequenceGenerator(name = "security_user_id_seq", allocationSize = 1, initialValue = 10, sequenceName = "security_user_id_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "security_user_id_seq")
+	private Integer id;
+
+	@Column(length=100)
+	private String address;
+
+	private Timestamp birthday;
+
+	@Column(name="computer_id", length=50)
+	private String computerId;
+
+	@Column(name="create_time")
+	private Timestamp createTime;
+
+	@Column(name="create_user_uid", length=48)
+	private String createUserUid;
+
+	@Column(length=255)
+	private String email;
+
+	@Column(length=18)
+	private String idcard;
+
+	@Column(name="last_login_ip", length=255)
+	private String lastLoginIp;
+
+	@Column(name="last_login_time")
+	private Timestamp lastLoginTime;
+
+	@Column(length=100)
+	private String maxim;
+
+	@Column(length=255)
+	private String mobile;
+
+	@Column(precision=10, scale=2)
+	private BigDecimal money;
+
+	@Column(length=50)
+	private String nickname;
+
+	@Column(length=64)
+	private String password;
+
+	@Column(length=255)
+	private String phone;
+
+	@Column(length=255)
+	private String picture;
+
+	private Integer rank;
+
+	@Column(length=50)
+	private String realname;
+
+	@Column(length=50)
+	private String region;
+
+	@Column(length=32)
+	private String salt;
+
+	private Integer score;
+
+	@Column(length=2)
+	private String sex;
+
+	private Integer status;
+
+	@Column(length=30)
+	private String username;
+
+	//bi-directional many-to-one association to Group
+	@OneToMany(mappedBy="securityUser")
+	private List<Group> groups;
+
+    //在此处进行映射可以方便查找出此SecurityUser对应的SecurityUserRole
+    //然后利用List<SecurityUserRole>可以查找出SecurityRole
+	//bi-directional many-to-one association to SecurityUserRole
+	@OneToMany(mappedBy="securityUser")
+	private List<SecurityUserRole> securityUserRoles;
+	//省略setter、getter
+	.........
+}
+{%endhighlight%}
+{%highlight java linenos%}
+@Entity
+@Table(name="security_user_role")
+@NamedQuery(name="SecurityUserRole.findAll", query="SELECT s FROM SecurityUserRole s")
+public class SecurityUserRole implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(unique=true, nullable=false)
+	@SequenceGenerator(name = "security_user_role_id_seq", allocationSize = 1, initialValue = 10, sequenceName = "security_use_role_id_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "security_user_role_id_seq")
+	private Long id;
+
+	@Column(length=48)
+	private String departemntvalue;
+
+	@Column(length=48)
+	private String departmentid;
+
+	private Integer priority;
+
+	//bi-directional many-to-one association to SecurityRole
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="role_id",referencedColumnName="id")
+	private SecurityRole securityRole;
+
+	//bi-directional many-to-one association to SecurityUser
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_uid",referencedColumnName="uid")
+	private SecurityUser securityUser;
+
+	public SecurityUserRole() {
+	}
+	//省略setter、getter
+	.........
+	}
+	{% endhighlight %}
+	
+视图类：
+	{% highlight java linenos %}
+public class UserRoleList {
+
+	private SecurityUser user;
+	private List<SecurityRole> roles;
+	//省略setter、getter
+	.........
+	}
+     {% endhighlight %}
+     
+##3.Handler页面跳转类
+
+使用SpringMVC架构，此为Controller层。前台写的较为臃肿，最好可以将复杂逻辑放入Service层。
+{% highlight java linenos %}
+@Controller
+public class SecurityUserRoleHandler {
+
+	@Autowired
+	private SecurityUserService securityUserService;
+@Autowired
+	private SecurityRoleService securityRoleService;
+@Autowired
+private SecurityUserRoleService securityUserRoleService;
+@Autowired
+private UserRoleListService userRoleListService;
+
+//保存用户信息
+	@RequestMapping(value="/backui/userrole/save",method=RequestMethod.GET)
+	public String input(Map<String,Object> map){
+		//传递所有角色到页面
+        map.put("securityroles",securityRoleService.getAll());
+		return "backui/userrole/input";
+	}
+
+	//接收用户信息
+	@RequestMapping(value="/backui/userrole/save",method=RequestMethod.POST)
+	public String save(UserRoleList userRoleList){
+		//先保存user
+		securityUserService.save(userRoleList.getUser());
+		if(userRoleList.getRoles()!=null)
+		for(int i=0;i<userRoleList.getRoles().size();i++){
+			SecurityUserRole securityUserRole = new SecurityUserRole();
+			securityUserRole.setSecurityUser(userRoleList.getUser());
+			securityUserRole.setSecurityRole(userRoleList.getRoles().get(i));
+			//再保存复杂对象中的roles
+			if(userRoleList.getRoles().get(i).getId()!=null){
+			SecurityRole role=securityRoleService.get(userRoleList.getRoles().get(i).getId().toString());
+			userRoleList.getRoles().get(i).setName(role.getName());
+			userRoleList.getRoles().get(i).setDescription(role.getDescription());
+			securityRoleService.save(role);
+			//最后保存本身
+		securityUserRoleService.save(securityUserRole);
+			}
+		}
+		//securityUserRoleService.save(securityUserRole);
+		return "backui/users/list";
+	}
+	
+	//更新用户
+	@RequestMapping(value="/backui/userrole/update/{useruid}", method=RequestMethod.GET)
+	public String preUpdate(@PathVariable("useruid") String useruid, Map<String, Object> map){
+		SecurityUser user = securityUserService.get(useruid);
+		map.put("securityuser", user);
+		List<SecurityUserRole> userroles = securityUserRoleService.findBySecurityUser(user);
+		List<SecurityRole> roles = securityRoleService.getAll();
+	    for(int i=0,k=0;i<roles.size();i++){
+			for(int j=0;j<userroles.size();j++){
+				System.out.println(roles.get(i).getId()+"/"+userroles.get(j).getSecurityRole().getId());
+				if(roles.get(i).getId().equals(userroles.get(j).getSecurityRole().getId())){
+					roles.remove(i);
+					k++;
+					j=userroles.size();
+				}
+			}
+			i-=k;
+			k=0;
+	    }
+		map.put("securityroles",roles);
+		map.put("securityuserroles", userroles);
+		return "backui/userrole/input";
+	}
+	
+	//前台返回
+	@RequestMapping(value="/backui/userrole/update/{useruid}",method={RequestMethod.PUT,RequestMethod.POST})
+	public String update(UserRoleList userRoleList){
+		//先保存用户
+		securityUserService.save(userRoleList.getUser());
+		//清除以前的用户角色
+		userRoleListService.deleteRoleByUser(userRoleList.getUser());
+		for(int i=0;i<userRoleList.getRoles().size();i++){
+			SecurityUserRole securityUserRole = new SecurityUserRole();
+			securityUserRole.setSecurityUser(userRoleList.getUser());
+			securityUserRole.setSecurityRole(userRoleList.getRoles().get(i));
+			if(userRoleList.getRoles().get(i).getId()!=null){
+			SecurityRole role=securityRoleService.get(userRoleList.getRoles().get(i).getId().toString());
+			userRoleList.getRoles().get(i).setName(role.getName());
+			userRoleList.getRoles().get(i).setDescription(role.getDescription());
+			securityRoleService.save(role);
+		securityUserRoleService.save(securityUserRole);
+			}
+		}
+		return "backui/users/list";
+	}
+	
+}
+
+{% endhighlight %}
+
+##4.前台JSP页面处理复杂对象
+
+Jsp页面接收时，需要在Handler中的Map里放入需要的对象，而在回传时，复杂对象是由后台进行组装的，不需要Map中有此对象。例如：SecurityUserRoleHandler的save方法并没有传入UserRoleList，后台依然可以接收到此对象。
+{% highlight jsp linenos%}
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>添加用户</title>
+<%-- <script type="text/javascript"
+	src="${pageContext.request.contextPath }/scripts/jquery-1.9.1.min.js"></script> 
+<link href="${pageContext.request.contextPath }/styles/assets/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="${pageContext.request.contextPath }/styles/assets/css/font-awesome.min.css" />  --%>
+</head>
+
+<body>
+
+	<c:set value="${pageContext.request.contextPath }/backui/userrole/save"
+		var="url"></c:set>
+	<c:if test="${securityuser.uid != null}">
+		<c:set
+			value="${pageContext.request.contextPath }/backui/userrole/update/${securityuser.uid}"
+			var="url"></c:set>
+	</c:if>
+
+	<div class="page-header">
+		<h4>
+			用户管理 <small> <i class="icon-double-angle-right"></i> 添加用户
+			</small>
+		</h4>
+	</div>
+	<div class="row">
+		<div class="col-xs-12" align="center">
+			<form action="#" attr_href="${url }" method="POST"
+				class="form-horizontal" id="_form">
+
+				<c:if test="${securityuser.uid != null }">
+					<%-- 	<form:hidden path="id" /> --%>
+					<input type="hidden" name="user.uid"
+						value="${securityuser.uid } " />
+					<input type="hidden" name="user.id"
+						value="${securityuser.id } " />
+					<input type="hidden" name="user.createTime"
+						value="${securityuser.createTime } " />
+				</c:if>
+
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">用户名
+						:</label> <input class="col-xs-3" name="user.username"
+						value="${securityuser.username}" type="text" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">登录密码:</label>
+					<input class="col-xs-3" name="user.password"
+						value="${securityuser.password}" type="password" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">真实姓名
+						:</label> <input class="col-xs-3" name="user.realname"
+						value="${securityuser.realname}" type="text" /><br />
+				</div>
+								<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">性别
+						:</label> <input class="col-xs-3" name="user.sex"
+						value="${securityuser.sex}" type="text" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">昵称:</label>
+					<input class="col-xs-3" name="user.nickname"
+						value="${securityuser.nickname}" type="text" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">邮箱:</label>
+					<input class="col-xs-3" name="user.email"
+						value="${securityuser.email}" type="text" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">移动电话:</label>
+					<input class="col-xs-3" name="user.mobile"
+						value="${securityuser.mobile}" type="text" />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">地址:</label>
+					<input class="col-xs-3" name="user.address"
+						value="${securityuser.address}" type="text" /><br />
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label no-padding-right">身份证号码:</label>
+					<input class="col-xs-3" name="user.idcard"
+						value="${securityuser.idcard}" type="text" /><br />
+				</div>
+
+				<label class="col-xs-3 control-label no-padding-right">选择角色：</label>
+				<div class="col-xs-9" style="text-align:left">
+				<c:forEach var="list1" items="${securityroles}"  varStatus="vs1">
+					<label><input name="roles[${vs1.index}].id" type="checkbox"
+						value="<c:out value="${list1.id}"/>" /> <c:out
+							value="${list1.name}" /></label>
+							<c:if test="${vs1.index%5==0&&vs1.index!=0}"><br/></c:if>
+				</c:forEach>
+
+
+				<c:forEach var="list2" items="${securityuserroles}"varStatus="vs2">
+					<label><input name="roles[${vs2.index+list1.size}].id" type="checkbox"
+						checked="checked" value="<c:out value="${list2.securityRole.id}"/>" /> <c:out
+							value="${list2.securityRole.name}" /></label>
+				</c:forEach>
+</div>
+				<%-- 		 <select class="combox" name="securityRole.id" class="col-xs-3">
+						<c:forEach var="list" items="${securityroles}">
+							<c:choose>
+								<c:when test="${securityuserrole.securityRole.id==list.id}">
+									<option selected="selected"
+										value="<c:out value="${list.id}"/>">
+										<c:out value="${list.name}" />
+									</option>
+								</c:when>
+								<c:otherwise>
+									<option value="<c:out value="${list.id}"/>">
+										<c:out value="${list.name}" />
+									</option>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</select> --%>
+				<%-- 		<div class="form-group">
+		<label class="col-xs-3 control-label no-padding-right">性别:</label> 
+		<input class="col-xs-3" name="sex" value="${securityuser.sex}"type="text"/><br/>
+		</div> --%>
+				<%-- 		<div class="form-group">
+		<label class="col-xs-3 control-label no-padding-right">生日:</label> 
+		<input class="col-xs-3" name="birthday" value="${securityuser.birthday}"type="text"/><br/>
+		</div> --%>
+				<!-- 		<input type="submit" value="提交" /> -->
+			</form>
+			<div class="form-group">
+				<label class="col-xs-3 control-label no-padding-right"></label>
+				<button type="submit" class="btn btn-info col-sm-1 no-padding-right"
+					value="确定添加" href="#"
+					onclick="submitFormByDivAndUrl(_form,'ebag_list','${pageContext.request.contextPath }/backui/users/list')">
+					<i class="icon-undo bigger-110"></i>提交
+				</button>
+				<button type="submit" class="btn col-sm-1 no-padding-right"
+					value="确定添加" href="#"
+					onclick="newJsp('${pageContext.request.contextPath }/backui/users/list','ebag_list')">
+					<i class="icon-undo bigger-110"></i>返回
+				</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+{% endhighlight %}
+
+以下是添加用户并选择角色的页面，其实是把一个SecurityUser和多个SecurityRole组装成一个复杂类UserRoleList回传给后台处理。
+
+![junit](../../../static/images/userrolelist.png)
+
+用到的技术：
+JSP+SpringMVC+SpringDate+JPA

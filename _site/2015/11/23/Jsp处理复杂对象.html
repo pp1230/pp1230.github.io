@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            Jsp处理复杂对象
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="在页面中，许多功能往往需要多个基础类的查询。可以构建一个基于页面的复杂类，来处理页面的功能需求。这里以一个User对应多个Role对象为例，创建UserRoleList视图类。" />
+    <meta name="keywords" content="java,jsp,spring" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="http://pp1230.github.io/static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="http://pp1230.github.io/static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="http://github.com/qq472220372" rel="bookmark" title="联系我">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    Jsp处理复杂对象
+</p>
+<h1 class="lotus-pagetit">Jsp处理复杂对象</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="November 23, 2015">November 23, 2015</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h2 id="section">1.数据库表结构</h2>
+<p>SecurityUser和SecurityRole是多对多的关系，其中SecurityUserRole使关联对象。对应到数据库中：</p>
+
+<p><img src="../../../static/images/securityrole.png" alt="securityrole" />
+<img src="../../../static/images/securityuser.png" alt="securityuser" />
+<img src="../../../static/images/securityuserrole.png" alt="securityuserrole" /></p>
+
+<h2 id="section-1">2.实体类和视图类</h2>
+
+<p>User和Role的关联类，User类。（Role类省略）</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Entity</span>
+<span class="lineno"> 2</span> <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;security_user&quot;</span><span class="o">)</span>
+<span class="lineno"> 3</span> <span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;SecurityUser.findAll&quot;</span><span class="o">,</span> <span class="n">query</span><span class="o">=</span><span class="s">&quot;SELECT s FROM SecurityUser s&quot;</span><span class="o">)</span>
+<span class="lineno"> 4</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUser</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+<span class="lineno"> 5</span> 	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+<span class="lineno"> 6</span> 
+<span class="lineno"> 7</span> 	<span class="nd">@Id</span>
+<span class="lineno"> 8</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">48</span><span class="o">)</span>
+<span class="lineno"> 9</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">uid</span><span class="o">;</span>
+<span class="lineno">10</span> 	
+<span class="lineno">11</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">insertable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+<span class="lineno">12</span> 	<span class="nd">@SequenceGenerator</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;security_user_id_seq&quot;</span><span class="o">,</span> <span class="n">allocationSize</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">initialValue</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">sequenceName</span> <span class="o">=</span> <span class="s">&quot;security_user_id_seq&quot;</span><span class="o">)</span>
+<span class="lineno">13</span> 	<span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">GenerationType</span><span class="o">.</span><span class="na">SEQUENCE</span><span class="o">,</span> <span class="n">generator</span> <span class="o">=</span> <span class="s">&quot;security_user_id_seq&quot;</span><span class="o">)</span>
+<span class="lineno">14</span> 	<span class="kd">private</span> <span class="n">Integer</span> <span class="n">id</span><span class="o">;</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">100</span><span class="o">)</span>
+<span class="lineno">17</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span> 	<span class="kd">private</span> <span class="n">Timestamp</span> <span class="n">birthday</span><span class="o">;</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;computer_id&quot;</span><span class="o">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="o">)</span>
+<span class="lineno">22</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">computerId</span><span class="o">;</span>
+<span class="lineno">23</span> 
+<span class="lineno">24</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;create_time&quot;</span><span class="o">)</span>
+<span class="lineno">25</span> 	<span class="kd">private</span> <span class="n">Timestamp</span> <span class="n">createTime</span><span class="o">;</span>
+<span class="lineno">26</span> 
+<span class="lineno">27</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;create_user_uid&quot;</span><span class="o">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">48</span><span class="o">)</span>
+<span class="lineno">28</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">createUserUid</span><span class="o">;</span>
+<span class="lineno">29</span> 
+<span class="lineno">30</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="o">)</span>
+<span class="lineno">31</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>
+<span class="lineno">32</span> 
+<span class="lineno">33</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">18</span><span class="o">)</span>
+<span class="lineno">34</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">idcard</span><span class="o">;</span>
+<span class="lineno">35</span> 
+<span class="lineno">36</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;last_login_ip&quot;</span><span class="o">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="o">)</span>
+<span class="lineno">37</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">lastLoginIp</span><span class="o">;</span>
+<span class="lineno">38</span> 
+<span class="lineno">39</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;last_login_time&quot;</span><span class="o">)</span>
+<span class="lineno">40</span> 	<span class="kd">private</span> <span class="n">Timestamp</span> <span class="n">lastLoginTime</span><span class="o">;</span>
+<span class="lineno">41</span> 
+<span class="lineno">42</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">100</span><span class="o">)</span>
+<span class="lineno">43</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">maxim</span><span class="o">;</span>
+<span class="lineno">44</span> 
+<span class="lineno">45</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="o">)</span>
+<span class="lineno">46</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">mobile</span><span class="o">;</span>
+<span class="lineno">47</span> 
+<span class="lineno">48</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">10</span><span class="o">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+<span class="lineno">49</span> 	<span class="kd">private</span> <span class="n">BigDecimal</span> <span class="n">money</span><span class="o">;</span>
+<span class="lineno">50</span> 
+<span class="lineno">51</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="o">)</span>
+<span class="lineno">52</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">nickname</span><span class="o">;</span>
+<span class="lineno">53</span> 
+<span class="lineno">54</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="o">)</span>
+<span class="lineno">55</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+<span class="lineno">56</span> 
+<span class="lineno">57</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="o">)</span>
+<span class="lineno">58</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">phone</span><span class="o">;</span>
+<span class="lineno">59</span> 
+<span class="lineno">60</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="o">)</span>
+<span class="lineno">61</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">picture</span><span class="o">;</span>
+<span class="lineno">62</span> 
+<span class="lineno">63</span> 	<span class="kd">private</span> <span class="n">Integer</span> <span class="n">rank</span><span class="o">;</span>
+<span class="lineno">64</span> 
+<span class="lineno">65</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="o">)</span>
+<span class="lineno">66</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">realname</span><span class="o">;</span>
+<span class="lineno">67</span> 
+<span class="lineno">68</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">50</span><span class="o">)</span>
+<span class="lineno">69</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">region</span><span class="o">;</span>
+<span class="lineno">70</span> 
+<span class="lineno">71</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">32</span><span class="o">)</span>
+<span class="lineno">72</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">salt</span><span class="o">;</span>
+<span class="lineno">73</span> 
+<span class="lineno">74</span> 	<span class="kd">private</span> <span class="n">Integer</span> <span class="n">score</span><span class="o">;</span>
+<span class="lineno">75</span> 
+<span class="lineno">76</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+<span class="lineno">77</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">sex</span><span class="o">;</span>
+<span class="lineno">78</span> 
+<span class="lineno">79</span> 	<span class="kd">private</span> <span class="n">Integer</span> <span class="n">status</span><span class="o">;</span>
+<span class="lineno">80</span> 
+<span class="lineno">81</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">30</span><span class="o">)</span>
+<span class="lineno">82</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">username</span><span class="o">;</span>
+<span class="lineno">83</span> 
+<span class="lineno">84</span> 	<span class="c1">//bi-directional many-to-one association to Group</span>
+<span class="lineno">85</span> 	<span class="nd">@OneToMany</span><span class="o">(</span><span class="n">mappedBy</span><span class="o">=</span><span class="s">&quot;securityUser&quot;</span><span class="o">)</span>
+<span class="lineno">86</span> 	<span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Group</span><span class="o">&gt;</span> <span class="n">groups</span><span class="o">;</span>
+<span class="lineno">87</span> 
+<span class="lineno">88</span>     <span class="c1">//在此处进行映射可以方便查找出此SecurityUser对应的SecurityUserRole</span>
+<span class="lineno">89</span>     <span class="c1">//然后利用List&lt;SecurityUserRole&gt;可以查找出SecurityRole</span>
+<span class="lineno">90</span> 	<span class="c1">//bi-directional many-to-one association to SecurityUserRole</span>
+<span class="lineno">91</span> 	<span class="nd">@OneToMany</span><span class="o">(</span><span class="n">mappedBy</span><span class="o">=</span><span class="s">&quot;securityUser&quot;</span><span class="o">)</span>
+<span class="lineno">92</span> 	<span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityUserRole</span><span class="o">&gt;</span> <span class="n">securityUserRoles</span><span class="o">;</span>
+<span class="lineno">93</span> 	<span class="c1">//省略setter、getter</span>
+<span class="lineno">94</span> 	<span class="o">.........</span>
+<span class="lineno">95</span> <span class="o">}</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Entity</span>
+<span class="lineno"> 2</span> <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;security_user_role&quot;</span><span class="o">)</span>
+<span class="lineno"> 3</span> <span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;SecurityUserRole.findAll&quot;</span><span class="o">,</span> <span class="n">query</span><span class="o">=</span><span class="s">&quot;SELECT s FROM SecurityUserRole s&quot;</span><span class="o">)</span>
+<span class="lineno"> 4</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUserRole</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+<span class="lineno"> 5</span> 	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+<span class="lineno"> 6</span> 
+<span class="lineno"> 7</span> 	<span class="nd">@Id</span>
+<span class="lineno"> 8</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+<span class="lineno"> 9</span> 	<span class="nd">@SequenceGenerator</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;security_user_role_id_seq&quot;</span><span class="o">,</span> <span class="n">allocationSize</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">initialValue</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">sequenceName</span> <span class="o">=</span> <span class="s">&quot;security_use_role_id_seq&quot;</span><span class="o">)</span>
+<span class="lineno">10</span> 	<span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">GenerationType</span><span class="o">.</span><span class="na">SEQUENCE</span><span class="o">,</span> <span class="n">generator</span> <span class="o">=</span> <span class="s">&quot;security_user_role_id_seq&quot;</span><span class="o">)</span>
+<span class="lineno">11</span> 	<span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">48</span><span class="o">)</span>
+<span class="lineno">14</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">departemntvalue</span><span class="o">;</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span> 	<span class="nd">@Column</span><span class="o">(</span><span class="n">length</span><span class="o">=</span><span class="mi">48</span><span class="o">)</span>
+<span class="lineno">17</span> 	<span class="kd">private</span> <span class="n">String</span> <span class="n">departmentid</span><span class="o">;</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span> 	<span class="kd">private</span> <span class="n">Integer</span> <span class="n">priority</span><span class="o">;</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span> 	<span class="c1">//bi-directional many-to-one association to SecurityRole</span>
+<span class="lineno">22</span> 	<span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">FetchType</span><span class="o">.</span><span class="na">LAZY</span><span class="o">)</span>
+<span class="lineno">23</span> 	<span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;role_id&quot;</span><span class="o">,</span><span class="n">referencedColumnName</span><span class="o">=</span><span class="s">&quot;id&quot;</span><span class="o">)</span>
+<span class="lineno">24</span> 	<span class="kd">private</span> <span class="n">SecurityRole</span> <span class="n">securityRole</span><span class="o">;</span>
+<span class="lineno">25</span> 
+<span class="lineno">26</span> 	<span class="c1">//bi-directional many-to-one association to SecurityUser</span>
+<span class="lineno">27</span> 	<span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">FetchType</span><span class="o">.</span><span class="na">LAZY</span><span class="o">)</span>
+<span class="lineno">28</span> 	<span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;user_uid&quot;</span><span class="o">,</span><span class="n">referencedColumnName</span><span class="o">=</span><span class="s">&quot;uid&quot;</span><span class="o">)</span>
+<span class="lineno">29</span> 	<span class="kd">private</span> <span class="n">SecurityUser</span> <span class="n">securityUser</span><span class="o">;</span>
+<span class="lineno">30</span> 
+<span class="lineno">31</span> 	<span class="kd">public</span> <span class="nf">SecurityUserRole</span><span class="o">()</span> <span class="o">{</span>
+<span class="lineno">32</span> 	<span class="o">}</span>
+<span class="lineno">33</span> 	<span class="c1">//省略setter、getter</span>
+<span class="lineno">34</span> 	<span class="o">.........</span>
+<span class="lineno">35</span> 	<span class="o">}</span></code></pre></div>
+
+<p>视图类：</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRoleList</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span> 	<span class="kd">private</span> <span class="n">SecurityUser</span> <span class="n">user</span><span class="o">;</span>
+<span class="lineno">4</span> 	<span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityRole</span><span class="o">&gt;</span> <span class="n">roles</span><span class="o">;</span>
+<span class="lineno">5</span> 	<span class="c1">//省略setter、getter</span>
+<span class="lineno">6</span> 	<span class="o">.........</span>
+<span class="lineno">7</span> 	<span class="o">}</span></code></pre></div>
+
+<h2 id="handler">3.Handler页面跳转类</h2>
+
+<p>使用SpringMVC架构，此为Controller层。前台写的较为臃肿，最好可以将复杂逻辑放入Service层。</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Controller</span>
+<span class="lineno"> 2</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUserRoleHandler</span> <span class="o">{</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span> 	<span class="nd">@Autowired</span>
+<span class="lineno"> 5</span> 	<span class="kd">private</span> <span class="n">SecurityUserService</span> <span class="n">securityUserService</span><span class="o">;</span>
+<span class="lineno"> 6</span> <span class="nd">@Autowired</span>
+<span class="lineno"> 7</span> 	<span class="kd">private</span> <span class="n">SecurityRoleService</span> <span class="n">securityRoleService</span><span class="o">;</span>
+<span class="lineno"> 8</span> <span class="nd">@Autowired</span>
+<span class="lineno"> 9</span> <span class="kd">private</span> <span class="n">SecurityUserRoleService</span> <span class="n">securityUserRoleService</span><span class="o">;</span>
+<span class="lineno">10</span> <span class="nd">@Autowired</span>
+<span class="lineno">11</span> <span class="kd">private</span> <span class="n">UserRoleListService</span> <span class="n">userRoleListService</span><span class="o">;</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span> <span class="c1">//保存用户信息</span>
+<span class="lineno">14</span> 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;/backui/userrole/save&quot;</span><span class="o">,</span><span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+<span class="lineno">15</span> 	<span class="kd">public</span> <span class="n">String</span> <span class="nf">input</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
+<span class="lineno">16</span> 		<span class="c1">//传递所有角色到页面</span>
+<span class="lineno">17</span>         <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;securityroles&quot;</span><span class="o">,</span><span class="n">securityRoleService</span><span class="o">.</span><span class="na">getAll</span><span class="o">());</span>
+<span class="lineno">18</span> 		<span class="k">return</span> <span class="s">&quot;backui/userrole/input&quot;</span><span class="o">;</span>
+<span class="lineno">19</span> 	<span class="o">}</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span> 	<span class="c1">//接收用户信息</span>
+<span class="lineno">22</span> 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;/backui/userrole/save&quot;</span><span class="o">,</span><span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+<span class="lineno">23</span> 	<span class="kd">public</span> <span class="n">String</span> <span class="nf">save</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
+<span class="lineno">24</span> 		<span class="c1">//先保存user</span>
+<span class="lineno">25</span> 		<span class="n">securityUserService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
+<span class="lineno">26</span> 		<span class="k">if</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">()!=</span><span class="kc">null</span><span class="o">)</span>
+<span class="lineno">27</span> 		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++){</span>
+<span class="lineno">28</span> 			<span class="n">SecurityUserRole</span> <span class="n">securityUserRole</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SecurityUserRole</span><span class="o">();</span>
+<span class="lineno">29</span> 			<span class="n">securityUserRole</span><span class="o">.</span><span class="na">setSecurityUser</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
+<span class="lineno">30</span> 			<span class="n">securityUserRole</span><span class="o">.</span><span class="na">setSecurityRole</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+<span class="lineno">31</span> 			<span class="c1">//再保存复杂对象中的roles</span>
+<span class="lineno">32</span> 			<span class="k">if</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">()!=</span><span class="kc">null</span><span class="o">){</span>
+<span class="lineno">33</span> 			<span class="n">SecurityRole</span> <span class="n">role</span><span class="o">=</span><span class="n">securityRoleService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+<span class="lineno">34</span> 			<span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">setName</span><span class="o">(</span><span class="n">role</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="lineno">35</span> 			<span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">setDescription</span><span class="o">(</span><span class="n">role</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
+<span class="lineno">36</span> 			<span class="n">securityRoleService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">role</span><span class="o">);</span>
+<span class="lineno">37</span> 			<span class="c1">//最后保存本身</span>
+<span class="lineno">38</span> 		<span class="n">securityUserRoleService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">securityUserRole</span><span class="o">);</span>
+<span class="lineno">39</span> 			<span class="o">}</span>
+<span class="lineno">40</span> 		<span class="o">}</span>
+<span class="lineno">41</span> 		<span class="c1">//securityUserRoleService.save(securityUserRole);</span>
+<span class="lineno">42</span> 		<span class="k">return</span> <span class="s">&quot;backui/users/list&quot;</span><span class="o">;</span>
+<span class="lineno">43</span> 	<span class="o">}</span>
+<span class="lineno">44</span> 	
+<span class="lineno">45</span> 	<span class="c1">//更新用户</span>
+<span class="lineno">46</span> 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;/backui/userrole/update/{useruid}&quot;</span><span class="o">,</span> <span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+<span class="lineno">47</span> 	<span class="kd">public</span> <span class="n">String</span> <span class="nf">preUpdate</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&quot;useruid&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">useruid</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
+<span class="lineno">48</span> 		<span class="n">SecurityUser</span> <span class="n">user</span> <span class="o">=</span> <span class="n">securityUserService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">useruid</span><span class="o">);</span>
+<span class="lineno">49</span> 		<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;securityuser&quot;</span><span class="o">,</span> <span class="n">user</span><span class="o">);</span>
+<span class="lineno">50</span> 		<span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityUserRole</span><span class="o">&gt;</span> <span class="n">userroles</span> <span class="o">=</span> <span class="n">securityUserRoleService</span><span class="o">.</span><span class="na">findBySecurityUser</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+<span class="lineno">51</span> 		<span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityRole</span><span class="o">&gt;</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">securityRoleService</span><span class="o">.</span><span class="na">getAll</span><span class="o">();</span>
+<span class="lineno">52</span> 	    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">roles</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++){</span>
+<span class="lineno">53</span> 			<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">userroles</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">j</span><span class="o">++){</span>
+<span class="lineno">54</span> 				<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">roles</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">()+</span><span class="s">&quot;/&quot;</span><span class="o">+</span><span class="n">userroles</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">).</span><span class="na">getSecurityRole</span><span class="o">().</span><span class="na">getId</span><span class="o">());</span>
+<span class="lineno">55</span> 				<span class="k">if</span><span class="o">(</span><span class="n">roles</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">userroles</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">j</span><span class="o">).</span><span class="na">getSecurityRole</span><span class="o">().</span><span class="na">getId</span><span class="o">())){</span>
+<span class="lineno">56</span> 					<span class="n">roles</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="lineno">57</span> 					<span class="n">k</span><span class="o">++;</span>
+<span class="lineno">58</span> 					<span class="n">j</span><span class="o">=</span><span class="n">userroles</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+<span class="lineno">59</span> 				<span class="o">}</span>
+<span class="lineno">60</span> 			<span class="o">}</span>
+<span class="lineno">61</span> 			<span class="n">i</span><span class="o">-=</span><span class="n">k</span><span class="o">;</span>
+<span class="lineno">62</span> 			<span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+<span class="lineno">63</span> 	    <span class="o">}</span>
+<span class="lineno">64</span> 		<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;securityroles&quot;</span><span class="o">,</span><span class="n">roles</span><span class="o">);</span>
+<span class="lineno">65</span> 		<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;securityuserroles&quot;</span><span class="o">,</span> <span class="n">userroles</span><span class="o">);</span>
+<span class="lineno">66</span> 		<span class="k">return</span> <span class="s">&quot;backui/userrole/input&quot;</span><span class="o">;</span>
+<span class="lineno">67</span> 	<span class="o">}</span>
+<span class="lineno">68</span> 	
+<span class="lineno">69</span> 	<span class="c1">//前台返回</span>
+<span class="lineno">70</span> 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;/backui/userrole/update/{useruid}&quot;</span><span class="o">,</span><span class="n">method</span><span class="o">={</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">PUT</span><span class="o">,</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">})</span>
+<span class="lineno">71</span> 	<span class="kd">public</span> <span class="n">String</span> <span class="nf">update</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
+<span class="lineno">72</span> 		<span class="c1">//先保存用户</span>
+<span class="lineno">73</span> 		<span class="n">securityUserService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
+<span class="lineno">74</span> 		<span class="c1">//清除以前的用户角色</span>
+<span class="lineno">75</span> 		<span class="n">userRoleListService</span><span class="o">.</span><span class="na">deleteRoleByUser</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
+<span class="lineno">76</span> 		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++){</span>
+<span class="lineno">77</span> 			<span class="n">SecurityUserRole</span> <span class="n">securityUserRole</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SecurityUserRole</span><span class="o">();</span>
+<span class="lineno">78</span> 			<span class="n">securityUserRole</span><span class="o">.</span><span class="na">setSecurityUser</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
+<span class="lineno">79</span> 			<span class="n">securityUserRole</span><span class="o">.</span><span class="na">setSecurityRole</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+<span class="lineno">80</span> 			<span class="k">if</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">()!=</span><span class="kc">null</span><span class="o">){</span>
+<span class="lineno">81</span> 			<span class="n">SecurityRole</span> <span class="n">role</span><span class="o">=</span><span class="n">securityRoleService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">getId</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+<span class="lineno">82</span> 			<span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">setName</span><span class="o">(</span><span class="n">role</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="lineno">83</span> 			<span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">setDescription</span><span class="o">(</span><span class="n">role</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
+<span class="lineno">84</span> 			<span class="n">securityRoleService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">role</span><span class="o">);</span>
+<span class="lineno">85</span> 		<span class="n">securityUserRoleService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">securityUserRole</span><span class="o">);</span>
+<span class="lineno">86</span> 			<span class="o">}</span>
+<span class="lineno">87</span> 		<span class="o">}</span>
+<span class="lineno">88</span> 		<span class="k">return</span> <span class="s">&quot;backui/users/list&quot;</span><span class="o">;</span>
+<span class="lineno">89</span> 	<span class="o">}</span>
+<span class="lineno">90</span> 	
+<span class="lineno">91</span> <span class="o">}</span></code></pre></div>
+
+<h2 id="jsp">4.前台JSP页面处理复杂对象</h2>
+
+<p>Jsp页面接收时，需要在Handler中的Map里放入需要的对象，而在回传时，复杂对象是由后台进行组装的，不需要Map中有此对象。例如：SecurityUserRoleHandler的save方法并没有传入UserRoleList，后台依然可以接收到此对象。</p>
+
+<div class="highlight"><pre><code class="language-jsp" data-lang="jsp"><span class="lineno">  1</span> <span class="k">&lt;%@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">&quot;java&quot;</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span>
+<span class="lineno">  2</span> 	<span class="n">pageEncoding</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="k">%&gt;</span>
+<span class="lineno">  3</span> <span class="k">&lt;%@</span> <span class="n">taglib</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&quot;form&quot;</span> <span class="n">uri</span><span class="o">=</span><span class="s">&quot;http://www.springframework.org/tags/form&quot;</span><span class="k">%&gt;</span>
+<span class="lineno">  4</span> <span class="k">&lt;%@</span> <span class="n">taglib</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&quot;c&quot;</span> <span class="n">uri</span><span class="o">=</span><span class="s">&quot;http://java.sun.com/jsp/jstl/core&quot;</span><span class="k">%&gt;</span>
+<span class="lineno">  5</span> 
+<span class="lineno">  6</span> <span class="cp">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</span>
+<span class="lineno">  7</span> <span class="nt">&lt;html&gt;</span>
+<span class="lineno">  8</span> <span class="nt">&lt;head&gt;</span>
+<span class="lineno">  9</span> <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;Content-Type&quot;</span> <span class="na">content=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 10</span> <span class="nt">&lt;title&gt;</span>添加用户<span class="nt">&lt;/title&gt;</span>
+<span class="lineno"> 11</span> <span class="k">&lt;%-</span><span class="o">-</span> <span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span>
+<span class="lineno"> 12</span> 	<span class="n">src</span><span class="o">=</span><span class="s">&quot;${pageContext.request.contextPath }/scripts/jquery-1.9.1.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span> 
+<span class="lineno"> 13</span> <span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;${pageContext.request.contextPath }/styles/assets/css/bootstrap.min.css&quot;</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+<span class="lineno"> 14</span> <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;${pageContext.request.contextPath }/styles/assets/css/font-awesome.min.css&quot;</span> <span class="o">/&gt;</span>  <span class="o">--</span><span class="k">%&gt;</span>
+<span class="lineno"> 15</span> <span class="nt">&lt;/head&gt;</span>
+<span class="lineno"> 16</span> 
+<span class="lineno"> 17</span> <span class="nt">&lt;body&gt;</span>
+<span class="lineno"> 18</span> 
+<span class="lineno"> 19</span> 	<span class="nt">&lt;c:set</span> <span class="na">value=</span><span class="s">&quot;${pageContext.request.contextPath }/backui/userrole/save&quot;</span>
+<span class="lineno"> 20</span> 		<span class="na">var=</span><span class="s">&quot;url&quot;</span><span class="nt">&gt;&lt;/c:set&gt;</span>
+<span class="lineno"> 21</span> 	<span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">&quot;${securityuser.uid != null}&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 22</span> 		<span class="nt">&lt;c:set</span>
+<span class="lineno"> 23</span> 			<span class="na">value=</span><span class="s">&quot;${pageContext.request.contextPath }/backui/userrole/update/${securityuser.uid}&quot;</span>
+<span class="lineno"> 24</span> 			<span class="na">var=</span><span class="s">&quot;url&quot;</span><span class="nt">&gt;&lt;/c:set&gt;</span>
+<span class="lineno"> 25</span> 	<span class="nt">&lt;/c:if&gt;</span>
+<span class="lineno"> 26</span> 
+<span class="lineno"> 27</span> 	<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;page-header&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 28</span> 		<span class="nt">&lt;h4&gt;</span>
+<span class="lineno"> 29</span> 			用户管理 <span class="nt">&lt;small&gt;</span> <span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-double-angle-right&quot;</span><span class="nt">&gt;&lt;/i&gt;</span> 添加用户
+<span class="lineno"> 30</span> 			<span class="nt">&lt;/small&gt;</span>
+<span class="lineno"> 31</span> 		<span class="nt">&lt;/h4&gt;</span>
+<span class="lineno"> 32</span> 	<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 33</span> 	<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 34</span> 		<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-12&quot;</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 35</span> 			<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">&quot;#&quot;</span> <span class="na">attr_href=</span><span class="s">&quot;${url }&quot;</span> <span class="na">method=</span><span class="s">&quot;POST&quot;</span>
+<span class="lineno"> 36</span> 				<span class="na">class=</span><span class="s">&quot;form-horizontal&quot;</span> <span class="na">id=</span><span class="s">&quot;_form&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 37</span> 
+<span class="lineno"> 38</span> 				<span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">&quot;${securityuser.uid != null }&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 39</span> 					<span class="k">&lt;%-</span><span class="o">-</span> 	<span class="o">&lt;</span><span class="nl">form:</span><span class="n">hidden</span> <span class="n">path</span><span class="o">=</span><span class="s">&quot;id&quot;</span> <span class="o">/&gt;</span> <span class="o">--</span><span class="k">%&gt;</span>
+<span class="lineno"> 40</span> 					<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> <span class="na">name=</span><span class="s">&quot;user.uid&quot;</span>
+<span class="lineno"> 41</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.uid } &quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 42</span> 					<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> <span class="na">name=</span><span class="s">&quot;user.id&quot;</span>
+<span class="lineno"> 43</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.id } &quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 44</span> 					<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> <span class="na">name=</span><span class="s">&quot;user.createTime&quot;</span>
+<span class="lineno"> 45</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.createTime } &quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 46</span> 				<span class="nt">&lt;/c:if&gt;</span>
+<span class="lineno"> 47</span> 
+<span class="lineno"> 48</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 49</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>用户名
+<span class="lineno"> 50</span> 						:<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.username&quot;</span>
+<span class="lineno"> 51</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.username}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 52</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 53</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 54</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>登录密码:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 55</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.password&quot;</span>
+<span class="lineno"> 56</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.password}&quot;</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 57</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 58</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 59</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>真实姓名
+<span class="lineno"> 60</span> 						:<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.realname&quot;</span>
+<span class="lineno"> 61</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.realname}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 62</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 63</span> 								<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 64</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>性别
+<span class="lineno"> 65</span> 						:<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.sex&quot;</span>
+<span class="lineno"> 66</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.sex}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 67</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 68</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 69</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>昵称:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 70</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.nickname&quot;</span>
+<span class="lineno"> 71</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.nickname}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 72</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 73</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 74</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>邮箱:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 75</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.email&quot;</span>
+<span class="lineno"> 76</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.email}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 77</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 78</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 79</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>移动电话:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 80</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.mobile&quot;</span>
+<span class="lineno"> 81</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.mobile}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 82</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 83</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 84</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>地址:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 85</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.address&quot;</span>
+<span class="lineno"> 86</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.address}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 87</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 88</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 89</span> 					<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>身份证号码:<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 90</span> 					<span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="na">name=</span><span class="s">&quot;user.idcard&quot;</span>
+<span class="lineno"> 91</span> 						<span class="na">value=</span><span class="s">&quot;${securityuser.idcard}&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+<span class="lineno"> 92</span> 				<span class="nt">&lt;/div&gt;</span>
+<span class="lineno"> 93</span> 
+<span class="lineno"> 94</span> 				<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;</span>选择角色：<span class="nt">&lt;/label&gt;</span>
+<span class="lineno"> 95</span> 				<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-9&quot;</span> <span class="na">style=</span><span class="s">&quot;text-align:left&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 96</span> 				<span class="nt">&lt;c:forEach</span> <span class="na">var=</span><span class="s">&quot;list1&quot;</span> <span class="na">items=</span><span class="s">&quot;${securityroles}&quot;</span>  <span class="na">varStatus=</span><span class="s">&quot;vs1&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 97</span> 					<span class="nt">&lt;label&gt;&lt;input</span> <span class="na">name=</span><span class="s">&quot;roles[${vs1.index}].id&quot;</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span>
+<span class="lineno"> 98</span> 						<span class="na">value=</span><span class="s">&quot;&lt;c:out value=&quot;</span><span class="err">${list1.id}&quot;</span><span class="nt">/&gt;</span>&quot; /&gt; <span class="nt">&lt;c:out</span>
+<span class="lineno"> 99</span> 							<span class="na">value=</span><span class="s">&quot;${list1.name}&quot;</span> <span class="nt">/&gt;&lt;/label&gt;</span>
+<span class="lineno">100</span> 							<span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">&quot;${vs1.index%5==0&amp;&amp;vs1.index!=0}&quot;</span><span class="nt">&gt;&lt;br/&gt;&lt;/c:if&gt;</span>
+<span class="lineno">101</span> 				<span class="nt">&lt;/c:forEach&gt;</span>
+<span class="lineno">102</span> 
+<span class="lineno">103</span> 
+<span class="lineno">104</span> 				<span class="nt">&lt;c:forEach</span> <span class="na">var=</span><span class="s">&quot;list2&quot;</span> <span class="na">items=</span><span class="s">&quot;${securityuserroles}&quot;</span><span class="na">varStatus=</span><span class="s">&quot;vs2&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">105</span> 					<span class="nt">&lt;label&gt;&lt;input</span> <span class="na">name=</span><span class="s">&quot;roles[${vs2.index+list1.size}].id&quot;</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span>
+<span class="lineno">106</span> 						<span class="na">checked=</span><span class="s">&quot;checked&quot;</span> <span class="na">value=</span><span class="s">&quot;&lt;c:out value=&quot;</span><span class="err">${list2.securityRole.id}&quot;</span><span class="nt">/&gt;</span>&quot; /&gt; <span class="nt">&lt;c:out</span>
+<span class="lineno">107</span> 							<span class="na">value=</span><span class="s">&quot;${list2.securityRole.name}&quot;</span> <span class="nt">/&gt;&lt;/label&gt;</span>
+<span class="lineno">108</span> 				<span class="nt">&lt;/c:forEach&gt;</span>
+<span class="lineno">109</span> <span class="nt">&lt;/div&gt;</span>
+<span class="lineno">110</span> 				<span class="k">&lt;%-</span><span class="o">-</span> 		 <span class="o">&lt;</span><span class="n">select</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;combox&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;securityRole.id&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-xs-3&quot;</span><span class="o">&gt;</span>
+<span class="lineno">111</span> 						<span class="o">&lt;</span><span class="nl">c:</span><span class="n">forEach</span> <span class="n">var</span><span class="o">=</span><span class="s">&quot;list&quot;</span> <span class="n">items</span><span class="o">=</span><span class="s">&quot;${securityroles}&quot;</span><span class="o">&gt;</span>
+<span class="lineno">112</span> 							<span class="o">&lt;</span><span class="nl">c:</span><span class="n">choose</span><span class="o">&gt;</span>
+<span class="lineno">113</span> 								<span class="o">&lt;</span><span class="nl">c:</span><span class="n">when</span> <span class="n">test</span><span class="o">=</span><span class="s">&quot;${securityuserrole.securityRole.id==list.id}&quot;</span><span class="o">&gt;</span>
+<span class="lineno">114</span> 									<span class="o">&lt;</span><span class="n">option</span> <span class="n">selected</span><span class="o">=</span><span class="s">&quot;selected&quot;</span>
+<span class="lineno">115</span> 										<span class="n">value</span><span class="o">=</span><span class="s">&quot;&lt;c:out value=&quot;</span><span class="n">$</span><span class="o">{</span><span class="n">list</span><span class="o">.</span><span class="na">id</span><span class="o">}</span><span class="s">&quot;/&gt;&quot;</span><span class="o">&gt;</span>
+<span class="lineno">116</span> 										<span class="o">&lt;</span><span class="nl">c:</span><span class="n">out</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;${list.name}&quot;</span> <span class="o">/&gt;</span>
+<span class="lineno">117</span> 									<span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="lineno">118</span> 								<span class="o">&lt;/</span><span class="nl">c:</span><span class="n">when</span><span class="o">&gt;</span>
+<span class="lineno">119</span> 								<span class="o">&lt;</span><span class="nl">c:</span><span class="n">otherwise</span><span class="o">&gt;</span>
+<span class="lineno">120</span> 									<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;&lt;c:out value=&quot;</span><span class="n">$</span><span class="o">{</span><span class="n">list</span><span class="o">.</span><span class="na">id</span><span class="o">}</span><span class="s">&quot;/&gt;&quot;</span><span class="o">&gt;</span>
+<span class="lineno">121</span> 										<span class="o">&lt;</span><span class="nl">c:</span><span class="n">out</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;${list.name}&quot;</span> <span class="o">/&gt;</span>
+<span class="lineno">122</span> 									<span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="lineno">123</span> 								<span class="o">&lt;/</span><span class="nl">c:</span><span class="n">otherwise</span><span class="o">&gt;</span>
+<span class="lineno">124</span> 							<span class="o">&lt;/</span><span class="nl">c:</span><span class="n">choose</span><span class="o">&gt;</span>
+<span class="lineno">125</span> 						<span class="o">&lt;/</span><span class="nl">c:</span><span class="n">forEach</span><span class="o">&gt;</span>
+<span class="lineno">126</span> 					<span class="o">&lt;/</span><span class="n">select</span><span class="o">&gt;</span> <span class="o">--</span><span class="k">%&gt;</span>
+<span class="lineno">127</span> 				<span class="k">&lt;%-</span><span class="o">-</span> 		<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;form-group&quot;</span><span class="o">&gt;</span>
+<span class="lineno">128</span> 		<span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="o">&gt;</span><span class="nl">性别:</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span> 
+<span class="lineno">129</span> 		<span class="o">&lt;</span><span class="n">input</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;sex&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;${securityuser.sex}&quot;</span><span class="n">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+<span class="lineno">130</span> 		<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span> <span class="o">--</span><span class="k">%&gt;</span>
+<span class="lineno">131</span> 				<span class="k">&lt;%-</span><span class="o">-</span> 		<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;form-group&quot;</span><span class="o">&gt;</span>
+<span class="lineno">132</span> 		<span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="o">&gt;</span><span class="nl">生日:</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span> 
+<span class="lineno">133</span> 		<span class="o">&lt;</span><span class="n">input</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-xs-3&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;birthday&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;${securityuser.birthday}&quot;</span><span class="n">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span><span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+<span class="lineno">134</span> 		<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span> <span class="o">--</span><span class="k">%&gt;</span>
+<span class="lineno">135</span> 				<span class="c">&lt;!-- 		&lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt; --&gt;</span>
+<span class="lineno">136</span> 			<span class="nt">&lt;/form&gt;</span>
+<span class="lineno">137</span> 			<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">138</span> 				<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">&quot;col-xs-3 control-label no-padding-right&quot;</span><span class="nt">&gt;&lt;/label&gt;</span>
+<span class="lineno">139</span> 				<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-info col-sm-1 no-padding-right&quot;</span>
+<span class="lineno">140</span> 					<span class="na">value=</span><span class="s">&quot;确定添加&quot;</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span>
+<span class="lineno">141</span> 					<span class="na">onclick=</span><span class="s">&quot;submitFormByDivAndUrl(_form,&#39;ebag_list&#39;,&#39;${pageContext.request.contextPath }/backui/users/list&#39;)&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">142</span> 					<span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-undo bigger-110&quot;</span><span class="nt">&gt;&lt;/i&gt;</span>提交
+<span class="lineno">143</span> 				<span class="nt">&lt;/button&gt;</span>
+<span class="lineno">144</span> 				<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">class=</span><span class="s">&quot;btn col-sm-1 no-padding-right&quot;</span>
+<span class="lineno">145</span> 					<span class="na">value=</span><span class="s">&quot;确定添加&quot;</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span>
+<span class="lineno">146</span> 					<span class="na">onclick=</span><span class="s">&quot;newJsp(&#39;${pageContext.request.contextPath }/backui/users/list&#39;,&#39;ebag_list&#39;)&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">147</span> 					<span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-undo bigger-110&quot;</span><span class="nt">&gt;&lt;/i&gt;</span>返回
+<span class="lineno">148</span> 				<span class="nt">&lt;/button&gt;</span>
+<span class="lineno">149</span> 			<span class="nt">&lt;/div&gt;</span>
+<span class="lineno">150</span> 		<span class="nt">&lt;/div&gt;</span>
+<span class="lineno">151</span> 	<span class="nt">&lt;/div&gt;</span>
+<span class="lineno">152</span> <span class="nt">&lt;/body&gt;</span>
+<span class="lineno">153</span> <span class="nt">&lt;/html&gt;</span></code></pre></div>
+
+<p>以下是添加用户并选择角色的页面，其实是把一个SecurityUser和多个SecurityRole组装成一个复杂类UserRoleList回传给后台处理。</p>
+
+<p><img src="../../../static/images/userrolelist.png" alt="junit" /></p>
+
+<p>用到的技术：
+JSP+SpringMVC+SpringDate+JPA</p>
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2015/11/15/%E5%87%A0%E7%A7%8D%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html" rel="prev">&laquo;&nbsp;比较几种基本排序（一）</a></div>
+    
+    
+</section>
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>
