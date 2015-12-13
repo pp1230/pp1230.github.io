@@ -97,11 +97,13 @@
 <h1 class="lotus-pagetit">词向量和语言模型</h1>
 <p class="lotus-meta">Publish: <time class="date" pubdate="December 13, 2015">December 13, 2015</time></p>
 <article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<blockquote>
+  <p>Natural language processing  is one of the most important technologies of the information age. Understanding complex language utterances is also a crucial part of artificial intelligence. Applications of NLP are everywhere because people communicate most everything in language: web search, advertisement, emails, customer service, language translation, radiology reports, etc. There are a large variety of underlying tasks and machine learning models powering NLP applications. Recently, deep learning approaches have obtained very high performance across many different NLP tasks. These models can often be trained with a single end-to-end model and do not require traditional, task-specific feature engineering. </p>
+</blockquote>
+
 <h2 id="section">0.研究现状</h2>
 
-<blockquote>
-  <p>Deep Learning 算法已经在图像和音频领域取得了惊人的成果，但是在 NLP 领域中尚未见到如此激动人心的结果。有一种说法是，语言（词、句子、篇章等）属于人类认知过程中产生的高层认知抽象实体，而语音和图像属于较为底层的原始输入信号，所以后两者更适合做deep learning来学习特征。</p>
-</blockquote>
+<p>　　Deep Learning 算法已经在图像和音频领域取得了惊人的成果，但是在 NLP 领域中尚未见到如此激动人心的结果。有一种说法是，语言（词、句子、篇章等）属于人类认知过程中产生的高层认知抽象实体，而语音和图像属于较为底层的原始输入信号，所以后两者更适合做deep learning来学习特征。</p>
 
 <h2 id="section-1">1.什么是词向量</h2>
 <p>　　<strong>Deep Learning</strong> 中一般用到的词向量并不是刚才提到的用 <code>One-hot Representation</code> 表示的那种很长很长的词向量，而是用 <code>Distributed Representation</code>（不知道这个应该怎么翻译，因为还存在一种叫“Distributional Representation”的表示方法，又是另一个不同的概念）表示的一种低维实数向量。这种向量一般长成这个样子：[0.792, −0.177, −0.107, 0.109, −0.542, …]。维度以 50 维和 100 维比较常见。这种向量的表示不是唯一的，后文会提到目前计算出这种向量的主流方法。<br />
