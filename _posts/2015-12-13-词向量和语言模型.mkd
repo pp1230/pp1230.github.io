@@ -62,8 +62,9 @@ P(Wn|W1W2...Wn-1) = (C(W1 W2...Wn))/(C(W1 W2...Wn-1))
 
 下面我们用bigram举个例子。假设语料库总词数为13,748
 ![ngrame](../../../static/images/ngram.gif)
+![ngrame1](../../../static/images/ngram1.gif)
 
-计算结果：
+**计算结果**：
 P(I want to eat Chinese food)
 =P(I)*P(want|I)*P(to|want)*P(eat|to)*P(Chinese|eat)*P(food|Chinese)
 =0.25*1087/3437*786/1215*860/3256*19/938*120/213
@@ -78,8 +79,42 @@ P(I want to eat Chinese food)
 author:Yoshua Bengio<br>
 We propose to fight thecurse of dimensionality by learning a distributed representation for words which allows each
 training sentence to inform the model about an exponential number of semantically neighboring
-sentences.
-        
+senten<br>
+1. Fighting the Curse of Dimensionality with Distributed Representations<br>
+In a nutshell, the idea of the proposed approach can be summarized as follows:
+
+*  associate with each word in the vocabulary a distributed word feature vector (a real-
+valued vector in R m ),
+*  express the joint probability function of word sequences in terms of the feature vectors
+of these words in the sequence, and
+*  learn simultaneously the word feature vectors and the parameters of that probability
+function.
+
+1.2 Relation to Previous Work<br>
+The idea of using neural networks to model high-dimensional discrete distributions has already
+been found useful to learn the joint probability of Z 1 · · · Z n , a set of random variables where each is
+possibly of a different nature (Bengio and Bengio, 2000a,b). In that model, the joint probability is
+decomposed as a product of conditional probabilities
+
+![relaf](../../../static/images/relaf.png)
+
+2.A Neural Model
+
+![bingo1](../../../static/images/bingo1.png)
+
+图中最下方的 wt−n+1,…,wt−2,wt−1 就是前 n−1 个词。现在需要根据这已知的 n−1 个词预测下一个词 wt。C(w) 表示词 w 所对应的词向量，整个模型中使用的是一套唯一的词向量，存在矩阵 C（一个 |V|×m 的矩阵）中。其中 |V| 表示词表的大小（语料中的总词数），m 表示词向量的维度。w 到 C(w) 的转化就是从矩阵中取出一行。
+网络的第一层（输入层）是将 C(wt−n+1),…,C(wt−2),C(wt−1) 这 n−1 个向量首尾相接拼起来，形成一个 (n−1)m 维的向量，下面记为 x。
+网络的第二层（隐藏层）就如同普通的神经网络，直接使用 d+Hx 计算得到。d 是一个偏置项。在此之后，使用 tanh 作为激活函数。
+网络的第三层（输出层）一共有 |V| 个节点，每个节点 yi 表示 下一个词为 i 的未归一化 log 概率。最后使用 softmax 激活函数将输出值 y 归一化成概率。最终，y 的计算公式为：
+{%highlight c%}
+y=b+Wx+Utanh(d+Hx)
+{%endhighlight%}
+式子中的 U（一个 |V|×h 的矩阵）是隐藏层到输出层的参数，整个模型的多数计算集中在 U 和隐藏层的矩阵乘法中。后文的提到的 3 个工作，都有对这一环节的简化，提升计算的速度。
+式子中还有一个矩阵 W（|V|×(n−1)m），这个矩阵包含了从输入层到输出层的直连边。直连边就是从输入层直接到输出层的一个线性变换，好像也是神经网络中的一种常用技巧（没有仔细考察过）。如果不需要直连边的话，将 W 置为 0 就可以了。在最后的实验中，Bengio 发现直连边虽然不能提升模型效果，但是可以少一半的迭代次数。同时他也猜想如果没有直连边，可能可以生成更好的词向量。
+现在万事俱备，用随机梯度下降法把这个模型优化出来就可以了。需要注意的是，一般神经网络的输入层只是一个输入值，而在这里，输入层 x 也是参数（存在 C 中），也是需要优化的。优化结束之后，词向量有了，语言模型也有了。
+这样得到的语言模型自带平滑，无需传统 n-gram 模型中那些复杂的平滑算法。Bengio 在 APNews 数据集上做的对比实验也表明他的模型效果比精心设计平滑算法的普通 n-gram 算法要好 10% 到 20%。
+
+---------------------------------------------------------------------------------未完待续--------------------------------------------------------------------------
         
         
         
@@ -89,16 +124,3 @@ ngram模型：[CSDN博客网址](http://blog.csdn.net/lengyuhong/article/details
 DeepLearning in NLP:[licstar的博客](http://licstar.net/archives/328)
 
 Yoshua Bengio, Rejean Ducharme, Pascal Vincent, and Christian Jauvin. A neural probabilistic language model. Journal of Machine Learning Research (JMLR), 3:1137–1155, 2003. [PDF](http://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf)
-
-Ronan Collobert, Jason Weston, Léon Bottou, Michael Karlen, Koray Kavukcuoglu and Pavel Kuksa. Natural Language Processing (Almost) from Scratch. Journal of Machine Learning Research (JMLR), 12:2493-2537, 2011. [PDF](http://www.jmlr.org/papers/volume12/collobert11a/collobert11a.pdf)
-
-Andriy Mnih & Geoffrey Hinton. Three new graphical models for statistical language modelling. International Conference on Machine Learning (ICML). 2007. [PDF](http://www.cs.utoronto.ca/~hinton/absps/threenew.pdf)
-Andriy Mnih & Geoffrey Hinton. A scalable hierarchical distributed language model. The Conference on Neural Information Processing Systems (NIPS) (pp. 1081–1088). 2008. [PDF](http://www.cs.utoronto.ca/~hinton/absps/andriytree.pdf)
-
-Mikolov Tomáš. Statistical Language Models based on Neural Networks. PhD thesis, Brno University of Technology. 2012. [PDF](http://www.fit.vutbr.cz/~imikolov/rnnlm/thesis.pdf)
-
-Turian Joseph, Lev Ratinov, and Yoshua Bengio. Word representations: a simple and general method for semi-supervised learning. Proceedings of the 48th Annual Meeting of the Association for Computational Linguistics (ACL). 2010. [PDF](http://www.aclweb.org/anthology-new/P/P10/P10-1040.pdf)
-
-Eric Huang, Richard Socher, Christopher Manning and Andrew Ng. Improving word representations via global context and multiple word prototypes. Proceedings of the 50th Annual Meeting of the Association for Computational Linguistics: Long Papers-Volume 1. 2012. [PDF](http://www-nlp.stanford.edu/pubs/HuangACL12.pdf)
-
-Mikolov, Tomas, Wen-tau Yih, and Geoffrey Zweig. Linguistic regularities in continuous space word representations. Proceedings of NAACL-HLT. 2013. [PDF](https://www.aclweb.org/anthology/N/N13/N13-1090.pdf)
