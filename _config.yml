@@ -58,8 +58,8 @@ nav:
     url: /contact.html
     icon: icon-envelope-alt
     class: none
-  - text: 联系我
-    url: http://github.com/qq472220372
+  - text: love shuwei
+    url: /love/shuwei.html
     icon: icon-heart
     class: none
   - text: 资源
