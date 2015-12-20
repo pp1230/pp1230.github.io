@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            SpringData组合查询实例分析
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="Spring Data项目的目的是为了简化构建基于Spring 框架应用的数据访问计数，包括非关系数据库、Map-Reduce框架、云数据服务等等；另外也包含对关系数据库的访问支持。Spring Data 的宗旨是提供一个熟悉和一致的，基于Spring的数据访问编程模型，同时还保留基本数据存储的特殊特性。也就是说，我们可以更加灵活地使用Spring-data-jpa ,1.当数据操作比较原始简单时可以调用springdata接口2.当操作复杂或需要提高性能时，可以自己构建查询方法访问数据层。" />
+    <meta name="keywords" content="java,spring data,jpa" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="http://pp1230.github.io/static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/love/shuwei.html" rel="bookmark" title="love shuwei">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    SpringData组合查询实例分析
+</p>
+<h1 class="lotus-pagetit">SpringData组合查询实例分析</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="December 20, 2015">December 20, 2015</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h1 id="introduction">Introduction</h1>
+
+<blockquote>
+  <p>Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model for data access while still retaining the special traits of the underlying data store. 
+It makes it easy to use data access technologies, relational and non-relational databases, map-reduce frameworks, and cloud-based data services. This is an umbrella project which contains many subprojects that are specific to a given database. The projects are developed by working together with many of the companies and developers that are behind these exciting technologies.</p>
+</blockquote>
+
+<h1 id="springdata">一.使用SpringData默认的方法</h1>
+
+<h2 id="springdata-1">SpringData方法的基本规则</h2>
+
+<table class="tableblock frame-all grid-all">
+<caption class="title">Table 4. Supported keywords inside method names</caption>
+<colgroup>
+<col />
+<col />
+<col />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keyword</th>
+<th class="tableblock halign-left valign-top">Sample</th>
+<th class="tableblock halign-left valign-top">JPQL snippet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>And</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByLastnameAndFirstname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.lastname = ?1 and x.firstname = ?2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Or</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByLastnameOrFirstname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.lastname = ?1 or x.firstname = ?2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is,Equals</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstname</code>,<code>findByFirstnameIs</code>,<code>findByFirstnameEquals</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname = 1?</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Between</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByStartDateBetween</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.startDate between 1? and ?2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LessThan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeLessThan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age &lt; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LessThanEqual</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeLessThanEqual</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age &#8656; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GreaterThan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeGreaterThan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age &gt; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GreaterThanEqual</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeGreaterThanEqual</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age &gt;= ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>After</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByStartDateAfter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.startDate &gt; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Before</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByStartDateBefore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.startDate &lt; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IsNull</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeIsNull</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age is null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IsNotNull,NotNull</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAge(Is)NotNull</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age not null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Like</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameLike</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname like ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NotLike</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameNotLike</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname not like ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StartingWith</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameStartingWith</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname like ?1</code> (parameter bound with appended <code>%</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>EndingWith</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameEndingWith</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname like ?1</code> (parameter bound with prepended <code>%</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Containing</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameContaining</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.firstname like ?1</code> (parameter bound wrapped in <code>%</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OrderBy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeOrderByLastnameDesc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age = ?1 order by x.lastname desc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Not</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByLastnameNot</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.lastname &lt;&gt; ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>In</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeIn(Collection&lt;Age&gt; ages)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age in ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NotIn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByAgeNotIn(Collection&lt;Age&gt; age)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.age not in ?1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>True</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByActiveTrue()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.active = true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>False</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByActiveFalse()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where x.active = false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IgnoreCase</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findByFirstnameIgnoreCase</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>… where UPPER(x.firstame) = UPPER(?1)</code></p></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="dao">几个简单的Dao</h2>
+
+<h3 id="query-creation-from-method-names">1.Query creation from method names</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">Repository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">findByEmailAddressAndLastname</span><span class="o">(</span><span class="n">String</span> <span class="n">emailAddress</span><span class="o">,</span> <span class="n">String</span> <span class="n">lastname</span><span class="o">);</span>
+<span class="lineno">4</span> <span class="o">}</span></code></pre></div>
+
+<h3 id="query-method-declaration-in-userrepository">2.Query method declaration in UserRepository</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">findByLastname</span><span class="o">(</span><span class="n">String</span> <span class="n">lastname</span><span class="o">);</span>
+<span class="lineno">4</span> 
+<span class="lineno">5</span>   <span class="n">User</span> <span class="nf">findByEmailAddress</span><span class="o">(</span><span class="n">String</span> <span class="n">emailAddress</span><span class="o">);</span>
+<span class="lineno">6</span> <span class="o">}</span></code></pre></div>
+
+<h1 id="query">二.自己创建Query语句查询</h1>
+
+<p>Using named queries to declare queries for entities is a valid approach and works fine for a small number of queries. As the queries themselves are tied to the Java method that executes them you actually can bind them directly using the Spring Data JPA @Query annotation rather than annotating them to the domain class. This will free the domain class from persistence specific information and co-locate the query to the repository interface.</p>
+
+<h2 id="section">使用默认的命名规则</h2>
+
+<h3 id="declare-query-at-the-query-method-using-query">1.Declare query at the query method using @Query</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="nd">@Query</span><span class="o">(</span><span class="s">&quot;select u from User u where u.emailAddress = ?1&quot;</span><span class="o">)</span>
+<span class="lineno">4</span>   <span class="n">User</span> <span class="nf">findByEmailAddress</span><span class="o">(</span><span class="n">String</span> <span class="n">emailAddress</span><span class="o">);</span>
+<span class="lineno">5</span> <span class="o">}</span></code></pre></div>
+
+<h3 id="advanced-like-expressions-in-query">2.Advanced like-expressions in @Query</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="nd">@Query</span><span class="o">(</span><span class="s">&quot;select u from User u where u.firstname like %?1&quot;</span><span class="o">)</span>
+<span class="lineno">4</span>   <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">findByFirstnameEndsWith</span><span class="o">(</span><span class="n">String</span> <span class="n">firstname</span><span class="o">);</span>
+<span class="lineno">5</span> <span class="o">}</span></code></pre></div>
+
+<h3 id="declare-a-native-query-at-the-query-method-using-query">3.Declare a native query at the query method using @Query</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="nd">@Query</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM USERS WHERE EMAIL_ADDRESS = ?0&quot;</span><span class="o">,</span> <span class="n">nativeQuery</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="lineno">4</span>   <span class="n">User</span> <span class="nf">findByEmailAddress</span><span class="o">(</span><span class="n">String</span> <span class="n">emailAddress</span><span class="o">);</span>
+<span class="lineno">5</span> <span class="o">}</span></code></pre></div>
+
+<h2 id="section-1">使用自定义的命名规则</h2>
+
+<h3 id="using-named-parameters">1.Using named parameters</h3>
+
+<p>By default Spring Data JPA will use position based parameter binding as described in all the samples above. This makes query methods a little error prone to refactoring regarding the parameter position. To solve this issue you can use @Param annotation to give a method parameter a concrete name and bind the name in the query.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">2</span> 
+<span class="lineno">3</span>   <span class="nd">@Query</span><span class="o">(</span><span class="s">&quot;select u from User u where u.firstname = :firstname or u.lastname = :lastname&quot;</span><span class="o">)</span>
+<span class="lineno">4</span>   <span class="n">User</span> <span class="nf">findByLastnameOrFirstname</span><span class="o">(</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;lastname&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">lastname</span><span class="o">,</span>
+<span class="lineno">5</span>                                  <span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;firstname&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">firstname</span><span class="o">);</span>
+<span class="lineno">6</span> <span class="o">}</span></code></pre></div>
+
+<h3 id="query-with-jpql-query">2.@Query with JPQL query</h3>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SecurityUserRepository</span> <span class="kd">extends</span>
+<span class="lineno">2</span> 		<span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">SecurityUser</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno">3</span> 
+<span class="lineno">4</span> <span class="nd">@Query</span><span class="o">(</span><span class="s">&quot;select u from SecurityUser u where u in (select ur.securityUser from SecurityUserRole ur where ur.securityRole in (select r from SecurityRole r where r.description like %:des%))and ( u.id = :id  or u.status = :status or u.mobile like %:mobile%)&quot;</span><span class="o">)</span>
+<span class="lineno">5</span> <span class="n">Page</span><span class="o">&lt;</span><span class="n">SecurityUser</span><span class="o">&gt;</span> <span class="nf">findByParams</span><span class="o">(</span>
+<span class="lineno">6</span> 		<span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;des&quot;</span><span class="o">)</span><span class="n">String</span> <span class="n">des</span><span class="o">,</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">)</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;status&quot;</span><span class="o">)</span><span class="kt">int</span> <span class="n">status</span><span class="o">,</span> <span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;mobile&quot;</span><span class="o">)</span><span class="n">String</span> <span class="n">mobile</span><span class="o">,</span> <span class="n">Pageable</span> <span class="n">page</span><span class="o">);</span>
+<span class="lineno">7</span> <span class="o">}</span></code></pre></div>
+
+<p>参考资料：</p>
+
+<p><a href="http://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/">springdatajpa官方文档</a><br />
+<a href="http://stackoverflow.com/questions/22898077/springdata-jparepository-and-or-operators">stackoverflow问题</a></p>
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2015/12/15/JqueryValidation%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8.html" rel="prev">&laquo;&nbsp;使用Jquery-Validation插件进行前端验证</a></div>
+    
+    
+</section>
+
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2015/12/20/springdatajpa组合查询" data-title="SpringData组合查询实例分析" data-url="/2015/12/20/springdatajpa%E7%BB%84%E5%90%88%E6%9F%A5%E8%AF%A2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pp1230"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>
