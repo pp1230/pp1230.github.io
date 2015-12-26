@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            Cassandra Lucene Index
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="Stratio’s Cassandra Lucene Index, derived from Stratio Cassandra, is a plugin for Apache Cassandra that extends its index functionality to provide near real time search such as ElasticSearch or Solr, including full text search capabilities and free multivariable, geospatial and bitemporal search. It is achieved through an Apache Lucene based implementation of Cassandra secondary indexes, where each node of the cluster indexes its own data. Stratio’s Cassandra indexes are one of the core modules on which Stratio’s BigData platform is based." />
+    <meta name="keywords" content="java,spring data,jpa" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="../../../static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/love/shuwei.html" rel="bookmark" title="love shuwei">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    Cassandra Lucene Index
+</p>
+<h1 class="lotus-pagetit">Cassandra Lucene Index</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="December 26, 2015">December 26, 2015</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h2 id="stratios-cassandra-lucene-index">Stratio’s Cassandra Lucene Index</h2>
+
+<p>Stratio’s Cassandra Lucene Index, derived from <a href="https://github.com/Stratio/stratio-cassandra">Stratio Cassandra</a>, is
+a plugin for <a href="http://cassandra.apache.org/">Apache Cassandra</a> that extends its index functionality to provide near
+real time search such as ElasticSearch or Solr, including <a href="http://en.wikipedia.org/wiki/Full_text_search">full text search</a>
+capabilities and free multivariable, geospatial and bitemporal search. It is achieved through an <a href="http://lucene.apache.org/">Apache Lucene</a>
+based implementation of Cassandra secondary indexes, where each node of the cluster indexes its own data. Stratio’s
+Cassandra indexes are one of the core modules on which <a href="http://www.stratio.com/">Stratio’s BigData platform</a> is based.</p>
+<p>Index <a href="http://en.wikipedia.org/wiki/Relevance_(information_retrieval)">relevance searches</a> allows you to retrieve the
+<em>n</em> more relevant results satisfying a search. The coordinator node sends the search to each node in the cluster, each node
+returns its <em>n</em> best results and then the coordinator combines these partial results and gives you the <em>n</em> best of them,
+avoiding full scan. You can also base the sorting in a combination of fields.</p>
+<p>Index filtered searches are a powerful help when analyzing the data stored in Cassandra with <a href="http://es.wikipedia.org/wiki/MapReduce">MapReduce</a>
+frameworks as <a href="http://hadoop.apache.org/">Apache Hadoop</a> or, even better, <a href="http://spark.apache.org/">Apache Spark</a>.
+Adding Lucene filters in the jobs input can dramatically reduce the amount of data to be processed, avoiding full scan.</p>
+<p>Any cell in the tables can be indexed, including those in the primary key as well as collections. Wide rows are also
+supported. You can scan token/key ranges, apply additional CQL3 clauses and page on the filtered results.</p>
+<p>This project is not intended to replace Apache Cassandra denormalized
+tables, inverted indexes, and/or secondary indexes. It is just a tool
+to perform some kind of queries which are really hard to be addressed
+using Apache Cassandra out of the box features.</p>
+<p>More detailed information is available at <a href="/pp1230/cassandra-lucene-index/blob/branch-2.2.4/doc/src/site/sphinx/documentation.rst">Stratio’s Cassandra Lucene Index documentation</a>.</p>
+<p><a name="user-content-features"></a></p>
+
+<h3 id="features">Features</h3>
+
+<p>Stratio’s Cassandra Lucene Index and its integration with Lucene search technology provides:</p>
+
+<ul>
+  <li>Full text search</li>
+  <li>Geospatial search</li>
+  <li>Bitemporal search</li>
+  <li>Boolean (and, or, not) search</li>
+  <li>Near real-time search</li>
+  <li>Relevance scoring and sorting</li>
+  <li>General top-k queries</li>
+  <li>Custom analyzers</li>
+  <li>CQL complex types (list, set, map, tuple and UDT)</li>
+  <li>CQL user defined functions (UDF)</li>
+  <li>Third-party CQL-based drivers compatibility</li>
+  <li>Spark compatibility</li>
+  <li>Hadoop compatibility</li>
+  <li>Smart Chinese Analyzer</li>
+  <li>Not yet supported:</li>
+</ul>
+
+<p>Thrift API
+* Legacy compact storage option
+* Indexing counter columns
+* Columns with TTL
+* Static columns</p>
+
+<h3 id="requirements">Requirements</h3>
+
+<ul>
+  <li>Cassandra (identified by the three first numbers of the plugin version)</li>
+  <li>Java &gt;= 1.7 (OpenJDK and Sun have been tested)</li>
+  <li>Maven &gt;= 3.0
+###Build and install</li>
+</ul>
+
+<p>Stratio’s Cassandra Lucene Index is distributed as a plugin for Apache Cassandra. Thus, you just need to build a JAR containing the plugin and add it to the Cassandra’s classpath:</p>
+
+<p>Build the plugin with Maven: </p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="err">$</span> <span class="n">mvn</span> <span class="n">clean</span> <span class="n">package</span></code></pre></div>
+
+<p>Copy the generated JAR to the lib folder of your compatible Cassandra installation:</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="err">$</span> <span class="n">cp</span> <span class="n">plugin</span><span class="o">/</span><span class="n">target</span><span class="o">/</span><span class="n">cassandra</span><span class="o">-</span><span class="n">lucene</span><span class="o">-</span><span class="n">index</span><span class="o">-</span><span class="n">plugin</span><span class="o">-*</span><span class="p">.</span><span class="n">jar</span> <span class="o">&lt;</span><span class="n">CASSANDRA_HOME</span><span class="o">&gt;/</span><span class="n">lib</span><span class="o">/</span></code></pre></div>
+
+<p>Start/restart Cassandra as usual</p>
+
+<p>Alternatively, patching can also be done with this Maven profile, specifying the path of your Cassandra installation,
+this task also delete previous plugin’s JAR versions in CASSANDRA_HOME/lib/ directory:</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="n">mvn</span> <span class="n">clean</span> <span class="n">package</span> <span class="o">-</span><span class="n">Ppatch</span> <span class="o">-</span><span class="n">Dcassandra_home</span><span class="o">=&lt;</span><span class="n">CASSANDRA_HOME</span><span class="o">&gt;</span></code></pre></div>
+
+<p>If you don’t have an installed version of Cassandra, there is also an alternative profile to let Maven download and patch the proper version of Apache Cassandra:</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="err">$</span> <span class="n">mvn</span> <span class="n">clean</span> <span class="n">package</span> <span class="o">-</span><span class="n">Pdownload_and_patch</span> <span class="o">-</span><span class="n">Dcassandra_home</span><span class="o">=&lt;</span><span class="n">CASSANDRA_HOME</span><span class="o">&gt;</span></code></pre></div>
+
+<p>Now you can run Cassandra and do some tests using the Cassandra Query Language:</p>
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="err">$</span> <span class="o">&lt;</span><span class="n">CASSANDRA_HOME</span><span class="o">&gt;/</span><span class="n">bin</span><span class="o">/</span><span class="n">cassandra</span> <span class="o">-</span><span class="n">f</span>
+<span class="err">$</span> <span class="o">&lt;</span><span class="n">CASSANDRA_HOME</span><span class="o">&gt;/</span><span class="n">bin</span><span class="o">/</span><span class="n">cqlsh</span></code></pre></div>
+
+<p>The Lucene’s index files will be stored in the same directories where the Cassandra’s will be. The default data directory is /var/lib/cassandra/data, and each index is placed next to the SSTables of its indexed column family.</p>
+
+<p>For more details about Apache Cassandra please see its documentation.</p>
+
+<h3 id="example">Example:</h3>
+
+<h4 id="creat-table">1.Creat Table</h4>
+
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="lineno">1</span> <span class="n">USE</span> <span class="n">demo</span><span class="p">;</span>
+<span class="lineno">2</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">test2</span> <span class="p">(</span>
+<span class="lineno">3</span>     <span class="n">id</span> <span class="nb">INT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+<span class="lineno">4</span>     <span class="n">body</span> <span class="nb">TEXT</span><span class="p">,</span>
+<span class="lineno">5</span>     <span class="n">lucene</span> <span class="nb">TEXT</span>
+<span class="lineno">6</span> <span class="p">);</span></code></pre></div>
+
+<h4 id="create-index">2.Create Index</h4>
+
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="lineno"> 1</span> <span class="n">USE</span> <span class="n">demo</span><span class="p">;</span>
+<span class="lineno"> 2</span> <span class="k">CREATE</span> <span class="n">CUSTOM</span> <span class="k">INDEX</span> <span class="n">test2_index</span> <span class="k">ON</span> <span class="n">test2</span> <span class="p">(</span><span class="n">lucene</span><span class="p">)</span>
+<span class="lineno"> 3</span> <span class="k">USING</span> <span class="s1">&#39;com.stratio.cassandra.lucene.Index&#39;</span>
+<span class="lineno"> 4</span> <span class="k">WITH</span> <span class="k">OPTIONS</span> <span class="o">=</span> <span class="err">{</span>
+<span class="lineno"> 5</span>     <span class="s1">&#39;refresh_seconds&#39;</span> <span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+<span class="lineno"> 6</span>     <span class="s1">&#39;schema&#39;</span> <span class="p">:</span> <span class="s1">&#39;{</span>
+<span class="lineno"> 7</span> <span class="s1">        fields : {</span>
+<span class="lineno"> 8</span> <span class="s1">            id    : {type : &quot;integer&quot;},</span>
+<span class="lineno"> 9</span> <span class="s1">            body  : {type : &quot;text&quot;, analyzer : &quot;chinese&quot;}</span>
+<span class="lineno">10</span> <span class="s1">        }</span>
+<span class="lineno">11</span> <span class="s1">    }&#39;</span>
+<span class="lineno">12</span> <span class="err">}</span><span class="p">;</span></code></pre></div>
+
+<h4 id="insert-record">3.Insert record</h4>
+
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="lineno">1</span> <span class="n">use</span> <span class="n">demo</span><span class="p">;</span>
+<span class="lineno">2</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">test2</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span> <span class="p">,</span> <span class="s1">&#39;i come from china&#39;</span><span class="p">);</span>
+<span class="lineno">3</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">test2</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="mi">2</span> <span class="p">,</span> <span class="s1">&#39;我来自中国，住在南昌。&#39;</span><span class="p">);</span>
+<span class="lineno">4</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">test2</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="mi">3</span> <span class="p">,</span> <span class="s1">&#39;我来自中东，这里有丰富的石油。&#39;</span><span class="p">);</span>
+<span class="lineno">5</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">test2</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="mi">4</span> <span class="p">,</span> <span class="s1">&#39;今天有一个好天气，可以去爬山。&#39;</span><span class="p">);</span></code></pre></div>
+
+<h4 id="query">4.Query</h4>
+
+<ul>
+  <li>Query1:</li>
+</ul>
+
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="lineno">1</span> <span class="n">use</span> <span class="n">demo</span><span class="p">;</span>
+<span class="lineno">2</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">test2</span> <span class="k">WHERE</span> <span class="n">lucene</span><span class="o">=</span><span class="s1">&#39;{</span>
+<span class="lineno">3</span> <span class="s1">    query  : {type:&quot;phrase&quot;, field:&quot;body&quot;, value:&quot;天有&quot;, slop:1}</span>
+<span class="lineno">4</span> <span class="s1">}&#39;</span> <span class="k">limit</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
+
+<ul>
+  <li>Query2:</li>
+</ul>
+
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="lineno">1</span> <span class="n">use</span> <span class="n">demo</span><span class="p">;</span>
+<span class="lineno">2</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">test2</span> <span class="k">WHERE</span> <span class="n">lucene</span><span class="o">=</span><span class="s1">&#39;{</span>
+<span class="lineno">3</span> <span class="s1">    query  : {type:&quot;phrase&quot;, field:&quot;body&quot;, value:&quot;今天&quot;, slop:1}</span>
+<span class="lineno">4</span> <span class="s1">}&#39;</span> <span class="k">limit</span> <span class="mi">100</span><span class="p">;</span></code></pre></div>
+
+<h4 id="result">5.Result</h4>
+
+<ul>
+  <li>Result1:
+Null</li>
+  <li>Result2:
+今天有一个好天气，可以去爬山。</li>
+</ul>
+
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2015/12/20/springdatajpa%E7%BB%84%E5%90%88%E6%9F%A5%E8%AF%A2.html" rel="prev">&laquo;&nbsp;SpringData组合查询实例分析</a></div>
+    
+    
+</section>
+
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2015/12/26/cassandra-lucene-index" data-title="Cassandra Lucene Index" data-url="/2015/12/26/cassandra-lucene-index.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pp1230"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>
