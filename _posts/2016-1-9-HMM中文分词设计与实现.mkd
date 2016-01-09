@@ -1,0 +1,419 @@
+---
+layout: post
+title: HMM中文分词设计与实现
+description: 马尔可夫模型（Markov Model）是一种统计模型，广泛应用在语音识别，词性自动标注，音字转换，概率文法等各个自然语言处理等应用领域。经过长期发展，尤其是在语音识别中的成功应用，使它成为一种通用的统计工具。
+keywords: 中文, 分词, HMM
+---
+
+##0.概述
+> 为了对中文文本进行分析归类，需要对句子进行切割，提取关键特征词语。而中文不像英文等语言词语已经天然分割开来，需要人工进行分词。常用的分词模型包括了隐马尔可夫模型（HMM）和条件随机场（CFX）等。
+
+##1.模型介绍
+
+<table class="wikitable" style="border-spacing: 2px; border: 1px solid darkgray;">
+<tr>
+<th></th>
+<th>System state is fully observable</th>
+<th>System state is partially observable</th>
+</tr>
+<tr>
+<th>System is autonomous</th>
+<td><a href="https://en.wikipedia.org/wiki/Markov_chain" title="Markov chain">Markov chain</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Hidden_Markov_model" title="Hidden Markov model">Hidden Markov model</a></td>
+</tr>
+<tr>
+<th>System is controlled</th>
+<td><a href="https://en.wikipedia.org/wiki/Markov_decision_process" title="Markov decision process">Markov decision process</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process" title="Partially observable Markov decision process">Partially observable Markov decision process</a></td>
+</tr>
+</table>
+
+##1.1马尔科夫模型
+
+　　马尔可夫模型（Markov Model）是一种统计模型，广泛应用在语音识别，词性自动标注，音字转换，概率文法等各个自然语言处理等应用领域。经过长期发展，尤其是在语音识别中的成功应用，使它成为一种通用的统计工具。
+
+##1.2隐马尔科夫模型
+
+####1.2.1HMM概念
+　　隐马尔可夫模型（Hidden Markov Model，HMM）是统计模型，它用来描述一个含有隐含未知参数的马尔可夫过程。现已成功地用于语音识别，行为识别，文字识别以及故障诊断等领域。
+
+　　在正常的马尔可夫模型中，状态对于观察者来说是直接可见的。这样状态的转换概率便是全部的参数。而在隐马尔可夫模型中,状态并不是直接可见的，但受状态影响的某些变量则是可见的。每一个状态在可能输出的符号上都有一概率分布。因此输出符号的序列能够透露出状态序列的一些信息。
+
+####1.2.2HMM例子
+
+In its discrete form, a hidden Markov process can be visualized as a generalization of the **Urn problem** with replacement (where each item from the urn is returned to the original urn before the next step).[14] Consider this example: in a room that is not visible to an observer there is a genie. The room contains urns `X1`, `X2`, `X3`, … each of which contains a known mix of balls, each ball labeled `y1`, `y2`, `y3`, … . The genie chooses an urn in that room and randomly draws a ball from that urn. It then puts the ball onto a conveyor belt, where the observer can observe the sequence of the balls but not the sequence of urns from which they were drawn. The genie has some procedure to choose urns; the choice of the urn for the n-th ball depends only upon a random number and the choice of the urn for the (n − 1)-th ball. The choice of urn does not directly depend on the urns chosen before this single previous urn; therefore, this is called a **Markov process**. 
+
+![hmm](../../../static/images/HMM.png)
+
+* X — 状态：每个状态出现的概率只和上一次的状态有关
+* y — 可能的观察值：在特定状态下可能的输出值
+* a — 状态转移概率：状态之间的转化概率
+* b — 输出概率：在特定状态下输出某值的概率
+
+![hmmex](../../../static/images/HMMEx.png)
+
+The state transition and output probabilities of an HMM are indicated by the line opacity in the upper part of the diagram. Given that we have observed the output sequence in the lower part of the diagram, we may be interested in the most likely sequence of states that could have produced it. Based on the arrows that are present in the diagram, the following state sequences are candidates:
+
+5 3 2 5 3 2
+
+4 3 2 5 3 2
+
+3 1 2 5 3 2
+
+We can find the most likely sequence by evaluating the joint probability of both the state sequence and the observations for each case (simply by multiplying the probability values, which here correspond to the opacities of the arrows involved). In general, this type of problem (i.e. finding the most likely explanation for an observation sequence) can be solved efficiently using the **Viterbi algorithm**.
+
+##2.分词器模型设计
+
+　　 本质上看，分词可以看做一个为文本中每个字符分类的过程，例如我们现在定义四个类别：E代表词尾词，B代表词头，M代表词中，S代表单个字的词。于是分词“你/现在/应该/去/幼儿园/了”可以表达为：你S现B在E应B该E去S幼B儿M园E了S。那么对这句话来说，分词结果即为马尔科夫模型里的状态序列，也就是说，我们要通过“你现在应该去幼儿园了”这个观察序列来确定状态序列，也就是HMM的“解码问题”。比如这句话的解码结果就是：“SBEBESBMES”。解码完成后只需要对结果进行“解读”就可以得到分词结果了。使用数学公式表示我们需要找到的序列的概率：
+
+ $$ P(C1，C2，C3….Ci | O1, O2, O3……Oi) = P(C|O) 　　　①$$
+
+ 　　其中C代表一个分类标识，这里，C 属于 {B, M, E, S} ；O表示观察值。我们称**P(Cj\|Ci)**为i到j的状态转移概率，可以通过在大量预料中使用统计的方法求得。
+
+ 　　给定了O的情况下，最有可能出现的C的序列，也是HMM的“解码问题”，根据贝叶斯公式有：
+
+$$P(C|O) = \frac{P(O|C)P(C)} {P(O)}$$
+
+ 　　由于$$P(O)$$对于每一种序列来说都是一样的，因此可以去掉，因此，①等价于 ：
+
+$$P(O|C)P(C)　　　 　②$$
+
+　　对于**P(O\|C)**，HMM有两个假设：a. 已知类地序列，观察值在统计上是独立的； b. 某类的概率密度函数不依赖其他类。也就是说依赖性仅仅存在于产生类的序列，而在类内，观察值服从类自己的规则。因此对于：
+
+$$P(O|C) = P(O1, O2, O3……Oi | C1，C2，C3….Ci )$$
+
+根据假设a，观察序列具有统计意义上的独立性，因此：
+
+$$P(O1, O2, O3……Oi | C1，C2，C3….Ci )=P(O1|C) * P(O2|C)……P(Oi|C)$$
+
+根据假设b，对于Oi的分类Ci与Cj没有依赖关系，所以有：
+
+$$P(O1|C) * P(O2|C)……P(Oi|C) = P(O1|C1) * P(O2|C2)……P(Oi|Ci)$$
+
+同样的**P(Oi\|Ci)**可以通过在大量预料中使用统计的方法求得。至此我们在一个马尔科夫链上加入了观察值数据，构造了一个HMM，这个模型已经可以具备一定的分词能力啦！
+
+##3.Java语言实现
+
+###3.1HMM模型类
+
+####3.1.1类属性
+创建一个HMM模型计算类，他必须包含的属性有：1. 状态转移概率，即大量语料统计的状态序列频率 2. 观察值概率， 也可以通过大量语料统计得出。
+
+{%highlight java linenos%}
+	// 所有序列的状态转移概率
+	private double[] stp;
+	// 观察值概率，一维长度为所有可能的序列数，二维为该序列的每个元素观察值概率
+	private double[][] op;
+{%endhighlight%}
+
+####3.1.2计算方法
+编写一个计算模型概率的方法
+
+{%highlight java linenos%}
+	public void culpro() {
+		if (stp != null && op != null) {
+			double[] pros = new double[stp.length];
+			for (int i = 0; i < stp.length; i++) {
+				double m = stp[i];
+				for (int j = 0; j < op[i].length; j++) {
+					m *= op[i][j];
+				}
+				pros[i] = m;
+				//System.out.println(pros[i]);
+			}
+			double m = pros[0];
+			int n =0;
+			for(int k = 0;k<pros.length;k++){
+				if(pros[k]>m){
+					m=pros[k];
+					n=k;
+				}
+			}
+			pro = m;
+			num = n;
+		} else
+			System.out.println("参数为空！");
+		
+	}
+{%endhighlight%}
+
+####3.1.3测试
+
+编写一个测试类HMMTest，其中包含了对给定数值HMM模型的计算
+
+{%highlight java linenos%}
+	public HMM hs;
+
+	@Test
+	public void testHMM(){
+		double[] stp ={1.0, 2.0, 3.0, 4.0};
+		double[][] op ={\{1.0, 2.0, 5.0, 4.3},{1.0, 2.0, 1.9, 2.8},{1.0, 2.0, 1.2, 2.1},{1.0, 1.4, 1.8, 2.1}\};
+		hs = new HMM(stp, op);
+		hs.culpro();
+		System.out.println(stp[hs.getNum()]+"  "+hs.getPro());
+	}
+{%endhighlight%}
+
+测试结果
+
+{%highlight java linenos%}
+1.0  43.0
+{%endhighlight%}
+
+###3.2分词类
+
+主要分词方法（解码），还未使用效率较高的维特比算法
+
+{%highlight java linenos%}
+	public void segment() {
+		if (sentence != null && stpfilePath != null && opfilePath != null) {
+
+			int stplen = sentence.length();
+			String lineText = "";
+			String[] allstp;
+			String[] stp;
+			int[] stpnum;
+			int stparrlen = 0;
+			try {
+				String encoding = "UTF-8";
+				File file = new File(stpfilePath);
+				if (file.isFile() && file.exists()) { // 判断文件是否存在
+					InputStreamReader read = new InputStreamReader(
+							new FileInputStream(file), encoding);// 考虑到编码格式
+					BufferedReader bufferedReader = new BufferedReader(read);
+					String line = null;
+					while ((line = bufferedReader.readLine()) != null) {
+						lineText += line;
+						// System.out.println(lineTxt);
+					}
+					read.close();
+				} else {
+					System.out.println("找不到指定的文件");
+				}
+			} catch (Exception e) {
+				System.out.println("读取文件内容出错");
+				e.printStackTrace();
+			}
+
+			allstp = lineText.split("\\|");
+			stp = new String[allstp.length];
+			stpnum = new int[allstp.length];
+			for (int i = 0; i < allstp.length; i++) {
+				if (allstp[i].split(" ")[0].length() == stplen) {
+					for (int j = 0; j < stp.length; j++) {
+						if (stp[j] == null) {
+							stp[j] = allstp[i].split(" ")[0];
+							stpnum[j] = Integer
+									.valueOf(allstp[i].split(" ")[1]);
+							stparrlen++;
+							//System.out.println(stp[j] + " " + stpnum[j]);
+							break;
+						}
+					}
+				}
+			}
+
+			String[][] ops;
+			String[] charas;
+			lineText = "";
+			try {
+				String encoding = "UTF-8";
+				File file = new File(opfilePath);
+				if (file.isFile() && file.exists()) { // 判断文件是否存在
+					InputStreamReader read = new InputStreamReader(
+							new FileInputStream(file), encoding);// 考虑到编码格式
+					BufferedReader bufferedReader = new BufferedReader(read);
+					String line = null;
+					while ((line = bufferedReader.readLine()) != null) {
+						lineText += line;
+						// System.out.println(lineTxt);
+					}
+					read.close();
+				} else {
+					System.out.println("找不到指定的文件");
+				}
+			} catch (Exception e) {
+				System.out.println("读取文件内容出错");
+				e.printStackTrace();
+			}
+			charas = lineText.split("\\|");
+			ops = new String[charas.length][5];
+			for (int i = 0; i < charas.length; i++) {
+				String[] s1 = null;
+				if (charas[i].contains("B")) {
+					s1 = charas[i].split("B");
+					for (int m = 0; m < ops.length; m++) {
+						if (ops[m][0] == null) {
+							ops[m][0] = s1[0];
+							ops[m][1] = s1[1];
+							break;
+						} else if (ops[m][0].equals(s1[0])) {
+							ops[m][1] = s1[1];
+							break;
+						}
+					}
+				} else if (charas[i].contains("M")) {
+					s1 = charas[i].split("M");
+					for (int m = 0; m < ops.length; m++) {
+						if (ops[m][0] == null) {
+							ops[m][0] = s1[0];
+							ops[m][2] = s1[1];
+							break;
+						} else if (ops[m][0].equals(s1[0])) {
+							ops[m][2] = s1[1];
+							break;
+						}
+					}
+				} else if (charas[i].contains("E")) {
+					s1 = charas[i].split("E");
+					for (int m = 0; m < ops.length; m++) {
+						if (ops[m][0] == null) {
+							ops[m][0] = s1[0];
+							ops[m][3] = s1[1];
+							break;
+						} else if (ops[m][0].equals(s1[0])) {
+							ops[m][3] = s1[1];
+							break;
+						}
+					}
+				} else if (charas[i].contains("S")) {
+					s1 = charas[i].split("S");
+					for (int m = 0; m < ops.length; m++) {
+						if (ops[m][0] == null) {
+							ops[m][0] = s1[0];
+							ops[m][4] = s1[1];
+							break;
+						} else if (ops[m][0].equals(s1[0])) {
+							ops[m][4] = s1[1];
+							break;
+						}
+					}
+				}
+			}
+
+			int[] stpresult;
+			int[][] opresult;
+			int n1 = 0;
+			for (int x1 = 0; x1 < stpnum.length; x1++) {
+				if (stpnum[x1] != 0)
+					n1++;
+				else
+					break;
+			}
+			//System.out.println(n1);
+			stpresult = new int[n1];
+			for (int x2 = 0; x2 < n1; x2++) {
+				stpresult[x2] = stpnum[x2];
+				//System.out.println(stpresult[x2]);
+			}
+
+			opresult = new int[n1][stplen];
+			String[] word = sentence.split("");
+			for (int y1 = 0; y1 < n1; y1++) {
+				String[] signs = stp[y1].split("");
+				for (int y2 = 0; y2 < stplen; y2++) {
+					if (signs[y2+1].equals("B")) {
+						for (int y3 = 0; y3 < ops.length; y3++) {
+							if (ops[y3][0].equals(word[y2+1])) {
+								if (!ops[y3][1].equals("null"))
+									opresult[y1][y2] = Integer
+											.valueOf(ops[y3][1]);
+								else
+									opresult[y1][y2] = 0;
+								break;
+							}
+						}
+					} else if (signs[y2+1].equals("M")) {
+						for (int y3 = 0; y3 < ops.length; y3++) {
+							if (ops[y3][0].equals(word[y2+1])) {
+								if (!ops[y3][2].equals("null"))
+									opresult[y1][y2] = Integer
+											.valueOf(ops[y3][2]);
+								else
+									opresult[y1][y2] = 0;
+								break;
+							}
+						}
+					} else if (signs[y2+1].equals("E")) {
+						for (int y3 = 0; y3 < ops.length; y3++) {
+							if (ops[y3][0].equals(word[y2+1])) {
+								if (!ops[y3][3].equals("null"))
+									opresult[y1][y2] = Integer
+											.valueOf(ops[y3][3]);
+								else
+									opresult[y1][y2] = 0;
+								break;
+							}
+						}
+					} else if (signs[y2+1].equals("S")) {
+						for (int y3 = 0; y3 < ops.length; y3++) {
+							if (ops[y3][0].equals(word[y2+1])) {
+								if (!ops[y3][4].equals("null"))
+									opresult[y1][y2] = Integer
+											.valueOf(ops[y3][4]);
+								else
+									opresult[y1][y2] = 0;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			double[] stpdo = new double[stpresult.length];
+			for(int i=0;i<stpresult.length;i++){
+				stpdo[i] = stpresult[i]/100.0;
+				//System.out.println(stpdo[i]);
+			}
+			
+			double[][] opdo = new double[n1][stplen];
+			for(int i = 0;i<opresult.length;i++){
+				for(int j = 0;j<opresult[0].length;j++){
+					opdo[i][j] = opresult[i][j];
+					//System.out.println(opdo[i][j]);
+				}
+			}
+			
+			HMM hmm = new HMM(stpdo, opdo);
+			hmm.culpro();
+			//System.out.println(hmm.getNum()+" "+hmm.getPro()+" "+stp[hmm.getNum()]);
+			
+			char[] word1 = sentence.toCharArray();
+			char[] sign1 = stp[hmm.getNum()].toCharArray();
+			for(int i = 0;i<sentence.length();i++){
+				if(sign1[i] == 'E' || sign1[i] == 'S')
+				System.out.print(word1[i]+"  ");
+				else
+					System.out.print(word1[i]);
+			}
+		}
+	}
+{%endhighlight%}
+
+测试方法
+
+{%highlight java linenos%}
+	@Test
+	public void testSegment(){
+		String sentence = "互联网的普及推动了信息的传播和社会的进步";
+		String stpfilePath = "/home/pi/Workspaces/MyEclipse Spring 2014/CNHMMSegment/hmmpara/stpresult.txt";
+		String opfilePath = "/home/pi/Workspaces/MyEclipse Spring 2014/CNHMMSegment/hmmpara/op.txt";
+		segmenter = new Segmenter(sentence, stpfilePath, opfilePath);
+		segmenter.segment();
+	}
+{%endhighlight%}
+
+测试结果
+
+{%highlight java linenos%}
+互联网  的  普及  推动  了  信息  的  传播  和  社会  的  进步  
+{%endhighlight%}
+
+####参考资料
+
+[项目源码](https://github.com/pp1230/CNSegmenter)
+
+[52nlpHMM文章索引](http://www.52nlp.cn/hmm%E7%9B%B8%E5%85%B3%E6%96%87%E7%AB%A0%E7%B4%A2%E5%BC%95)
+
+[维基百科](https://en.wikipedia.org/wiki/Markov_model)
+
