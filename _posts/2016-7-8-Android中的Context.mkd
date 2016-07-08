@@ -1,0 +1,17 @@
+---
+layout: post
+title: Android中的context使用
+description: Android的getContext() , getApplicationContext() , getBaseContext() , and "this"
+keywords: Android
+---
+<ul>
+<li><p><a href="http://developer.android.com/reference/android/view/View.html#getContext%28%29"><code>View.getContext()</code></a>:  Returns the context the view is currently running in.  Usually the currently active Activity.</p></li>
+<li><p><a href="http://developer.android.com/reference/android/content/ContextWrapper.html#getApplicationContext%28%29"><code>Activity.getApplicationContext()</code></a>:  Returns the context for the entire application (the process all the Activities are running inside
+of).  Use this instead of the current Activity context if you need a
+context tied to the lifecycle of the entire application, not just the
+current Activity.</p></li>
+<li><p><a href="http://developer.android.com/reference/android/content/ContextWrapper.html#getBaseContext%28%29"><code>ContextWrapper.getBaseContext()</code></a>:  If you need access to a Context from within another context, you use a ContextWrapper.  The
+Context referred to from inside that ContextWrapper is accessed via
+getBaseContext().</p></li>
+</ul>
+* **this** and **getContext()** are not always same e.g. in Activity class, you can use this because Activity inherits from Context but method getContext() is not in Activity class. 

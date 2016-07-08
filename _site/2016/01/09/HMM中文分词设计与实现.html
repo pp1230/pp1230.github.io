@@ -135,7 +135,7 @@
 
 <h4 id="hmm-1">1.2.2HMM例子</h4>
 
-<p>In its discrete form, a hidden Markov process can be visualized as a generalization of the <strong>Urn problem</strong> with replacement (where each item from the urn is returned to the original urn before the next step).[14] Consider this example: in a room that is not visible to an observer there is a genie. The room contains urns <code>X1</code>, <code>X2</code>, <code>X3</code>, … each of which contains a known mix of balls, each ball labeled <code>y1</code>, <code>y2</code>, <code>y3</code>, … . The genie chooses an urn in that room and randomly draws a ball from that urn. It then puts the ball onto a conveyor belt, where the observer can observe the sequence of the balls but not the sequence of urns from which they were drawn. The genie has some procedure to choose urns; the choice of the urn for the n-th ball depends only upon a random number and the choice of the urn for the (n − 1)-th ball. The choice of urn does not directly depend on the urns chosen before this single previous urn; therefore, this is called a <strong>Markov process</strong>. </p>
+<p>In its discrete form, a hidden Markov process can be visualized as a generalization of the <strong>Urn problem</strong> with replacement (where each item from the urn is returned to the original urn before the next step).[14] Consider this example: in a room that is not visible to an observer there is a genie. The room contains urns <code>X1</code>, <code>X2</code>, <code>X3</code>, … each of which contains a known mix of balls, each ball labeled <code>y1</code>, <code>y2</code>, <code>y3</code>, … . The genie chooses an urn in that room and randomly draws a ball from that urn. It then puts the ball onto a conveyor belt, where the observer can observe the sequence of the balls but not the sequence of urns from which they were drawn. The genie has some procedure to choose urns; the choice of the urn for the n-th ball depends only upon a random number and the choice of the urn for the (n − 1)-th ball. The choice of urn does not directly depend on the urns chosen before this single previous urn; therefore, this is called a <strong>Markov process</strong>.</p>
 
 <p><img src="../../../static/images/HMM.png" alt="hmm" /></p>
 
@@ -162,7 +162,7 @@
 
 <p>　　 本质上看，分词可以看做一个为文本中每个字符分类的过程，例如我们现在定义四个类别：E代表词尾词，B代表词头，M代表词中，S代表单个字的词。于是分词“你/现在/应该/去/幼儿园/了”可以表达为：你S现B在E应B该E去S幼B儿M园E了S。那么对这句话来说，分词结果即为马尔科夫模型里的状态序列，也就是说，我们要通过“你现在应该去幼儿园了”这个观察序列来确定状态序列，也就是HMM的“解码问题”。比如这句话的解码结果就是：“SBEBESBMES”。解码完成后只需要对结果进行“解读”就可以得到分词结果了。使用数学公式表示我们需要找到的序列的概率：</p>
 
-<script type="math/tex; mode=display"> P(C1，C2，C3….Ci | O1, O2, O3……Oi) = P(C|O) 　　　①</script>
+<script type="math/tex; mode=display">P(C1，C2，C3….Ci | O1, O2, O3……Oi) = P(C|O) 　　　①</script>
 
 <p>　　其中C代表一个分类标识，这里，C 属于 {B, M, E, S} ；O表示观察值。我们称<strong>P(Cj|Ci)</strong>为i到j的状态转移概率，可以通过在大量预料中使用统计的方法求得。</p>
 

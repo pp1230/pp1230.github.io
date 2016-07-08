@@ -149,9 +149,7 @@
 那么我们怎么得到P(Wn|W1W2…Wn-1)呢？一种简单的估计方法就是<code>最大似然估计</code>(Maximum Likelihood Estimate）了。即</li>
 </ul>
 
-<script type="math/tex; mode=display">
-P(Wn|W1W2...Wn-1) = (C(W1 W2...Wn))/(C(W1 W2...Wn-1))
-</script>
+<script type="math/tex; mode=display">P(Wn|W1W2...Wn-1) = (C(W1 W2...Wn))/(C(W1 W2...Wn-1))</script>
 
 <ul>
   <li>剩下的工作就是在训练语料库中数数儿了，即统计序列<code>C(W1 W2…Wn) </code>出现的次数和<code>C(W1 W2…Wn-1)</code>出现的次数。下面我们用bigram举个例子。假设语料库总词数为13,748
@@ -171,7 +169,7 @@ P(I want to eat Chinese food)
 
 <h2 id="section-6">2.2对词向量训练的不同方法</h2>
 
-<p>Natural language processing  is one of the most important technologies of the information age. Understanding complex language utterances is also a crucial part of artificial intelligence. Applications of NLP are everywhere because people communicate most everything in language: web search, advertisement, emails, customer service, language translation, radiology reports, etc. There are a large variety of underlying tasks and machine learning models powering NLP applications. Recently, deep learning approaches have obtained very high performance across many different NLP tasks. These models can often be trained with a single end-to-end model and do not require traditional, task-specific feature engineering. </p>
+<p>Natural language processing  is one of the most important technologies of the information age. Understanding complex language utterances is also a crucial part of artificial intelligence. Applications of NLP are everywhere because people communicate most everything in language: web search, advertisement, emails, customer service, language translation, radiology reports, etc. There are a large variety of underlying tasks and machine learning models powering NLP applications. Recently, deep learning approaches have obtained very high performance across many different NLP tasks. These models can often be trained with a single end-to-end model and do not require traditional, task-specific feature engineering.</p>
 
 <h3 id="bengio-">2.2.1Bengio 的经典之作</h3>
 <p><strong>A Neural Probabilistic Language Model</strong><br />
@@ -199,7 +197,7 @@ been found useful to learn the joint probability of Z 1 · · · Z n , a set of 
 possibly of a different nature (Bengio and Bengio, 2000a,b). In that model, the joint probability is
 decomposed as a product of conditional probabilities</p>
 
-<script type="math/tex; mode=display"> \hat P(Z_1 = z_1 , · · · , Z_n = z_n) = \prod_i \hat P(Z_i = z_i |g_i (Z_{i−1} = z_{i−1} , Z_{i−2} = z_{i−2} , · · · , Z_1 = z_1 )) </script>
+<script type="math/tex; mode=display">\hat P(Z_1 = z_1 , · · · , Z_n = z_n) = \prod_i \hat P(Z_i = z_i |g_i (Z_{i−1} = z_{i−1} , Z_{i−2} = z_{i−2} , · · · , Z_1 = z_1 ))</script>
 
 <p>2.A Neural Model</p>
 
