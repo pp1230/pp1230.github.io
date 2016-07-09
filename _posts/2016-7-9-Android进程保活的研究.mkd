@@ -1,0 +1,150 @@
+---
+layout: post
+title: Android进程保活的研究
+description: 关于 Android 平台的进程保活这一块，想必是所有 Android 开发者瞩目的内容之一。你到网上搜 Android 进程保活，可以搜出各种各样神乎其技的做法，绝大多数都是极其不靠谱。
+keywords: android,保活
+---
+
+<h2>保活手段</h2>
+<p>当前业界的Android进程保活手段主要分为<strong> 黑、白、灰 </strong>三种，其大致的实现思路如下：</p>
+<p><strong>黑色保活</strong>：不同的app进程，用广播相互唤醒（包括利用系统提供的广播进行唤醒）</p>
+<p><strong>白色保活</strong>：启动前台Service</p>
+<p><strong>灰色保活</strong>：利用<strong>系统的漏洞</strong>启动前台Service</p>
+<h2>黑色保活</h2>
+<p>所谓黑色保活，就是利用不同的app进程使用广播来进行相互唤醒。举个3个比较常见的场景：</p>
+<p><strong>场景1</strong>：开机，网络切换、拍照、拍视频时候，利用系统产生的广播唤醒app</p>
+<p><strong>场景2</strong>：接入第三方SDK也会唤醒相应的app进程，如微信sdk会唤醒微信，支付宝sdk会唤醒支付宝。由此发散开去，就会直接触发了下面的 <strong>场景3</strong></p>
+<p><strong>场景3</strong>：假如你手机里装了支付宝、淘宝、天猫、UC等阿里系的app，那么你打开任意一个阿里系的app后，有可能就顺便把其他阿里系的app给唤醒了。（只是拿阿里打个比方，其实BAT系都差不多）</p>
+<p><strong>没错，我们的Android手机就是一步一步的被上面这些场景给拖卡机的。</strong></p>
+<p>针对<strong>场景1</strong>，估计Google已经开始意识到这些问题，所以在最新的Android N取消了 ACTION_NEW_PICTURE（拍照），ACTION_NEW_VIDEO（拍视频），CONNECTIVITY_ACTION（网络切换）等三种广播，无疑给了很多app沉重的打击。我猜他们的心情是下面这样的</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-2904dab833d2f189.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-2904dab833d2f189.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>而开机广播的话，记得有一些定制ROM的厂商早已经将其去掉。</p>
+<p>针对<strong>场景2</strong>和<strong>场景3</strong>，因为调用SDK唤醒app进程属于正常行为，此处不讨论。但是在借助LBE分析app之间的唤醒路径的时候，发现了两个问题：</p>
+<ol>
+<li>很多推送SDK也存在唤醒app的功能</li>
+<li>app之间的唤醒路径真是多，且错综复杂</li>
+</ol>
+<p>我把自己使用的手机测试结果给大家围观一下（<strong>我的手机是小米4C，刷了原生的Android5.1系统，且已经获得Root权限才能查看这些唤醒路径</strong>）</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-93b6d8dd13047ef9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-93b6d8dd13047ef9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">15组相互唤醒路径</div>
+</div>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-82fba2826b224df0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-82fba2826b224df0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">全部唤醒路径</div>
+</div>
+<p>我们直接点开 <strong>简书</strong> 的唤醒路径进行查看</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-4a8629fbce1a5aed.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-4a8629fbce1a5aed.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">简书唤醒路径</div>
+</div>
+<p>可以看到以上3条唤醒路径，但是涵盖的唤醒应用总数却达到了23+43+28款，数目真心惊人。请注意，这只是我手机上一款app的唤醒路径而已，到了这里是不是有点细思极恐。</p>
+<p>当然，这里依然存在一个疑问，就是LBE分析这些唤醒路径和互相唤醒的应用是基于什么思路，我们不得而知。所以我们也无法确定其分析结果是否准确，如果有LBE的童鞋看到此文章，不知可否告知一下思路呢？但是，手机打开一个app就唤醒一大批，我自己可是亲身体验到这种酸爽的......</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-93e0875de1708ac5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-93e0875de1708ac5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<h2>白色保活</h2>
+<p>白色保活手段非常简单，就是调用系统api启动一个前台的Service进程，这样会在系统的通知栏生成一个Notification，用来让用户知道有这样一个app在运行着，哪怕当前的app退到了后台。如下方的LBE和QQ音乐这样：</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-3cc2af629b5f9827.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-3cc2af629b5f9827.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<h2>灰色保活</h2>
+<p>灰色保活，这种保活手段是应用范围最广泛。它是利用系统的漏洞来启动一个前台的Service进程，与普通的启动方式区别在于，它不会在系统通知栏处出现一个Notification，看起来就如同运行着一个后台Service进程一样。这样做带来的好处就是，用户无法察觉到你运行着一个前台进程（因为看不到Notification）,但你的进程优先级又是高于普通后台进程的。那么如何利用系统的漏洞呢，大致的实现思路和代码如下：</p>
+<ul>
+<li>思路一：API &lt; 18，启动前台Service时直接传入new Notification()；</li>
+<li>思路二：API &gt;= 18，同时启动两个id相同的前台Service，然后再将后启动的Service做stop处理；</li>
+</ul>
+<pre><code class="java">public class GrayService extends Service {
+
+    private final static int GRAY_SERVICE_ID = 1001;
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (Build.VERSION.SDK_INT &lt; 18) {
+            startForeground(GRAY_SERVICE_ID, new Notification());//API &lt; 18 ，此方法能有效隐藏Notification上的图标
+        } else {
+            Intent innerIntent = new Intent(this, GrayInnerService.class);
+            startService(innerIntent);
+            startForeground(GRAY_SERVICE_ID, new Notification());
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    ...
+    ...
+
+    /**
+     * 给 API &gt;= 18 的平台上用的灰色保活手段
+     */
+    public static class GrayInnerService extends Service {
+
+        @Override
+        public int onStartCommand(Intent intent, int flags, int startId) {
+            startForeground(GRAY_SERVICE_ID, new Notification());
+            stopForeground(true);
+            stopSelf();
+            return super.onStartCommand(intent, flags, startId);
+        }
+
+    }
+}</code></pre>
+<p>代码大致就是这样，能让你神不知鬼不觉的启动着一个前台Service。其实市面上很多app都用着这种灰色保活的手段，什么？你不信？好吧，我们来验证一下。流程很简单，打开一个app，看下系统通知栏有没有一个 Notification，如果没有，我们就进入手机的adb shell模式，然后输入下面的shell命令</p>
+<pre><code>dumpsys activity services PackageName</code></pre>
+<p>打印出指定包名的所有进程中的Service信息，看下有没有 <strong>isForeground=true</strong> 的关键信息。如果通知栏没有看到属于app的 Notification 且又看到 <strong>isForeground=true</strong> 则说明了，此app利用了这种灰色保活的手段。</p>
+<p>下面分别是我手机上微信、qq、支付宝、陌陌的测试结果，大家有兴趣也可以自己验证一下。</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-01201b49f73277e4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-01201b49f73277e4.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">微信</div>
+</div>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-9aaa4e98a2d19dda.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-9aaa4e98a2d19dda.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">手Q</div>
+</div>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-e7cb3aad386c6ef5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-e7cb3aad386c6ef5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">支付宝</div>
+</div>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-7d4685e4cb88d6d6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-7d4685e4cb88d6d6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption">陌陌</div>
+</div>
+<p>其实Google察觉到了此漏洞的存在，并逐步进行封堵。这就是为什么这种保活方式分 API &gt;= 18 和 API &lt; 18 两种情况，从Android5.0的ServiceRecord类的postNotification函数源代码中可以看到这样的一行注释</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-886c3f690e4f06d6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-886c3f690e4f06d6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>当某一天 API &gt;= 18 的方案也失效的时候，我们就又要另谋出路了。需要注意的是，<strong>使用灰色保活并不代表着你的Service就永生不死了，只能说是提高了进程的优先级。如果你的app进程占用了大量的内存，按照回收进程的策略，同样会干掉你的app。</strong>感兴趣于灰色保活是如何利用系统漏洞不显示 Notification 的童鞋，可以研究一下系统的 ServiceRecord、NotificationManagerService 等相关源代码，因为不是本文的重点，所以不做详述。</p>
+<h2>唠叨的分割线</h2>
+<p>到这里基本就介绍完了<strong> 黑、白、灰 </strong>三种实现方式，仅仅从代码层面去讲保活是不够的，我希望能够通过系统的进程回收机制来理解保活，这样能够让我们更好的避免踩到进程被杀的坑。</p>
+<h2>进程回收机制</h2>
+<p>熟悉Android系统的童鞋都知道，系统出于体验和性能上的考虑，app在退到后台时系统并不会真正的kill掉这个进程，而是将其缓存起来。打开的应用越多，后台缓存的进程也越多。在系统内存不足的情况下，系统开始依据自身的一套进程回收机制来判断要kill掉哪些进程，以腾出内存来供给需要的app。这套杀进程回收内存的机制就叫 <strong>Low Memory Killer</strong> ，它是基于Linux内核的 <strong>OOM Killer（Out-Of-Memory killer）</strong>机制诞生。</p>
+<p>了解完 <strong>Low Memory Killer</strong>，再科普一下<strong>oom_adj</strong>。什么是<strong>oom_adj</strong>？它是linux内核分配给每个系统进程的一个值，代表进程的优先级，进程回收机制就是根据这个优先级来决定是否进行回收。对于<strong>oom_adj</strong>的作用，你只需要记住以下几点即可：</p>
+<ul>
+<li><strong>进程的oom_adj越大，表示此进程优先级越低，越容易被杀回收；越小，表示进程优先级越高，越不容易被杀回收</strong></li>
+<li><strong>普通app进程的oom_adj&gt;=0,系统进程的oom_adj才可能&lt;0</strong></li>
+</ul>
+<p>那么我们如何查看进程的<strong>oom_adj</strong>值呢，需要用到下面的两个shell命令</p>
+<pre><code>ps | grep PackageName //获取你指定的进程信息</code></pre>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-5a244b4256260e76.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-5a244b4256260e76.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>这里是以我写的demo代码为例子，红色圈中部分别为下面三个进程的ID</p>
+<p>UI进程：<strong>com.clock.daemon</strong><br>普通后台进程：<strong>com.clock.daemon:bg</strong><br>灰色保活进程：<strong>com.clock.daemon:gray</strong></p>
+<p>当然，这些进程的id也可以通过AndroidStudio获得</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-5ae05cdd97ded04e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-5ae05cdd97ded04e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>接着我们来再来获取三个进程的<strong>oom_adj</strong></p>
+<pre><code>cat /proc/进程ID/oom_adj</code></pre>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-eb170317ab201e22.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-eb170317ab201e22.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>从上图可以看到UI进程和灰色保活Service进程的<strong>oom_adj=0</strong>，而普通后台进程<strong>oom_adj=15</strong>。到这里估计你也能明白，<strong>为什么普通的后台进程容易被回收，而前台进程则不容易被回收了吧。</strong>但明白这个还不够，接着看下图</p>
+<div class="image-package">
+<img src="http://upload-images.jianshu.io/upload_images/912181-b54d0a1eb4da6785.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912181-b54d0a1eb4da6785.jpg?imageMogr2/auto-orient/strip%7CimageView2/2"><br><div class="image-caption"></div>
+</div>
+<p>上面是我把app切换到后台，再进行一次<strong>oom_adj</strong>的检验，你会发现UI进程的值从0变成了6,而灰色保活的Service进程则从0变成了1。这里可以观察到，<strong>app退到后台时，其所有的进程优先级都会降低。但是UI进程是降低最为明显的，因为它占用的内存资源最多，系统内存不足的时候肯定优先杀这些占用内存高的进程来腾出资源。所以，为了尽量避免后台UI进程被杀，需要尽可能的释放一些不用的资源，尤其是图片、音视频之类的</strong>。</p>
+<p>从Android官方文档中，我们也能看到优先级从高到低列出了这些不同类型的进程：<strong>Foreground process</strong>、<strong>Visible process</strong>、<strong>Service process</strong>、<strong>Background process</strong>、<strong>Empty process</strong>。而这些进程的oom_adj分别是多少，又是如何挂钩起来的呢？推荐大家阅读下面这篇文章：</p>
+<p><a href="http://www.cnblogs.com/angeldevil/archive/2013/05/21/3090872.html" target="_blank">http://www.cnblogs.com/angeldevil/archive/2013/05/21/3090872.html</a></p>
+<h2>总结（文末有福利）</h2>
+<p>絮絮叨叨写完了这么多，最后来做个小小的总结。回归到开篇提到QQ进程不死的问题，我也曾认为存在这样一种技术。可惜我把手机root后，杀掉QQ进程之后就再也起不来了。有些手机厂商把这些知名的app放入了自己的白名单中，保证了进程不死来提高用户体验（如微信、QQ、陌陌都在小米的白名单中）。如果从白名单中移除，他们终究还是和普通app一样躲避不了被杀的命运，为了尽量避免被杀，还是老老实实去做好优化工作吧。</p>
+<p><strong>所以，进程保活的根本方案终究还是回到了性能优化上，进程永生不死终究是个彻头彻尾的伪命题！</strong></p>
+<h2>补充更新 （2016-04-20）</h2>
+<p><strong>有童鞋问，在华为的机子上发现微信和手Q的UI进程退到后台，oom_adj的值一点都没有变，是不是有什么黑科技在其中。为此，我稍稍验证了一下，验证方式就是把demo工程的包名改成手机QQ的，编译运行在华为的机子上，发现我的进程怎么杀也都是不死的，退到后台oom_adj的值同样不发生变化，而恢复原来的包名就不行了。所以，你懂的，手Q就在华为机子的白名单中。</strong></p>
+<p>文章到此结束，相关简单的实践代码请看</p>
+<p><a href="https://github.com/D-clock/AndroidDaemonService" target="_blank">https://github.com/D-clock/AndroidDaemonService</a></p>
