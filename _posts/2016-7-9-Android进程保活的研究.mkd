@@ -53,7 +53,9 @@ keywords: android,保活
 <li>思路一：API &lt; 18，启动前台Service时直接传入new Notification()；</li>
 <li>思路二：API &gt;= 18，同时启动两个id相同的前台Service，然后再将后启动的Service做stop处理；</li>
 </ul>
-<pre><code class="java">public class GrayService extends Service {
+
+{% highlight java %}
+public class GrayService extends Service {
 
     private final static int GRAY_SERVICE_ID = 1001;
 
@@ -87,7 +89,9 @@ keywords: android,保活
         }
 
     }
-}</code></pre>
+}
+{% endhighlight %}
+
 <p>代码大致就是这样，能让你神不知鬼不觉的启动着一个前台Service。其实市面上很多app都用着这种灰色保活的手段，什么？你不信？好吧，我们来验证一下。流程很简单，打开一个app，看下系统通知栏有没有一个 Notification，如果没有，我们就进入手机的adb shell模式，然后输入下面的shell命令</p>
 <pre><code>dumpsys activity services PackageName</code></pre>
 <p>打印出指定包名的所有进程中的Service信息，看下有没有 <strong>isForeground=true</strong> 的关键信息。如果通知栏没有看到属于app的 Notification 且又看到 <strong>isForeground=true</strong> 则说明了，此app利用了这种灰色保活的手段。</p>
