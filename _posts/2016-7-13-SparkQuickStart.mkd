@@ -11,6 +11,7 @@ To follow along with this guide, first download a packaged release of Spark from
 
 <a href="http://spark.apache.org/downloads.html">Spark Download</a>
 
+
 ##2.配置和启动
 
 
@@ -52,7 +53,9 @@ SPARK_MASTER_PORT=4050
 SPARK_LOCAL_IP=127.0.0.1
 {% endhighlight %}
 
+
 ##3.在scala环境下输入命令
+
 
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">textFile</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;README.md&quot;</span><span class="o">)</span>
 <span class="n">textFile</span><span class="k">:</span> <span class="kt">spark.RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="nc">MappedRDD</span><span class="k">@</span><span class="mi">2</span><span class="n">ee9b6e3</span></code></pre></div>
