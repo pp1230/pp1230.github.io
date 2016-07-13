@@ -35,7 +35,7 @@ Author:             展新(pizner@gmail.com)
 /*************************
  * reset style
 *************************/
-html { color: #1F0909; background: #f3f2ee; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+html { color: #000000; background: #ffffff; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, group, menu, nav, section { margin: 0; padding: 0; }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
 audio, canvas, video { display: inline-block;  }
@@ -66,9 +66,11 @@ ins, a { text-decoration: none; }
 u, .lotus-u { text-decoration: underline; }
 mark { background: #FFFB99; }
 pre, code { font-family: "Courier New", Courier, monospace; overflow-x: auto; vertical-align: middle;}
-pre { font-size: 12px; border: 1px solid #d8d8d8; border-left-width: 0.4em;  background: rgba(15, 16, 13, 0.5); padding: 10px; }
+pre { font-size: 14px; border: 1px solid #d8d8d8; border-left-width: 0.4em;  background: rgba(15, 16, 13, 0.5); padding: 10px; }
 code { color: #4d4d4d; background: rgba(214, 214, 214, 0.5); padding: 0 0.2em; border: 1px solid #bdbdbd; border-radius: 2px 2px; vertical-align:top;}
-small { font-size: 12px; color: #888; }
+small { font-size: 14px; color: #888; }
+
+p { font-size: 14px; }
 
 ::selection 	 	{background: rgba(0, 0, 0, 0.1);}
 ::-moz-selection 	{background: rgba(0, 0, 0, 0.1);}
