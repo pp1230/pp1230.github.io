@@ -558,7 +558,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     line-height:20px;
     padding:0 8px;
     background: #065588;
-    color: #f3f2ee;
+    color: #ffffff;
 }
 .iLight .lotus-pages a.page:hover {
     background: #9C0001;
@@ -626,7 +626,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     top: 10px;
     font-style:italic;
     line-height: 21px;
-    background: #f3f2ed;
+    background: #ffffff;
     color:#d2d1cd;
 }
 .lotus-post .lotus-post-end span i {
@@ -928,7 +928,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     left: 0;
     top: 0;
     padding: 0 2px;
-    color: #f3f2ee;
+    color: #ffffff;
     background: #065588;
     -webkit-transform-origin: 50% 0%;
     -moz-transform-origin: 50% 0%;
