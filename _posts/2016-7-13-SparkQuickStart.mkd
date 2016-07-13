@@ -5,6 +5,10 @@ description: This tutorial provides a quick introduction to using Spark. We will
 keywords: Spark
 ---
 
+Spark快速开始
+===============
+
+> 来自官方文档 http://spark.apache.org/docs/latest/quick-start.html
 
 1.下载Spark
 -----------------
@@ -56,8 +60,10 @@ SPARK_LOCAL_IP=127.0.0.1
 {% endhighlight %}
 
 
+
 3.在scala环境下输入命令
-------------------------
+-----------------
+
 
 
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">textFile</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;README.md&quot;</span><span class="o">)</span>
