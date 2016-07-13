@@ -5,15 +5,17 @@ description: This tutorial provides a quick introduction to using Spark. We will
 keywords: Spark
 ---
 
-##1.下载Spark
+
+1.下载Spark
+-----------------
 
 To follow along with this guide, first download a packaged release of Spark from the Spark website. Since we won’t be using HDFS, you can download a package for any version of Hadoop.(需要下载集成Hadoop环境的zip)
 
 <a href="http://spark.apache.org/downloads.html">Spark Download</a>
 
 
-##2.配置和启动
-
+2.配置和启动
+----------------
 
 <p>Spark&#8217;s shell provides a simple way to learn the API, as well as a powerful tool to analyze data interactively.
 It is available in either Scala (which runs on the Java VM and is thus a good way to use existing Java libraries)
@@ -44,7 +46,7 @@ Spark context available as sc.
 {% endhighlight %}
 
 如果启动失败，可能需要添加配置文件，配置文件模板位于**/spark-1.6.2-bin-hadoop2.6/conf**目录下,拷贝一份重新命名为：
-spark-env.sh
+**spark-env.sh**
 
 简单的端口配置如下：
 
@@ -54,7 +56,8 @@ SPARK_LOCAL_IP=127.0.0.1
 {% endhighlight %}
 
 
-##3.在scala环境下输入命令
+3.在scala环境下输入命令
+------------------------
 
 
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">textFile</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;README.md&quot;</span><span class="o">)</span>
