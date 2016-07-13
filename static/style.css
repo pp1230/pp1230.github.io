@@ -70,7 +70,7 @@ pre { font-size: 14px; border: 1px solid #d8d8d8; border-left-width: 0.4em;  bac
 code { color: #4d4d4d; background: rgba(214, 214, 214, 0.5); padding: 0 0.2em; border: 1px solid #bdbdbd; border-radius: 2px 2px; vertical-align:top;}
 small { font-size: 14px; color: #888; }
 
-p { font-size: 14px; }
+p { font-size: 18px; }
 
 ::selection 	 	{background: rgba(0, 0, 0, 0.1);}
 ::-moz-selection 	{background: rgba(0, 0, 0, 0.1);}
@@ -612,7 +612,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     border-bottom: 1px dotted #e0e0e0;
 }
 .lotus-post p{
-	font-size: 14px;
+	font-size: 18px;
 }
 .lotus-post .lotus-post-end span {
     width: 94px;
