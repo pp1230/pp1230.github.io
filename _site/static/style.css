@@ -35,7 +35,7 @@ Author:             展新(pizner@gmail.com)
 /*************************
  * reset style
 *************************/
-html { color: #1F0909; background: #f3f2ee; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+html { color: #000000; background: #ffffff; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, group, menu, nav, section { margin: 0; padding: 0; }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
 audio, canvas, video { display: inline-block;  }
@@ -66,9 +66,11 @@ ins, a { text-decoration: none; }
 u, .lotus-u { text-decoration: underline; }
 mark { background: #FFFB99; }
 pre, code { font-family: "Courier New", Courier, monospace; overflow-x: auto; vertical-align: middle;}
-pre { font-size: 12px; border: 1px solid #d8d8d8; border-left-width: 0.4em;  background: rgba(15, 16, 13, 0.5); padding: 10px; }
+pre { font-size: 14px; border: 1px solid #d8d8d8; border-left-width: 0.4em;  background: rgba(15, 16, 13, 0.5); padding: 10px; }
 code { color: #4d4d4d; background: rgba(214, 214, 214, 0.5); padding: 0 0.2em; border: 1px solid #bdbdbd; border-radius: 2px 2px; vertical-align:top;}
-small { font-size: 12px; color: #888; }
+small { font-size: 14px; color: #888; }
+
+p { color: #000000 ; font-size: 16px; }
 
 ::selection 	 	{background: rgba(0, 0, 0, 0.1);}
 ::-moz-selection 	{background: rgba(0, 0, 0, 0.1);}
@@ -401,7 +403,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
  * lotus design
 *************************/
 .lotus p, .lotus pre, .lotus ul, .lotus ol, .lotus dl, .lotus form, .lotus hr, .lotus table,
-.lotus-p, .lotus-pre, .lotus-ul, .lotus-ol, .lotus-dl, .lotus-form, .lotus-hr, .lotus-table { margin-bottom: 1em; vertical-align: middle; }
+.lotus-p, .lotus-pre, .lotus-ul, .lotus-ol, .lotus-dl, .lotus-form, .lotus-hr, .lotus-table { margin-bottom: 1.2em; vertical-align: middle; }
 
 .lotus blockquote p { margin-bottom: 0.4em; }
 .lotus blockquote p:before {
@@ -493,6 +495,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
 	margin: 2em 0 2em 0;
 	border-bottom: 1px dotted #c8c8c8;
 }
+
 .lotus-date { color: #a0a0a0; }
 .lotus-double {
 	margin-bottom: 3em;
@@ -555,7 +558,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     line-height:20px;
     padding:0 8px;
     background: #065588;
-    color: #f3f2ee;
+    color: #ffffff;
 }
 .iLight .lotus-pages a.page:hover {
     background: #9C0001;
@@ -599,6 +602,10 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
 	background: url(images/404.png) no-repeat center 0;
 }
 
+.lotus-post {
+	font-family:Arial,'Times New Roman','Microsoft YaHei',SimHei; 
+	font-size: 16px;
+}
 .lotus-post img:hover {
     cursor: pointer;
 }
@@ -608,6 +615,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     vertical-align: top;
     border-bottom: 1px dotted #e0e0e0;
 }
+
 .lotus-post .lotus-post-end span {
     width: 94px;
     padding-left:4px;
@@ -618,7 +626,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     top: 10px;
     font-style:italic;
     line-height: 21px;
-    background: #f3f2ed;
+    background: #ffffff;
     color:#d2d1cd;
 }
 .lotus-post .lotus-post-end span i {
@@ -920,7 +928,7 @@ h1, h2, h3, h4, h5, h6{ font-weight: 500; font-weight: 700\9; color:#333; }
     left: 0;
     top: 0;
     padding: 0 2px;
-    color: #f3f2ee;
+    color: #ffffff;
     background: #065588;
     -webkit-transform-origin: 50% 0%;
     -moz-transform-origin: 50% 0%;

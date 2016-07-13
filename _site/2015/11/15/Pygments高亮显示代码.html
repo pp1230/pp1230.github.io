@@ -107,25 +107,25 @@
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pygments.styles</span> <span class="kn">import</span> <span class="n">STYLE_MAP</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">STYLE_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="p">[</span><span class="s">&#39;manni&#39;</span><span class="p">,</span> <span class="s">&#39;igor&#39;</span><span class="p">,</span> <span class="s">&#39;xcode&#39;</span><span class="p">,</span> <span class="s">&#39;vim&#39;</span><span class="p">,</span> <span class="s">&#39;autumn&#39;</span><span class="p">,</span> <span class="s">&#39;vs&#39;</span><span class="p">,</span> <span class="s">&#39;rrt&#39;</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">,</span> <span class="s">&#39;perldoc&#39;</span><span class="p">,</span> <span class="s">&#39;borland&#39;</span><span class="p">,</span> <span class="s">&#39;tango&#39;</span><span class="p">,</span> <span class="s">&#39;emacs&#39;</span><span class="p">,</span> 
-<span class="s">&#39;friendly&#39;</span><span class="p">,</span> <span class="s">&#39;monokai&#39;</span><span class="p">,</span> <span class="s">&#39;paraiso-dark&#39;</span><span class="p">,</span> <span class="s">&#39;colorful&#39;</span><span class="p">,</span> <span class="s">&#39;murphy&#39;</span><span class="p">,</span> <span class="s">&#39;bw&#39;</span><span class="p">,</span> <span class="s">&#39;pastie&#39;</span><span class="p">,</span> <span class="s">&#39;paraiso-light&#39;</span><span class="p">,</span> <span class="s">&#39;trac&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="s">&#39;fruity&#39;</span><span class="p">]</span></code></pre></div>
+<span class="p">[</span><span class="s">'manni'</span><span class="p">,</span> <span class="s">'igor'</span><span class="p">,</span> <span class="s">'xcode'</span><span class="p">,</span> <span class="s">'vim'</span><span class="p">,</span> <span class="s">'autumn'</span><span class="p">,</span> <span class="s">'vs'</span><span class="p">,</span> <span class="s">'rrt'</span><span class="p">,</span> <span class="s">'native'</span><span class="p">,</span> <span class="s">'perldoc'</span><span class="p">,</span> <span class="s">'borland'</span><span class="p">,</span> <span class="s">'tango'</span><span class="p">,</span> <span class="s">'emacs'</span><span class="p">,</span> 
+<span class="s">'friendly'</span><span class="p">,</span> <span class="s">'monokai'</span><span class="p">,</span> <span class="s">'paraiso-dark'</span><span class="p">,</span> <span class="s">'colorful'</span><span class="p">,</span> <span class="s">'murphy'</span><span class="p">,</span> <span class="s">'bw'</span><span class="p">,</span> <span class="s">'pastie'</span><span class="p">,</span> <span class="s">'paraiso-light'</span><span class="p">,</span> <span class="s">'trac'</span><span class="p">,</span> <span class="s">'default'</span><span class="p">,</span> <span class="s">'fruity'</span><span class="p">]</span></code></pre></div>
 
 <p>在指定目录生成<code>pygments.css</code>文件，然后在html中引用即可</p>
 
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="o">$</span>  <span class="nt">pygmentize</span> <span class="nt">-f</span> <span class="nt">html</span> <span class="nt">-a</span> <span class="nc">.highlight</span> <span class="nt">-S</span> <span class="nt">vim</span> <span class="o">&gt;</span> <span class="nt">pygments</span><span class="nc">.css</span></code></pre></div>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="err">$</span>  <span class="nt">pygmentize</span> <span class="nt">-f</span> <span class="nt">html</span> <span class="nt">-a</span> <span class="nc">.highlight</span> <span class="nt">-S</span> <span class="nt">vim</span> <span class="o">&gt;</span> <span class="nt">pygments</span><span class="nc">.css</span></code></pre></div>
 
 <h2 id="section">3.高亮代码样式效果</h2>
 
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">//This is my java code.</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">hello</span><span class="o">{</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Hello world&quot;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello world"</span><span class="o">);</span>
 <span class="o">}</span></code></pre></div>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="c1">//This is my C code</span>
-<span class="cp">#include&lt;stdio.h&gt;</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="c1">//This is my C code
+</span><span class="cp">#include&lt;stdio.h&gt;
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello wrold&quot;</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Hello wrold"</span><span class="p">);</span>
 <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span></code></pre></div>
 

@@ -103,61 +103,93 @@
   <li>安装使用Ubuntu常用的<strong>apt</strong>命令</li>
 </ul>
 
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="o">$</span>  <span class="nt">sudo</span> <span class="nt">apt-get</span> <span class="nt">install</span> <span class="nt">gcc</span></code></pre></div>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="err">$</span>  <span class="nt">sudo</span> <span class="nt">apt-get</span> <span class="nt">install</span> <span class="nt">gcc</span></code></pre></div>
 
 <ul>
   <li>使用Vim编辑器进行代码编写</li>
 </ul>
 
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="o">$</span>  <span class="nt">vim</span> <span class="nt">method</span><span class="nc">.c</span></code></pre></div>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="err">$</span>  <span class="nt">vim</span> <span class="nt">method</span><span class="nc">.c</span></code></pre></div>
 
 <p>创建了一个名为<code>method.c</code>的文件</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="lineno"> 1</span> <span class="cp">#include &lt;stdio.h&gt;</span>
-<span class="lineno"> 2</span> <span class="c1">//放在main函数后面的函数需要申明</span>
-<span class="lineno"> 3</span> <span class="kt">void</span> <span class="nf">printfInts</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">);</span>
-<span class="lineno"> 4</span> <span class="kt">void</span> <span class="nf">printfInt</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">)</span>
-<span class="lineno"> 5</span> <span class="p">{</span>
-<span class="lineno"> 6</span>     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;输出：</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
-<span class="lineno"> 7</span> <span class="p">}</span>
-<span class="lineno"> 8</span> <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="lineno"> 9</span> <span class="p">{</span>
-<span class="lineno">10</span>     <span class="kt">int</span> <span class="n">a</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
-<span class="lineno">11</span>     <span class="kt">int</span> <span class="n">b</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
-<span class="lineno">12</span>     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;请输入一个整数：</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="lineno">13</span>     <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
-<span class="lineno">14</span>     <span class="n">printfInt</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
-<span class="lineno">15</span>     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;请输入五个整数：</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="lineno">16</span>     <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="lineno">17</span>         <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="lineno">18</span>     <span class="c1">//int数组址传递</span>
-<span class="lineno">19</span>     <span class="n">printfInts</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
-<span class="lineno">20</span>     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="lineno">21</span> <span class="p">}</span>
-<span class="lineno">22</span> <span class="c1">//输出int数组的值</span>
-<span class="lineno">23</span> <span class="kt">void</span> <span class="nf">printfInts</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span>
-<span class="lineno">24</span> <span class="p">{</span>
-<span class="lineno">25</span>     <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-<span class="lineno">26</span>     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;输出:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="lineno">27</span>     <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="lineno">28</span>         <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="lineno">29</span>     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="lineno">30</span> <span class="p">}</span></code></pre></div>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></td><td class="code"><pre><span class="cp">#include &lt;stdio.h&gt;
+</span><span class="c1">//放在main函数后面的函数需要申明
+</span><span class="kt">void</span> <span class="n">printfInts</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">printfInt</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输出：</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">,</span><span class="n">i</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">b</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请输入一个整数：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+    <span class="n">printfInt</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"请输入五个整数：</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="c1">//int数组址传递
+</span>    <span class="n">printfInts</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//输出int数组的值
+</span><span class="kt">void</span> <span class="nf">printfInts</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"输出:</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table>
 
-<h2 id="section">2.运行编译好的文件</h2>
 
-<ul>
-  <li>使用<strong>gcc</strong>命令进行文件的编译</li>
-</ul>
 
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="o">$</span>  <span class="nt">gcc</span> <span class="nt">method</span><span class="nc">.c</span> <span class="nt">-o</span> <span class="nt">method</span></code></pre></div>
+##2.运行编译好的文件
 
-<ul>
-  <li>运行<code>method</code>的结果</li>
-</ul>
+* 使用**gcc**命令进行文件的编译
 
-<p><img src="../../../static/images/method.png" alt="method" /></p>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="err">$</span>  <span class="nt">gcc</span> <span class="nt">method</span><span class="nc">.c</span> <span class="nt">-o</span> <span class="nt">method</span></code></pre></div>
 
+* 运行`method`的结果
+
+![method](../../../static/images/method.png)
+
+
+
+
+</code></pre></div>
 
 </article>
 <p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
