@@ -25,9 +25,6 @@ To follow along with this guide, first download a packaged release of Spark from
 It is available in either Scala (which runs on the Java VM and is thus a good way to use existing Java libraries)
 or Python. Start it by running the following in the Spark directory:</p>
 
-<div class="codetabs">
-<div data-lang="scala">
-
 
 {% highlight bash %}
 ./bin/spark-shell
