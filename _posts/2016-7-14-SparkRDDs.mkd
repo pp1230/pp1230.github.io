@@ -217,3 +217,42 @@ issue, the simplest way is to copy <code>field</code> into a local variable inst
 
 <h4 id="printing-elements-of-an-rdd">Printing elements of an RDD</h4>
 <p>Another common idiom is attempting to print out the elements of an RDD using <code>rdd.foreach(println)</code> or <code>rdd.map(println)</code>. On a single machine, this will generate the expected output and print all the RDD&#8217;s elements. However, in <code>cluster</code> mode, the output to <code>stdout</code> being called by the executors is now writing to the executor&#8217;s <code>stdout</code> instead, not the one on the driver, so <code>stdout</code> on the driver won&#8217;t show these! To print all elements on the driver, one can use the <code>collect()</code> method to first bring the RDD to the driver node thus: <code>rdd.collect().foreach(println)</code>. This can cause the driver to run out of memory, though, because <code>collect()</code> fetches the entire RDD to a single machine; if you only need to print a few elements of the RDD, a safer approach is to use the <code>take()</code>: <code>rdd.take(100).foreach(println)</code>.</p>
+
+
+
+
+<h3 id="working-with-key-value-pairs">Working with Key-Value Pairs</h3>
+
+
+<div data-lang="scala">
+
+    <p>While most Spark operations work on RDDs containing any type of objects, a few special operations are
+only available on RDDs of key-value pairs.
+The most common ones are distributed &#8220;shuffle&#8221; operations, such as grouping or aggregating the elements
+by a key.</p>
+
+    <p>In Scala, these operations are automatically available on RDDs containing
+<a href="http://www.scala-lang.org/api/2.10.5/index.html#scala.Tuple2">Tuple2</a> objects
+(the built-in tuples in the language, created by simply writing <code>(a, b)</code>). The key-value pair operations are available in the
+<a href="api/scala/index.html#org.apache.spark.rdd.PairRDDFunctions">PairRDDFunctions</a> class,
+which automatically wraps around an RDD of tuples.</p>
+
+    <p>For example, the following code uses the <code>reduceByKey</code> operation on key-value pairs to count how
+many times each line of text occurs in a file:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">lines</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;data.txt&quot;</span><span class="o">)</span>
+    <p>pairs是一个（key,value）形式的集合，将文件中的每一行生成pairs，如("text",1)表示text出现了一次。
+    reduceByKey(func)是一个转换函数，func定义了value的聚合规则，这里可以用来统计Key出现的次数，如聚合结果
+    ：("text",5)表示文档中text出现了5次</p>
+<span class="k">val</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">counts</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span></code></pre></div>
+
+    <p>We could also use <code>counts.sortByKey()</code>, for example, to sort the pairs alphabetically, and finally
+<code>counts.collect()</code> to bring them back to the driver program as an array of objects.</p>
+
+    <p><strong>Note:</strong> when using custom objects as the key in key-value pair operations, you must be sure that a
+custom <code>equals()</code> method is accompanied with a matching <code>hashCode()</code> method.  For full details, see
+the contract outlined in the <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#hashCode()">Object.hashCode()
+documentation</a>.</p>
+
+  </div>
