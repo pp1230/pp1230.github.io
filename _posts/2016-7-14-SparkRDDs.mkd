@@ -180,7 +180,7 @@ issue, the simplest way is to copy <code>field</code> into a local variable inst
   
   
   
-  <h3 id="understanding-closures-a-nameclosureslinka">Understanding closures （不是很理解）<a name="ClosuresLink"></a></h3>
+  <h3 id="understanding-closures-a-nameclosureslinka">Understanding closures （并行计算的闭包）<a name="ClosuresLink"></a></h3>
 <p>One of the harder things about Spark is understanding the scope and life cycle of variables and methods when executing code across a cluster. RDD operations that modify variables outside of their scope can be a frequent source of confusion. In the example below we&#8217;ll look at code that uses <code>foreach()</code> to increment a counter, but similar issues can occur for other operations as well.</p>
 
 <h4 id="example">Example</h4>
@@ -203,7 +203,7 @@ issue, the simplest way is to copy <code>field</code> into a local variable inst
   
   
   
-  <h4 id="local-vs-cluster-modes">Local vs. cluster modes</h4>
+  <h4 id="local-vs-cluster-modes">Local vs. cluster modes（单机和集群环境的差异）</h4>
 
 <p>The behavior of the above code is undefined, and may not work as intended. To execute jobs, Spark breaks up the processing of RDD operations into tasks, each of which is executed by an executor. Prior to execution, Spark computes the task&#8217;s <strong>closure</strong>. The closure is those variables and methods which must be visible for the executor to perform its computations on the RDD (in this case <code>foreach()</code>). This closure is serialized and sent to each executor.</p>
 
@@ -212,7 +212,7 @@ issue, the simplest way is to copy <code>field</code> into a local variable inst
 <p>In local mode, in some circumstances the <code>foreach</code> function will actually execute within the same JVM as the driver and will reference the same original <strong>counter</strong>, and may actually update it.</p>
 
 <p>To ensure well-defined behavior in these sorts of scenarios one should use an <a href="#accumulators"><code>Accumulator</code></a>. Accumulators in Spark are used specifically to provide a mechanism for safely updating a variable when execution is split up across worker nodes in a cluster. The Accumulators section of this guide discusses these in more detail.</p>
-
+<p>闭包不能从外部进行访问</p>
 <p>In general, closures - constructs like loops or locally defined methods, should not be used to mutate some global state. Spark does not define or guarantee the behavior of mutations to objects referenced from outside of closures. Some code that does this may work in local mode, but that&#8217;s just by accident and such code will not behave as expected in distributed mode. Use an Accumulator instead if some global aggregation is needed.</p>
 
 <h4 id="printing-elements-of-an-rdd">Printing elements of an RDD</h4>
