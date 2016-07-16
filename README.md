@@ -1,2 +1,9 @@
-# pp1230.github.io
-`This is my blog!`
+# phy的技术博客
+包含了最近Spring、Android、Spark的总结文档，记录技术细节和使用帮助。
+## 1.栏目归档
+所有文章按时间排序
+## 2.自我介绍
+我的介绍和联系方式
+## 3.love
+纪念一下
+
