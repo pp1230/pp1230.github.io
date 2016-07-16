@@ -120,3 +120,14 @@ of that each task&#8217;s update may be applied more than once if tasks or job s
 <span class="c1">// Here, accum is still 0 because no actions have caused the map to be computed.</span></code></pre></div>
 
   </div>
+  
+  <p>在data不是RD的情况下，记录器有效</p>
+  
+ {% highlight scala %}
+scala> val data = Array(1,2,3)
+val accum = sc.accumulator(0)
+data.map{x => accum +=x}
+scala> accum
+res49: org.apache.spark.Accumulator[Int] = 6
+//得到了多次计数的结果
+{% enshighlight %}
