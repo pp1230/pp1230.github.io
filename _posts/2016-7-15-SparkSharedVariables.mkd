@@ -130,4 +130,4 @@ data.map{x => accum +=x}
 scala> accum
 res49: org.apache.spark.Accumulator[Int] = 6
 //得到了多次计数的结果
-{% enshighlight %}
+{% endhighlight %}
