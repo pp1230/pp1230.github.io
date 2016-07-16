@@ -117,6 +117,6 @@ of that each task&#8217;s update may be applied more than once if tasks or job s
 
     <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">}</span>
-<span class="c1">// Here, accum is still 0 because no actions have caused the &lt;code&gt;map&lt;/code&gt; to be computed.</span></code></pre></div>
+<span class="c1">// Here, accum is still 0 because no actions have caused the map to be computed.</span></code></pre></div>
 
   </div>
