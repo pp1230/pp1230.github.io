@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Spark Shared Variables
-description: Spark does provide two limited types of shared variables for two common usage patterns: broadcast variables and accumulators.
+description: Spark does provide two limited types of shared variables for two common usage patterns,broadcast variables and accumulators.
 keywords: Spark,Variables
 ---
 
