@@ -121,12 +121,13 @@ of that each task&#8217;s update may be applied more than once if tasks or job s
 
   </div>
   
-  <p>在data不是RD的情况下，记录器有效</p>
+  <p>在data不是RDD的情况下，记录器有效</p>
   
  {% highlight scala %}
 scala> val data = Array(1,2,3)
 val accum = sc.accumulator(0)
 data.map{x => accum +=x}
+
 scala> accum
 res49: org.apache.spark.Accumulator[Int] = 6
 //得到了多次计数的结果
