@@ -20,7 +20,7 @@ keywords: index
 在**一张表上最多只能创建一个聚集索引**，因为真实数据的物理顺序只能有一种。
 
 
-![聚簇索引](../../../static/images/index3.png)
+![聚簇索引](../../../static/images/index3.jpg)
 
 
 从图中可以看到叶子结点即存储了真实的数据行，索引页的开销较大。
@@ -35,7 +35,7 @@ keywords: index
 ![非聚簇索引1](../../../static/images/index1.png)
 
 
-![非聚簇索引2](../../../static/images/index2.png)
+![非聚簇索引2](../../../static/images/index2.jpg)
 
 
 可以看到叶子节点只是储存了一个指向数据的指针，并没有直接存储数据，所以储存开销较少。
