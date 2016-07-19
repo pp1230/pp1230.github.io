@@ -1,0 +1,98 @@
+---
+layout: post
+title: 聚簇索引和非聚簇索引
+description: 数据库性能优化中索引绝对是一个重量级的因素，可以说，索引使用不当，其它优化措施将毫无意义。
+keywords: index
+---
+
+聚簇索引和非聚簇索引
+==============
+
+数据库索引好比是一本书前面的目录，能加快数据库的查询速度。索引分为聚簇索引和非聚簇索引两种，
+聚簇索引 是按照数据存放的物理位置为顺序的，而非聚簇索引就不一样了；聚簇索引能提高多行检索的速度，
+而非聚簇索引对于单行的检索很快。
+
+聚簇索引
+-----------
+
+表数据按照索引的顺序来存储的，也就是说索引项的顺序与表中记录的物理顺序一致。
+对于聚集索引，叶子结点即存储了真实的数据行，不再有另外单独的数据页。 
+在一张表上最多只能创建一个聚集索引，因为真实数据的物理顺序只能有一种。
+
+![聚簇索引](../../../static/images/index3.png)
+
+从图中可以看到叶子结点即存储了真实的数据行，索引页的开销较大。
+
+非聚簇索引
+----------
+
+表数据存储顺序与索引顺序无关。对于非聚集索引，叶结点包含索引字段值及指向数据页数据行的逻辑指针，
+其行数量与数据表行数据量一致。
+
+![非聚簇索引1](../../../static/images/index1.png)
+
+![非聚簇索引2](../../../static/images/index2.png)
+
+可以看到叶子节点只是储存了一个指向数据的指针，并没有直接存储数据，所以储存开销较少。
+
+比较
+---------
+
+最通俗的解释是:**聚簇索引**的顺序就是数据的物理存储顺序，而对**非聚簇索引**的索引顺序与数据物理排列顺序无关。
+举例来说，你翻到新华字典的汉字“爬”那一页就是P开头的部分，这就是物理存储顺序（聚簇索引）；
+而不用你到目录，找到汉字“爬”所在的页码，然后根据页码找到这个字（非聚簇索引）。
+
+<table cellspacing="0"> 
+ <tbody> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;"><strong>动作</strong><br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;"><strong>使用聚簇索引</strong><br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;"><strong>使用非聚簇索引</strong><br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">列经常被分组排序<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">返回某范围内的数据<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">一个或极少不同值<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">小数目的不同值<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">大数目的不同值<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">频繁更新的列<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">外键列<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">主键列<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+  <tr> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">频繁修改索引列<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">不应<br></td> 
+   <td style="word-wrap: break-word; margin: 0px; padding: 3px; border-color: rgb(192, 192, 192); border-collapse: collapse;">应<br></td> 
+  </tr> 
+ </tbody> 
+</table> 
