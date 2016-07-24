@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            Spark Shared Variables
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="Spark does provide two limited types of shared variables for two common usage patterns,broadcast variables and accumulators." />
+    <meta name="keywords" content="Spark,Variables" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="../../../static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/love/shuwei.html" rel="bookmark" title="love shuwei">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    Spark Shared Variables
+</p>
+<h1 class="lotus-pagetit">Spark Shared Variables</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="July 15, 2016">July 15, 2016</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h1 id="shared-variables">Shared Variables</h1>
+
+<blockquote>
+  <p>Spark Programming Guide : http://spark.apache.org/docs/latest/programming-guide.html#shared-variables</p>
+</blockquote>
+
+<p>Normally, when a function passed to a Spark operation (such as <code>map</code> or <code>reduce</code>) is executed on a
+remote cluster node, it works on separate copies of all the variables used in the function. These
+variables are copied to each machine, and no updates to the variables on the remote machine are
+propagated back to the driver program. Supporting general, read-write shared variables across tasks
+would be inefficient. However, Spark does provide two limited types of <em>shared variables</em> for two
+common usage patterns: broadcast variables and accumulators.</p>
+<p>Spark的变量交换使用了广播和收集者。广播变量是只读的，不同进程可以访问，但无法改变，
+而收集者在不同进程可改变却不能读取他的值</p>
+
+<h2 id="broadcast-variables">Broadcast Variables</h2>
+
+<p>Broadcast variables allow the programmer to keep a read-only variable cached on each machine rather
+than shipping a copy of it with tasks. They can be used, for example, to give every node a copy of a
+large input dataset in an efficient manner. Spark also attempts to distribute broadcast variables
+using efficient broadcast algorithms to reduce communication cost.</p>
+
+<p>Spark actions are executed through a set of stages, separated by distributed &#8220;shuffle&#8221; operations.
+Spark automatically broadcasts the common data needed by tasks within each stage. The data
+broadcasted this way is cached in serialized form and deserialized before running each task. This
+means that explicitly creating broadcast variables is only useful when tasks across multiple stages
+need the same data or when caching the data in deserialized form is important.</p>
+
+<p>Broadcast variables are created from a variable <code>v</code> by calling <code>SparkContext.broadcast(v)</code>. The
+broadcast variable is a wrapper around <code>v</code>, and its value can be accessed by calling the <code>value</code>
+method. The code below shows this:</p>
+
+<div class="codetabs">
+
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">broadcastVar</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+<span class="n">broadcastVar</span><span class="k">:</span> <span class="kt">org.apache.spark.broadcast.Broadcast</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Broadcast</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">broadcastVar</span><span class="o">.</span><span class="n">value</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">)</span></code></pre></div>
+
+  </div>
+
+<p>After the broadcast variable is created, it should be used instead of the value <code>v</code> in any functions
+run on the cluster so that <code>v</code> is not shipped to the nodes more than once. In addition, the object
+<code>v</code> should not be modified after it is broadcast in order to ensure that all nodes get the same
+value of the broadcast variable (e.g. if the variable is shipped to a new node later).</p>
+
+<h2 id="accumulators">Accumulators</h2>
+
+<p>Accumulators are variables that are only &#8220;added&#8221; to through an associative operation and can
+therefore be efficiently supported in parallel. They can be used to implement counters (as in
+MapReduce) or sums. Spark natively supports accumulators of numeric types, and programmers
+can add support for new types. If accumulators are created with a name, they will be
+displayed in Spark&#8217;s UI. This can be useful for understanding the progress of
+running stages (NOTE: this is not yet supported in Python).</p>
+
+<p>An accumulator is created from an initial value <code>v</code> by calling <code>SparkContext.accumulator(v)</code>. Tasks
+running on the cluster can then add to it using the <code>add</code> method or the <code>+=</code> operator (in Scala and Python).
+However, they cannot read its value.
+Only the driver program can read the accumulator&#8217;s value, using its <code>value</code> method.</p>
+
+<p>The code below shows an accumulator being used to add up the elements of an array:</p>
+<div class="codetabs">
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;My Accumulator&quot;</span><span class="o">)</span>
+<span class="n">accum</span><span class="k">:</span> <span class="kt">spark.Accumulator</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="mi">0</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="n">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">)</span>
+<span class="o">...</span>
+<span class="mi">10</span><span class="o">/</span><span class="mi">09</span><span class="o">/</span><span class="mi">29</span> <span class="mi">18</span><span class="k">:</span><span class="err">41</span><span class="kt">:</span><span class="err">08</span> <span class="kt">INFO</span> <span class="kt">SparkContext:</span> <span class="kt">Tasks</span> <span class="kt">finished</span> <span class="kt">in</span> <span class="err">0</span><span class="kt">.</span><span class="err">317106</span> <span class="kt">s</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span><span class="o">.</span><span class="n">value</span>
+<span class="n">res2</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span></code></pre></div>
+
+    <p>While this code used the built-in support for accumulators of type Int, programmers can also
+create their own types by subclassing <a href="api/scala/index.html#org.apache.spark.AccumulatorParam">AccumulatorParam</a>.
+The AccumulatorParam interface has two methods: <code>zero</code> for providing a &#8220;zero value&#8221; for your data
+type, and <code>addInPlace</code> for adding two values together. For example, supposing we had a <code>Vector</code> class
+representing mathematical vectors, we could write:</p>
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">VectorAccumulatorParam</span> <span class="k">extends</span> <span class="nc">AccumulatorParam</span><span class="o">[</span><span class="kt">Vector</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">zero</span><span class="o">(</span><span class="n">initialValue</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nc">Vector</span><span class="o">.</span><span class="n">zeros</span><span class="o">(</span><span class="n">initialValue</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
+  <span class="o">}</span>
+  <span class="k">def</span> <span class="n">addInPlace</span><span class="o">(</span><span class="n">v1</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">,</span> <span class="n">v2</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">)</span><span class="k">:</span> <span class="kt">Vector</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">v1</span> <span class="o">+=</span> <span class="n">v2</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Then, create an Accumulator of this type:</span>
+<span class="k">val</span> <span class="n">vecAccum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="k">new</span> <span class="nc">Vector</span><span class="o">(...))(</span><span class="nc">VectorAccumulatorParam</span><span class="o">)</span></code></pre></div>
+
+    <p>In Scala, Spark also supports the more general <a href="api/scala/index.html#org.apache.spark.Accumulable">Accumulable</a>
+interface to accumulate data where the resulting type is not the same as the elements added (e.g. build
+a list by collecting together elements), and the <code>SparkContext.accumulableCollection</code> method for accumulating
+common Scala collection types.</p>
+
+  </div>
+
+<p>For accumulator updates performed inside <b>actions only</b>, Spark guarantees that each task&#8217;s update to the accumulator
+will only be applied once, i.e. restarted tasks will not update the value. In transformations, users should be aware
+of that each task&#8217;s update may be applied more than once if tasks or job stages are re-executed.</p>
+
+<p>Accumulators do not change the lazy evaluation model of Spark. If they are being updated within an operation on an RDD, their value is only updated once that RDD is computed as part of an action. Consequently, accumulator updates are not guaranteed to be executed when made within a lazy transformation like <code>map()</code>. The below code fragment demonstrates this property:</p>
+
+<div class="codetabs">
+
+<div data-lang="scala">
+
+    <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">;</span> <span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="o">}</span>
+<span class="c1">// Here, accum is still 0 because no actions have caused the map to be computed.</span></code></pre></div>
+
+  </div>
+  
+  <p>在data不是RDD的情况下，记录器有效</p>
+  
+ 
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">accum</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="o">{</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">accum</span> <span class="o">+=</span><span class="n">x</span><span class="o">}</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">accum</span>
+<span class="n">res49</span><span class="k">:</span> <span class="kt">org.apache.spark.Accumulator</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="mi">6</span>
+<span class="o">//</span><span class="n">得到了多次计数的结果</span></code></pre></div>
+
+</div>
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2016/07/14/SparkRDDs.html" rel="prev">&laquo;&nbsp;Spark RDDs</a></div>
+    
+    
+    <div class="lotus-nextpage-right"><a class="next" href="/2016/07/19/clusteredindex.html" rel="next">聚簇索引和非聚簇索引&nbsp;&raquo;</a></div>
+    
+</section>
+
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/07/15/SparkSharedVariables" data-title="Spark Shared Variables" data-url="/2016/07/15/SparkSharedVariables.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pp1230"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>

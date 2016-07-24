@@ -1,0 +1,133 @@
+---
+layout: post
+title: Spark Api
+description: Spark Api 学习
+keywords: Spark,rdd
+---
+
+SPARK API
+=============
+
+> Spark Api Docs : http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.package
+
+SparkContext
+-------------
+
+* def
+**parallelize[T](seq: Seq[T], numSlices: Int = defaultParallelism(分组参数，可以为空))(implicit arg0: ClassTag[T]): RDD[T]**
+
+    Distribute a local Scala collection to form an RDD.
+
+    **Note**:
+avoid using parallelize(Seq()) to create an empty RDD. Consider emptyRDD for an RDD with no partitions, or parallelize(Seq[T]()) for an RDD of T with empty partitions.
+,
+Parallelize acts lazily. If seq is a mutable collection and is altered after the call to parallelize and before the first action on the RDD, the resultant RDD will reflect the modified collection. Pass a copy of the argument to avoid this.
+
+RDD
+----------
+
+* def
+**++(other: RDD[T]): RDD[T]**
+
+    Return the union of this RDD and another one(合并两个RDD). Any identical elements will appear multiple times (use .distinct() to eliminate them).
+
+* 
+def
+**aggregate[U] (zeroValue : U)(seqOp: (U, T) ⇒ U, combOp: (U, U) ⇒ U)(implicit arg0: ClassTag[U]): U**
+
+    Aggregate the elements of each partition, and then the results for all the partitions, using given combine functions and a neutral "zero value". This function can return a different result type, U, than the type of this RDD, T. Thus, we need one operation for merging a T into an U and one operation for merging two U's, as in scala.TraversableOnce. Both of these functions are allowed to modify and return their first argument instead of creating a new U to avoid memory allocation.
+    
+    **zeroValue**
+the initial value for the accumulated result of each partition for the seqOp operator, and also the initial value for the combine results from different partitions for the combOp operator - this will typically be the neutral element (e.g. Nil for list concatenation or 0 for summation)
+
+    **seqOp**（聚合函数）
+an operator used to accumulate results within a partition
+
+    **combOp**（统计函数）
+an associative operator used to combine results from different partitions
+
+{%highlight scala%}
+scala> val z = sc.parallelize(Array("a","b"),2)
+z: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[37] at parallelize at <console>:27
+
+/*函数执行过程
+seq:x+a
+com:x+xa
+seq:x+b
+com:xxa+xb
+res69: String = xxaxb
+*/
+
+scala> z.aggregate("x")(_ + _, _+_)
+res69: String = xxbxa
+
+{%endhighlight%}
+
+
+* def
+**cache(): RDD.this.type**
+
+    Persist this RDD with the default storage level (MEMORY_ONLY).
+
+* def
+**distinct(): RDD[T]**
+
+    Return a new RDD containing the distinct elements in this RDD.（去重函数）
+
+* def
+**distinct(numPartitions: Int)(implicit ord: Ordering[T] = null): RDD[T]**
+
+    Return a new RDD containing the distinct elements in this RDD.
+
+* def
+**count(): Long**
+
+    Return the number of elements in the RDD.(计数函数)
+
+* def
+**countApprox(timeout: Long, confidence: Double = 0.95): PartialResult[BoundedDouble]**
+
+    Approximate version of count() that returns a potentially incomplete result within a timeout, even if not all tasks have finished.（计算时间和计算可信度）
+
+
+* def
+**countApproxDistinct(relativeSD: Double = 0.05): Long**
+
+    Return approximate number of distinct elements in the RDD.（统计不同的元素）
+
+    The algorithm used is based on streamlib's implementation of "HyperLogLog in Practice: Algorithmic Engineering of a State of The Art Cardinality Estimation Algorithm", available here.
+relativeSD
+Relative accuracy. Smaller values create counters that require more space. It must be greater than 0.000017.
+
+{% highlight scala%}
+
+scala> val data = Array(1,1,2,3,21)
+data: Array[Int] = Array(1, 1, 2, 3, 21)
+
+scala> distrdd.count
+res1: Long = 5                                                                  
+                      ^
+//100毫秒计算时间
+scala> distrdd.countApprox(100)
+res3: org.apache.spark.partial.PartialResult[org.apache.spark.partial.BoundedDouble] = (final: [5.000, 5.000])
+
+//不同元素有四个
+scala> distrdd.countApproxDistinct(0.05)
+res4: Long = 4
+
+
+{% endhighlight%}
+
+
+
+* def
+**filter(f: (T) ⇒ Boolean): RDD[T]**
+
+    Return a new RDD containing only the elements that satisfy a predicate.(筛选函数)
+
+{% highlight scala%}
+scala> val distrdd2 = distrdd.filter(s => true)
+distrdd2: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[5] at filter at <console>:31
+
+{% endhighlight%}
+
