@@ -14,7 +14,7 @@ SparkContext
 -------------
 
 * def
-**parallelize[T](seq: Seq[T], numSlices: Int = defaultParallelism(分组参数，可以为空))(implicit arg0: ClassTag[T]): RDD[T]**
+**parallelize[T] (seq: Seq[T], numSlices: Int = defaultParallelism(分组参数，可以为空))(implicit arg0: ClassTag[T]): RDD[T]**
 
     Distribute a local Scala collection to form an RDD.
 
