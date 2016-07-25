@@ -85,7 +85,7 @@ res69: String = xxbxa
     Persist this RDD with the default storage level (MEMORY_ONLY).
 
 * def
-**cartesian[U](other: RDD[U])(implicit arg0: ClassTag[U]): RDD[(T, U)]**(两个rdd做笛卡尔积)
+**cartesian[U] (other: RDD[U])(implicit arg0: ClassTag[U]): RDD[(T, U)]**(两个rdd做笛卡尔积)
     Return the Cartesian product of this RDD and another one, that is, the RDD of all pairs of elements (a, b) where a is in this and b is in other.
 
 {%highlight scala%}
