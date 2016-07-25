@@ -126,7 +126,7 @@ res4: Long = 4
     Return a new RDD containing only the elements that satisfy a predicate.(筛选函数)
 
 {% highlight scala%}
-scala> val distrdd2 = distrdd.filter(s => true)
+scala> val distrdd2 = distrdd.filter(s => s/2==0)
 distrdd2: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[5] at filter at <console>:31
 
 {% endhighlight%}
