@@ -23,6 +23,21 @@ avoid using parallelize(Seq()) to create an empty RDD. Consider emptyRDD for an 
 ,
 Parallelize acts lazily. If seq is a mutable collection and is altered after the call to parallelize and before the first action on the RDD, the resultant RDD will reflect the modified collection. Pass a copy of the argument to avoid this.
 
+* def
+**textFile(path: String, minPartitions: Int = defaultMinPartitions): RDD[String]**
+    Read a text file from HDFS, a local file system (available on all nodes), or any Hadoop-supported file system URI, and return it as an RDD of Strings.
+
+{%highlight scala%}
+//从本地文件初始化RDD
+scala> val rdd2 = sc.textFile("data.txt")
+rdd2: org.apache.spark.rdd.RDD[String] = data.txt MapPartitionsRDD[3] at textFile at <console>:27
+
+scala> rdd2.toArray
+res2: Array[String] = Array(1, 11, 222, 3333, 44444)
+
+{%endhighlight%}
+
+
 RDD
 ----------
 
@@ -69,6 +84,19 @@ res69: String = xxbxa
 
     Persist this RDD with the default storage level (MEMORY_ONLY).
 
+* def
+**cartesian[U](other: RDD[U])(implicit arg0: ClassTag[U]): RDD[(T, U)]**(两个rdd做笛卡尔积)
+    Return the Cartesian product of this RDD and another one, that is, the RDD of all pairs of elements (a, b) where a is in this and b is in other.
+
+{%highlight scala%}
+//rdd1=1,2,3;rdd3=a,b
+scala> val rdd4 = rdd3.cartesian(rdd1)
+rdd4: org.apache.spark.rdd.RDD[(String, Int)] = CartesianRDD[6] at cartesian at <console>:33
+
+scala> rdd4.collect
+res7: Array[(String, Int)] = Array((a,1), (a,3), (a,2), (b,1), (b,3), (b,2))
+
+{%endhighlight%}
 * def
 **distinct(): RDD[T]**
 
