@@ -175,7 +175,7 @@ costBeforeTax.stream().map((cost) -&gt; cost + .<span style="color: #0000dd; fon
 <span style="color: #6600ee; font-weight: bold;">448.0</span>
 <span style="color: #6600ee; font-weight: bold;">560.0</span>
 <p>reduce() 是将集合中所有值结合进一个，Reduce类似SQL语句中的sum(), avg() 或count(), </p>
-<pre style="font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Applying 12% VAT on each purchase</span><span style="color: #333333;">
+<span style="color: #888888;">// Applying 12% VAT on each purchase</span><span style="color: #333333;">
 </span><span style="color: #888888;">// Old way:</span><span style="color: #333333;">
 </span><span style="color: #bb0066; font-weight: bold;">List</span><span style="color: #333333;"> costBeforeTax </span><span style="color: #008800; font-weight: bold;">=</span><span style="color: #333333;"> </span><span style="color: #bb0066; font-weight: bold;">Arrays</span><span style="color: #333333;">.asList(</span><span style="color: #0000dd; font-weight: bold;">100</span><span style="color: #333333;">, </span><span style="color: #0000dd; font-weight: bold;">200</span><span style="color: #333333;">, </span><span style="color: #0000dd; font-weight: bold;">300</span><span style="color: #333333;">, </span><span style="color: #0000dd; font-weight: bold;">400</span><span style="color: #333333;">, </span><span style="color: #0000dd; font-weight: bold;">500</span><span style="color: #333333;">);
 double total </span><span style="color: #008800; font-weight: bold;">=</span><span style="color: #333333;"> </span><span style="color: #0000dd; font-weight: bold;">0</span><span style="color: #333333;">;
