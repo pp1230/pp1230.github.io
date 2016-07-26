@@ -10,9 +10,10 @@ JAVA LAMBDA
 
 > 文章转自 http://www.jdon.com/idea/java/10-example-of-lambda-expressions-in-java8.html
 
-      <h3>　　1. 实现Runnable线程案例</h3>
+
+<h3>　　1. 实现Runnable线程案例</h3>
 <p>使用() -&gt; {} 替代匿名类：</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">//Before Java 8:</span>
+<span style="color: #888888;">//Before Java 8:</span>
 <span style="color: #008800; font-weight: bold;">new</span> <span style="color: #0066bb; font-weight: bold;">Thread</span>(<span style="color: #008800; font-weight: bold;">new</span> Runnable() {
     <span style="color: #555555; font-weight: bold;">@Override</span>
     <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #333399; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">run</span>() {
@@ -26,7 +27,7 @@ JAVA LAMBDA
 <span style="color: #997700; font-weight: bold;">Output:</span>
 too much code, <span style="color: #008800; font-weight: bold;">for</span> too little to <span style="color: #008800; font-weight: bold;">do</span>
 Lambda expression rocks !!
-</pre>
+
 
 
 <p>你可以使用 下面语法实现Lambda:</p>
@@ -41,7 +42,7 @@ Lambda expression rocks !!
 </p>
 <h3>2.实现事件处理</h3>
 <p>如果你曾经做过Swing 编程，你将永远不会忘记编写事件侦听器代码。使用lambda表达式如下所示写出更好的事件侦听器的代码。</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Before Java 8:</span>
+<span style="color: #888888;">// Before Java 8:</span>
 JButton show =  <span style="color: #008800; font-weight: bold;">new</span> JButton(<span style="background-color: #fff0f0;">"Show"</span>);
 show.<span style="color: #0000cc;">addActionListener</span>(<span style="color: #008800; font-weight: bold;">new</span> ActionListener() {
      <span style="color: #555555; font-weight: bold;">@Override</span>
@@ -58,7 +59,7 @@ show.<span style="color: #0000cc;">addActionListener</span>((e) -&gt; {
 <p>在java 8中你可以使用Lambda表达式替代丑陋的匿名类。</p>
 <p>&nbsp;</p>
 <h3>3.使用Lambda表达式遍历List集合</h3>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">//Prior Java 8 :</span>
+<span style="color: #888888;">//Prior Java 8 :</span>
 <span style="color: #bb0066; font-weight: bold;">List</span> features <span style="color: #008800; font-weight: bold;">=</span> <span style="color: #bb0066; font-weight: bold;">Arrays</span>.asList(<span style="background-color: #fff0f0;">"Lambdas"</span>, <span style="background-color: #fff0f0;">"Default Method"</span>, <br /><span style="background-color: #fff0f0;">"Stream API"</span>, <span style="background-color: #fff0f0;">"Date and Time API"</span>);
 <span style="color: #008800; font-weight: bold;">for</span> (<span style="color: #bb0066; font-weight: bold;">String</span> feature <span style="color: #008800; font-weight: bold;">:</span> <span style="color: #333399; font-weight: bold;">features</span>) {
    <span style="color: #bb0066; font-weight: bold;">System</span>.out.println(feature);
@@ -77,12 +78,12 @@ features.forEach(<span style="color: #bb0066; font-weight: bold;">System</span>.
 <span style="color: #333399; font-weight: bold;">Lambdas</span>
 <span style="color: #bb0066; font-weight: bold;">Default</span> <span style="color: #bb0066; font-weight: bold;">Method</span>
 <span style="color: #bb0066; font-weight: bold;">Stream</span> <span style="color: #bb0066; font-weight: bold;">API</span>
-<span style="color: #bb0066; font-weight: bold;">Date</span> and <span style="color: #bb0066; font-weight: bold;">Time</span> <span style="color: #bb0066; font-weight: bold;">API</span></pre>
+<span style="color: #bb0066; font-weight: bold;">Date</span> and <span style="color: #bb0066; font-weight: bold;">Time</span> <span style="color: #bb0066; font-weight: bold;">API</span>
 
 <p>方法引用是使用两个冒号::这个操作符号。</p>
 <h3>4.使用Lambda表达式和函数接口</h3>
 <p>为了支持函数编程，Java 8加入了一个新的包java.util.function，其中有一个接口java.util.function.Predicate是支持Lambda函数编程：</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">static</span> <span style="color: #333399; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">main</span>(args[]){
+<span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">static</span> <span style="color: #333399; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">main</span>(args[]){
   List languages = Arrays.<span style="color: #0000cc;">asList</span>(<span style="background-color: #fff0f0;">"Java"</span>, <span style="background-color: #fff0f0;">"Scala"</span>, <span style="background-color: #fff0f0;">"C++"</span>, <span style="background-color: #fff0f0;">"Haskell"</span>, <span style="background-color: #fff0f0;">"Lisp"</span>);
 
   System.<span style="color: #0000cc;">out</span>.<span style="color: #0000cc;">println</span>(<span style="background-color: #fff0f0;">"Languages which starts with J :"</span>);
@@ -131,13 +132,13 @@ Haskell
  <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">static</span> <span style="color: #333399; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">filter</span>(List names, Predicate condition) {
     names.<span style="color: #0000cc;">stream</span>().<span style="color: #0000cc;">filter</span>((name) -&gt; (condition.<span style="color: #0000cc;">test</span>(name)))<br />        .<span style="color: #0000cc;">forEach</span>((name) -&gt; {System.<span style="color: #0000cc;">out</span>.<span style="color: #0000cc;">println</span>(name + <span style="background-color: #fff0f0;">" "</span>);
     });
- }</pre>
+ }
 <p>你能看到来自Stream API 的filter方法能够接受 Predicate参数, 能够允许测试多个条件。</p>
 <p><h3>5.复杂的结合<strong>Predicate </strong>使用
 
 </h3>
 <p>java.util.function.Predicate提供and(), or() 和 xor()可以进行逻辑操作，比如为了得到一串字符串中以&quot;J&quot;开头的4个长度：</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// We can even combine Predicate using and(), or() And xor() logical functions</span>
+<span style="color: #888888;">// We can even combine Predicate using and(), or() And xor() logical functions</span>
  <span style="color: #888888;">// for example to find names, which starts with J and four letters long, you</span>
  <span style="color: #888888;">// can pass combination of two Predicate</span>
  <span style="color: #bb0066; font-weight: bold;">Predicate</span>&lt;<span style="color: #bb0066; font-weight: bold;">String</span>&gt; startsWithJ <span style="color: #008800; font-weight: bold;">=</span> (n) -&gt; n.startsWith(<span style="background-color: #fff0f0; color: #dd2200;">"J"</span>);
@@ -150,7 +151,7 @@ Haskell
 <p>&nbsp;</p>
 <h3>6.使用Lambda实现Map 和 Reduce</h3>
 <p>最流行的函数编程概念是map，它允许你改变你的对象，在这个案例中，我们将costBeforeTeax集合中每个元素改变了增加一定的数值，我们将Lambda表达式 x -&gt; x*x传送map()方法，这将应用到stream中所有元素。然后我们使用 forEach() 打印出这个集合的元素.</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// applying 12% VAT on each purchase</span>
+<span style="color: #888888;">// applying 12% VAT on each purchase</span>
 <span style="color: #888888;">// Without lambda expressions:</span>
 <span style="color: #bb0066; font-weight: bold;">List</span> costBeforeTax <span style="color: #008800; font-weight: bold;">=</span> <span style="color: #bb0066; font-weight: bold;">Arrays</span>.asList(<span style="color: #0000dd; font-weight: bold;">100</span>, <span style="color: #0000dd; font-weight: bold;">200</span>, <span style="color: #0000dd; font-weight: bold;">300</span>, <span style="color: #0000dd; font-weight: bold;">400</span>, <span style="color: #0000dd; font-weight: bold;">500</span>);
 <span style="color: #008800; font-weight: bold;">for</span> (<span style="color: #bb0066; font-weight: bold;">Integer</span> cost <span style="color: #008800; font-weight: bold;">:</span> <span style="color: #333399; font-weight: bold;">costBeforeTax</span>) {
@@ -172,7 +173,7 @@ costBeforeTax.stream().map((cost) -&gt; cost + .<span style="color: #0000dd; fon
 <span style="color: #6600ee; font-weight: bold;">224.0</span>
 <span style="color: #6600ee; font-weight: bold;">336.0</span>
 <span style="color: #6600ee; font-weight: bold;">448.0</span>
-<span style="color: #6600ee; font-weight: bold;">560.0</span></pre>
+<span style="color: #6600ee; font-weight: bold;">560.0</span>
 <p>reduce() 是将集合中所有值结合进一个，Reduce类似SQL语句中的sum(), avg() 或count(), </p>
 <pre style="font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Applying 12% VAT on each purchase</span><span style="color: #333333;">
 </span><span style="color: #888888;">// Old way:</span><span style="color: #333333;">
@@ -192,42 +193,42 @@ double bill </span><span style="color: #008800; font-weight: bold;">=</span><spa
 
 </span><span style="color: #bb0066; font-weight: bold;">Output</span><span style="color: #333333;">
 </span><span style="background-color: white;"><span style="color: #351c75;"><span style="font-weight: bold;">Total</span> </span><span style="color: #008800; font-weight: bold;">:</span><span style="color: #333333;"> </span><span style="color: red;">1680</span><span style="color: #333399; font-weight: bold;">.</span><span style="color: red;">0</span><span style="color: #333333;">
-</span><span style="color: #333399; font-weight: bold;">Total</span><span style="color: #333333;"> </span><span style="color: #333399; font-weight: bold;">:</span><span style="color: #333333;"> </span><span style="color: red;">1680</span><span style="color: #333399; font-weight: bold;">.</span><span style="color: red;">0</span></span></pre>
+</span><span style="color: #333399; font-weight: bold;">Total</span><span style="color: #333333;"> </span><span style="color: #333399; font-weight: bold;">:</span><span style="color: #333333;"> </span><span style="color: red;">1680</span><span style="color: #333399; font-weight: bold;">.</span><span style="color: red;">0</span></span>
 <p>&nbsp;</p>
 <h3>7.通过<strong>filtering </strong>创建一个字符串String的集合</h3>
 <p>Filtering是对大型Collection操作的一个通用操作，Stream提供filter()方法，接受一个Predicate对象，意味着你能传送lambda表达式作为一个过滤逻辑进入这个方法：</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Create a List with String more than 2 characters</span>
+<span style="color: #888888;">// Create a List with String more than 2 characters</span>
 <span style="color: #bb0066; font-weight: bold;">List</span>&lt;<span style="color: #bb0066; font-weight: bold;">String</span>&gt; filtered <span style="color: #008800; font-weight: bold;">=</span> strList.stream().filter(x -&gt; x.length()&gt; <span style="color: #0000dd; font-weight: bold;">2</span>)<br />                                        .collect(<span style="color: #bb0066; font-weight: bold;">Collectors</span>.toList());
 <span style="color: #bb0066; font-weight: bold;">System</span>.out.printf(<span style="background-color: #fff0f0;">"Original List : %s, filtered list : %s %n"</span>, <br />                  strList, filtered);
 
 <span style="color: #bb0066; font-weight: bold;">Output</span> <span style="color: #008800; font-weight: bold;">:</span>
-<span style="color: #333399; font-weight: bold;">Original</span> <span style="color: #333399; font-weight: bold;">List</span> <span style="color: #333399; font-weight: bold;">:</span> [<span style="color: #333399; font-weight: bold;">abc</span>, , <span style="color: #333399; font-weight: bold;">bcd</span>, , <span style="color: #333399; font-weight: bold;">defg</span>, <span style="color: #333399; font-weight: bold;">jk</span>], filtered list <span style="color: #008800; font-weight: bold;">:</span> <span style="background-color: #ffaaaa; color: red;">[</span><span style="color: #333399; font-weight: bold;">abc</span>, bcd, defg<span style="background-color: #ffaaaa; color: red;">]</span></pre>
+<span style="color: #333399; font-weight: bold;">Original</span> <span style="color: #333399; font-weight: bold;">List</span> <span style="color: #333399; font-weight: bold;">:</span> [<span style="color: #333399; font-weight: bold;">abc</span>, , <span style="color: #333399; font-weight: bold;">bcd</span>, , <span style="color: #333399; font-weight: bold;">defg</span>, <span style="color: #333399; font-weight: bold;">jk</span>], filtered list <span style="color: #008800; font-weight: bold;">:</span> <span style="background-color: #ffaaaa; color: red;">[</span><span style="color: #333399; font-weight: bold;">abc</span>, bcd, defg<span style="background-color: #ffaaaa; color: red;">]</span>
 <p>&nbsp;</p>
 <h3>8.对集合中每个元素应用函数</h3>
 <p>我们经常需要对集合中元素运用一定的功能，如表中的每个元素乘以或除以一个值等等.</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Convert String to Uppercase and join them using coma</span>
+<span style="color: #888888;">// Convert String to Uppercase and join them using coma</span>
 <span style="color: #bb0066; font-weight: bold;">List</span>&lt;<span style="color: #bb0066; font-weight: bold;">String</span>&gt; G7 <span style="color: #008800; font-weight: bold;">=</span> <span style="color: #bb0066; font-weight: bold;">Arrays</span>.asList(<span style="background-color: #fff0f0; color: #dd2200;">"USA"</span>, <span style="background-color: #fff0f0; color: #dd2200;">"Japan"</span>, <span style="background-color: #fff0f0; color: #dd2200;">"France"</span>, <span style="background-color: #fff0f0; color: #dd2200;">"Germany"</span>, 
 <span style="background-color: #fff0f0; color: #dd2200;">                                "Italy"</span>, <span style="background-color: #fff0f0; color: #dd2200;">"U.K."</span>,<span style="background-color: #fff0f0; color: #dd2200;">"Canada"</span>);
 <span style="color: #bb0066; font-weight: bold;">String</span> G7Countries <span style="color: #008800; font-weight: bold;">=</span> G7.stream().map(x -&gt; x.toUpperCase())<br />                                .collect(<span style="color: #bb0066; font-weight: bold;">Collectors</span>.joining(<span style="background-color: #fff0f0; color: #dd2200;">", "</span>));
 <span style="color: #bb0066; font-weight: bold;">System</span>.out.println(G7Countries);
 
 <span style="color: #bb0066; font-weight: bold;">Output</span> <span style="color: #008800; font-weight: bold;">:</span> 
-<span style="color: #888888; font-weight: bold;">USA</span>, <span style="color: #bb0066; font-weight: bold;">JAPAN</span>, <span style="color: #bb0066; font-weight: bold;">FRANCE</span>, <span style="color: #bb0066; font-weight: bold;">GERMANY</span>, <span style="color: #bb0066; font-weight: bold;">ITALY</span>, U.K., <span style="color: #bb0066; font-weight: bold;">CANADA</span></pre>
+<span style="color: #888888; font-weight: bold;">USA</span>, <span style="color: #bb0066; font-weight: bold;">JAPAN</span>, <span style="color: #bb0066; font-weight: bold;">FRANCE</span>, <span style="color: #bb0066; font-weight: bold;">GERMANY</span>, <span style="color: #bb0066; font-weight: bold;">ITALY</span>, U.K., <span style="color: #bb0066; font-weight: bold;">CANADA</span>
 <p>上面是将字符串转换为大写，然后使用逗号串起来。</p>
 <p>&nbsp;</p>
 <h3>9.通过复制不同的值创建一个子列表</h3>
 <p>使用Stream的distinct()方法过滤集合中重复元素。</p>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">// Create List of square of all distinct numbers</span>
+<span style="color: #888888;">// Create List of square of all distinct numbers</span>
 <span style="color: #bb0066; font-weight: bold;">List</span>&lt;<span style="color: #bb0066; font-weight: bold;">Integer</span>&gt; numbers <span style="color: #008800; font-weight: bold;">=</span> <span style="color: #bb0066; font-weight: bold;">Arrays</span>.asList(<span style="color: #0000dd; font-weight: bold;">9</span>, <span style="color: #0000dd; font-weight: bold;">10</span>, <span style="color: #0000dd; font-weight: bold;">3</span>, <span style="color: #0000dd; font-weight: bold;">4</span>, <span style="color: #0000dd; font-weight: bold;">7</span>, <span style="color: #0000dd; font-weight: bold;">3</span>, <span style="color: #0000dd; font-weight: bold;">4</span>);
 <span style="color: #bb0066; font-weight: bold;">List</span>&lt;<span style="color: #bb0066; font-weight: bold;">Integer</span>&gt; distinct <span style="color: #008800; font-weight: bold;">=</span> numbers.stream().map( i -&gt; i*i).distinct()<br />                                         .collect(<span style="color: #bb0066; font-weight: bold;">Collectors</span>.toList());
 <span style="color: #bb0066; font-weight: bold;">System</span>.out.printf(<span style="background-color: #fff0f0; color: #dd2200;">"Original List : %s,  Square Without duplicates :<br />                   %s %n"</span>, numbers, distinct);
 
 <span style="color: #bb0066; font-weight: bold;">Output</span> <span style="color: #008800; font-weight: bold;">:</span>
-<span style="color: #888888; font-weight: bold;">Original</span> <span style="color: #888888; font-weight: bold;">List</span> <span style="color: #888888; font-weight: bold;">:</span> [<span style="background-color: #e3d2d2; color: #a61717;">9</span>, <span style="background-color: #e3d2d2; color: #a61717;">10</span>, <span style="background-color: #e3d2d2; color: #a61717;">3</span>, <span style="background-color: #e3d2d2; color: #a61717;">4</span>, <span style="background-color: #e3d2d2; color: #a61717;">7</span>, <span style="background-color: #e3d2d2; color: #a61717;">3</span>, <span style="background-color: #e3d2d2; color: #a61717;">4</span>],  <span style="color: #bb0066; font-weight: bold;">Square</span> <span style="color: #bb0066; font-weight: bold;">Without</span> <br />                                         duplicates <span style="color: #008800; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">[81</span>, <span style="color: #0000dd; font-weight: bold;">100</span>, <span style="color: #0000dd; font-weight: bold;">9</span>, <span style="color: #0000dd; font-weight: bold;">16</span>, <span style="color: #0000dd; font-weight: bold;">49</span><span style="background-color: #e3d2d2; color: #a61717;">]</span></pre>
+<span style="color: #888888; font-weight: bold;">Original</span> <span style="color: #888888; font-weight: bold;">List</span> <span style="color: #888888; font-weight: bold;">:</span> [<span style="background-color: #e3d2d2; color: #a61717;">9</span>, <span style="background-color: #e3d2d2; color: #a61717;">10</span>, <span style="background-color: #e3d2d2; color: #a61717;">3</span>, <span style="background-color: #e3d2d2; color: #a61717;">4</span>, <span style="background-color: #e3d2d2; color: #a61717;">7</span>, <span style="background-color: #e3d2d2; color: #a61717;">3</span>, <span style="background-color: #e3d2d2; color: #a61717;">4</span>],  <span style="color: #bb0066; font-weight: bold;">Square</span> <span style="color: #bb0066; font-weight: bold;">Without</span> <br />                                         duplicates <span style="color: #008800; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">[81</span>, <span style="color: #0000dd; font-weight: bold;">100</span>, <span style="color: #0000dd; font-weight: bold;">9</span>, <span style="color: #0000dd; font-weight: bold;">16</span>, <span style="color: #0000dd; font-weight: bold;">49</span><span style="background-color: #e3d2d2; color: #a61717;">]</span>
 <p>&nbsp;</p>
 <h3>10.计算List中的元素的最大值，最小值，总和及平均值<br />
 </h3>
-<pre style="color: #333333; font-size: 10pt; line-height: 16.25px;"><span style="color: #888888;">//Get count, min, max, sum, and average for numbers</span>
+<span style="color: #888888;">//Get count, min, max, sum, and average for numbers</span>
 <span style="color: #bb0066; font-weight: bold;">List</span>&lt;<span style="color: #bb0066; font-weight: bold;">Integer</span>&gt; primes <span style="color: #008800; font-weight: bold;">=</span> <span style="color: #bb0066; font-weight: bold;">Arrays</span>.asList(<span style="color: #0000dd; font-weight: bold;">2</span>, <span style="color: #0000dd; font-weight: bold;">3</span>, <span style="color: #0000dd; font-weight: bold;">5</span>, <span style="color: #0000dd; font-weight: bold;">7</span>, <span style="color: #0000dd; font-weight: bold;">11</span>, <span style="color: #0000dd; font-weight: bold;">13</span>, <span style="color: #0000dd; font-weight: bold;">17</span>, <span style="color: #0000dd; font-weight: bold;">19</span>, <span style="color: #0000dd; font-weight: bold;">23</span>, <span style="color: #0000dd; font-weight: bold;">29</span>);
 <span style="color: #bb0066; font-weight: bold;">IntSummaryStatistics</span> stats <span style="color: #008800; font-weight: bold;">=</span> primes.stream().mapToInt((x) -&gt; x)<br />                                            .summaryStatistics();
 <span style="color: #bb0066; font-weight: bold;">System</span>.out.println(<span style="background-color: #fff0f0; color: #dd2200;">"Highest prime number in List : "</span> + stats.getMax());
