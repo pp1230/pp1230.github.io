@@ -55,7 +55,7 @@ show.<span style="color: #0000cc;">addActionListener</span>(<span style="color: 
 <span style="color: #888888;">// Java 8 way:</span>
 show.<span style="color: #0000cc;">addActionListener</span>((e) -&gt; {
     System.<span style="color: #0000cc;">out</span>.<span style="color: #0000cc;">println</span>(<span style="background-color: #fff0f0;">"Action !! Lambda expressions Rocks"</span>);
-});</pre>
+});
 <p>在java 8中你可以使用Lambda表达式替代丑陋的匿名类。</p>
 <p>&nbsp;</p>
 <h3>3.使用Lambda表达式遍历List集合</h3>
@@ -146,7 +146,7 @@ Haskell
    
  names.stream()
       .filter(startsWithJ.<em><strong>and</strong></em>(fourLetterLong))
-      .forEach((n) -&gt; <span style="color: #bb0066; font-weight: bold;">System</span>.out.print(<span style="background-color: #fff0f0; color: #dd2200;">"\nName, which starts with<br />            'J' and four letter long is : "</span> + n));</pre>
+      .forEach((n) -&gt; <span style="color: #bb0066; font-weight: bold;">System</span>.out.print(<span style="background-color: #fff0f0; color: #dd2200;">"\nName, which starts with<br />            'J' and four letter long is : "</span> + n));
 <p>其中<span style="color: #333333; font-size: 10pt; line-height: 16.25px;">startsWithJ.<em><strong>and</strong></em>(fourLetterLong)</span>是使用了AND逻辑操作。</p>
 <p>&nbsp;</p>
 <h3>6.使用Lambda实现Map 和 Reduce</h3>
@@ -240,5 +240,5 @@ double bill </span><span style="color: #008800; font-weight: bold;">=</span><spa
 <span style="color: #888888; font-weight: bold;">Highest</span> <span style="color: #888888; font-weight: bold;">prime</span> <span style="color: #888888; font-weight: bold;">number</span> <span style="color: #888888; font-weight: bold;">in</span> <span style="color: #888888; font-weight: bold;">List</span> <span style="color: #888888; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">29</span>
 <span style="color: #888888; font-weight: bold;">Lowest</span> <span style="color: #888888; font-weight: bold;">prime</span> <span style="color: #888888; font-weight: bold;">number</span> <span style="color: #888888; font-weight: bold;">in</span> <span style="color: #888888; font-weight: bold;">List</span> <span style="color: #888888; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">2</span>
 <span style="color: #888888; font-weight: bold;">Sum</span> <span style="color: #888888; font-weight: bold;">of</span> <span style="color: #888888; font-weight: bold;">all</span> <span style="color: #888888; font-weight: bold;">prime</span> <span style="color: #888888; font-weight: bold;">numbers</span> <span style="color: #888888; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">129</span>
-<span style="color: #888888; font-weight: bold;">Average</span> <span style="color: #888888; font-weight: bold;">of</span> <span style="color: #888888; font-weight: bold;">all</span> <span style="color: #888888; font-weight: bold;">prime</span> <span style="color: #888888; font-weight: bold;">numbers</span> <span style="color: #888888; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">12</span><span style="color: #888888; font-weight: bold;">.</span><span style="background-color: #e3d2d2; color: #a61717;">9</span></pre>
+<span style="color: #888888; font-weight: bold;">Average</span> <span style="color: #888888; font-weight: bold;">of</span> <span style="color: #888888; font-weight: bold;">all</span> <span style="color: #888888; font-weight: bold;">prime</span> <span style="color: #888888; font-weight: bold;">numbers</span> <span style="color: #888888; font-weight: bold;">:</span> <span style="background-color: #e3d2d2; color: #a61717;">12</span><span style="color: #888888; font-weight: bold;">.</span><span style="background-color: #e3d2d2; color: #a61717;">9</span>
 <p>&nbsp;</p>
