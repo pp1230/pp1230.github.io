@@ -9,7 +9,7 @@ keywords: Spark,Variables
 Shared Variables
 ===============
 
-> Spark Programming Guide : http://spark.apache.org/docs/latest/programming-guide.html#shared-variables
+> Spark Programming Guide : <http://spark.apache.org/docs/latest/programming-guide.html#shared-variables>
 
 <p>Normally, when a function passed to a Spark operation (such as <code>map</code> or <code>reduce</code>) is executed on a
 remote cluster node, it works on separate copies of all the variables used in the function. These

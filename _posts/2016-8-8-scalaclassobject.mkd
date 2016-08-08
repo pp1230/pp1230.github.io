@@ -1,0 +1,71 @@
+---
+layout: post
+title: Scala Class 和 Object 区别
+description: Spark Api 学习
+keywords: Scala
+---
+
+在IDEA中创建Class和Object
+-------------
+
+> 关于如何在IDEA中运行Scala类：<https://www.jetbrains.com/help/idea/2016.2/creating-and-running-your-scala-application.html>
+
+选择创建Class，再写一个Object。简单的HelloWorld
+
+{%highlight scala%}
+
+class Hello {
+
+}
+
+object Hello {
+  def main(args: Array[String]) {
+    println("Hello World")
+  }
+}
+
+{%endhighlight%}
+
+如果将方法写在class中，无法打印。
+
+比较不同
+-----------
+
+{%highlight scala%}
+
+/**
+  * scala没有静态的修饰符，但object下的成员都是静态的 ,
+  * 若有同名的class,这其作为它的伴生类。
+  * 在object中一般可以为伴生类做一些初始化等操作
+  */
+
+class ObjectTest {
+
+  var data1 = Array(1,2,3)
+  def test1()={
+    println(data1)
+  }
+}
+
+object ObjectTest {
+
+  var data2 = Array(1,2)
+  //私有成员不能在其他object中访问
+  private var data3 = "pipi"
+
+  def test2() = {
+    new ObjectTest()
+  }
+}
+
+object PrintObject {
+  def main(args: Array[String]) {
+
+    var a = ObjectTest.test2()
+    println(a.data1.length)
+    println(ObjectTest.data2.length)
+  }
+}
+
+
+{%endhighlight%}
