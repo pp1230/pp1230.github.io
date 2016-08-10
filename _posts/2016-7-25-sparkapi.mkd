@@ -41,6 +41,12 @@ res2: Array[String] = Array(1, 11, 222, 3333, 44444)
 RDD
 ----------
 
+
+A Resilient Distributed Dataset (RDD), the basic abstraction in Spark. Represents an immutable, partitioned collection of elements that can be operated on in parallel. This class contains the basic operations available on all RDDs, such as map, filter, and persist. In addition, org.apache.spark.rdd.**PairRDDFunctions** contains operations available only on RDDs of key-value pairs, such as groupByKey and join; org.apache.spark.rdd.**DoubleRDDFunctions** contains operations available only on RDDs of Doubles; and org.apache.spark.rdd.**SequenceFileRDDFunctions** contains operations available on RDDs that can be saved as SequenceFiles. All operations are automatically available on any RDD of the right type (e.g. RDD[(Int, Int)] through implicit.
+
+RDD是Spark的基本抽象类，包含了可以分布式运算的集合元素。RDD类包含了基本的map filtet persist方法，当RDD是键值对和Double时有额外的方法。
+
+
 * def
 **++(other: RDD[T]): RDD[T]**
 
@@ -182,3 +188,48 @@ distrdd2: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[5] at filter at <cons
 
 {% endhighlight%}
 
+
+PairRDDFunctions
+----------------
+
+Extra functions available on RDDs of (key, value) pairs through an implicit conversion.
+在键值对中的RDD方法
+
+* def
+**reduceByKey(func: (V, V) ⇒ V): RDD[(K, V)]**
+    
+    Merge the values for each key using an associative and commutative reduce function. This will also perform the merging locally on each mapper before sending results to a reducer, similarly to a "combiner" in MapReduce. Output will be hash-partitioned with the existing partitioner/ parallelism level.
+
+
+* def
+**join[W](other: RDD[(K, W)]): RDD[(K, (V, W))]**
+    
+    Return an RDD containing all pairs of elements with matching keys in this and other. Each pair of elements will be returned as a (k, (v1, v2)) tuple, where (k, v1) is in this and (k, v2) is in other. Performs a hash join across the cluster.
+
+
+{% highlight scala%}
+  //PairRDDFunctions
+    val rdd4 = sc.parallelize(Array(("hello",1),("pi",1)))
+    val data1 = "hello world hello pi pi haha"
+    //统计每个单词个数
+    val rdd3 = sc.parallelize(data1.split(" "))
+      .map(i => (i,1)).reduceByKey(_+_)
+    //合并相同单词
+    val rdd5 = rdd3.join[Int](rdd4)
+
+    rdd3.foreach(i => println(i))
+    rdd5.foreach(i => println(i))
+
+    /**
+      * 运行结果1
+      * (haha,1)
+      * (hello,2)
+      * (world,1)
+      * (pi,2)
+      * 
+      * 运行结果2
+      * (pi,(2,1))
+      * (hello,(2,1))
+      */
+
+{% endhighlight%}

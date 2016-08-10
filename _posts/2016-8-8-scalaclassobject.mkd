@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Scala Class 和 Object 区别
-description: Spark Api 学习
+title: Scala 的类和对象
+description: 在IDEA中创建Scala的类和对象，比较差异
 keywords: Scala
 ---
 

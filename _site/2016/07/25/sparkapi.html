@@ -133,6 +133,10 @@ Parallelize acts lazily. If seq is a mutable collection and is altered after the
 
 <h2 id="rdd">RDD</h2>
 
+<p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark. Represents an immutable, partitioned collection of elements that can be operated on in parallel. This class contains the basic operations available on all RDDs, such as map, filter, and persist. In addition, org.apache.spark.rdd.<strong>PairRDDFunctions</strong> contains operations available only on RDDs of key-value pairs, such as groupByKey and join; org.apache.spark.rdd.<strong>DoubleRDDFunctions</strong> contains operations available only on RDDs of Doubles; and org.apache.spark.rdd.<strong>SequenceFileRDDFunctions</strong> contains operations available on RDDs that can be saved as SequenceFiles. All operations are automatically available on any RDD of the right type (e.g. RDD[(Int, Int)] through implicit.</p>
+
+<p>RDD是Spark的基本抽象类，包含了可以分布式运算的集合元素。RDD类包含了基本的map filtet persist方法，当RDD是键值对和Double时有额外的方法。</p>
+
 <ul>
   <li>
     <p>def
@@ -273,6 +277,50 @@ Relative accuracy. Smaller values create counters that require more space. It mu
 
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">distrdd2</span> <span class="k">=</span> <span class="n">distrdd</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="n">s</span><span class="o">/</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="o">)</span>
 <span class="n">distrdd2</span><span class="k">:</span> <span class="kt">org.apache.spark.rdd.RDD</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">MapPartitionsRDD</span><span class="o">[</span><span class="err">5</span><span class="o">]</span> <span class="n">at</span> <span class="n">filter</span> <span class="n">at</span> <span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">31</span></code></pre></div>
+
+<h2 id="pairrddfunctions">PairRDDFunctions</h2>
+
+<p>Extra functions available on RDDs of (key, value) pairs through an implicit conversion.
+在键值对中的RDD方法</p>
+
+<ul>
+  <li>
+    <p>def
+<strong>reduceByKey(func: (V, V) ⇒ V): RDD[(K, V)]</strong></p>
+
+    <p>Merge the values for each key using an associative and commutative reduce function. This will also perform the merging locally on each mapper before sending results to a reducer, similarly to a “combiner” in MapReduce. Output will be hash-partitioned with the existing partitioner/ parallelism level.</p>
+  </li>
+  <li>
+    <p>def
+<strong>join<a href="other: RDD[(K, W)]">W</a>: RDD[(K, (V, W))]</strong></p>
+
+    <p>Return an RDD containing all pairs of elements with matching keys in this and other. Each pair of elements will be returned as a (k, (v1, v2)) tuple, where (k, v1) is in this and (k, v2) is in other. Performs a hash join across the cluster.</p>
+  </li>
+</ul>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">//PairRDDFunctions
+</span>    <span class="k">val</span> <span class="n">rdd4</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">((</span><span class="s">"hello"</span><span class="o">,</span><span class="mi">1</span><span class="o">),(</span><span class="s">"pi"</span><span class="o">,</span><span class="mi">1</span><span class="o">)))</span>
+    <span class="k">val</span> <span class="n">data1</span> <span class="k">=</span> <span class="s">"hello world hello pi pi haha"</span>
+    <span class="c1">//统计每个单词个数
+</span>    <span class="k">val</span> <span class="n">rdd3</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data1</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">i</span><span class="o">,</span><span class="mi">1</span><span class="o">)).</span><span class="n">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="c1">//合并相同单词
+</span>    <span class="k">val</span> <span class="n">rdd5</span> <span class="k">=</span> <span class="n">rdd3</span><span class="o">.</span><span class="n">join</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="n">rdd4</span><span class="o">)</span>
+
+    <span class="n">rdd3</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">i</span><span class="o">))</span>
+    <span class="n">rdd5</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">i</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * 运行结果1
+      * (haha,1)
+      * (hello,2)
+      * (world,1)
+      * (pi,2)
+      * 
+      * 运行结果2
+      * (pi,(2,1))
+      * (hello,(2,1))
+      */</span></code></pre></div>
 
 
 </article>
