@@ -322,6 +322,281 @@ Relative accuracy. Smaller values create counters that require more space. It mu
       * (hello,(2,1))
       */</span></code></pre></div>
 
+<h2 id="api">常用 Api</h2>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">//Transformations
+</span>      <span class="n">println</span><span class="o">(</span><span class="s">"============="</span><span class="o">+</span><span class="s">"Transformations"</span><span class="o">+</span><span class="s">"============"</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="n">numData</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">stringArray</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">"pi"</span><span class="o">,</span><span class="s">"huaiyu"</span><span class="o">,</span><span class="s">"hello"</span><span class="o">,</span><span class="s">"pi"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">stringData</span> <span class="k">=</span> <span class="s">"pi huai yu hello pi"</span>
+    <span class="k">val</span> <span class="n">stringArrayData</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">"hello world pi"</span><span class="o">,</span><span class="s">"pi huai yu"</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="n">numRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">numData</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">stringRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringData</span><span class="o">)</span>
+    <span class="cm">/**
+      * map(func)
+      * Return a new distributed dataset formed by
+      * passing each element of the source through a function func.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"map"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">mapRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span>
+    <span class="n">mapRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * filter(func)
+      * Return a new dataset formed by selecting those
+      * elements of the source on which func returns true.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"filter"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">filterRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">)</span>
+    <span class="n">filterRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * flatMap(func)
+      * Similar to map, but each input item can be
+      * mapped to 0 or more output items (so func should return a Seq rather than a single item).
+      * flatmap和map的不同在于，flatmap从m映射出n个平行元素，map从n映射出相等n个元素
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"flatMap"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">flatMapRdd1</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+    <span class="n">flatMapRdd1</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"map"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">flatMapRdd2</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+    <span class="n">flatMapRdd2</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="n">println</span><span class="o">(</span><span class="s">"item"</span><span class="o">)</span>
+      <span class="n">i</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+    <span class="o">}</span>
+    <span class="o">)</span>
+
+    <span class="cm">/**
+      * mapPartitions(func)
+      * 该函数和map函数类似，只不过映射函数的参数由RDD中的每一个元素变成了RDD中每一个分区的迭代器。
+      * 如果在映射的过程中需要频繁创建额外的对象，使用mapPartitions要比map高效的过。
+      * 参数preservesPartitioning表示是否保留父RDD的partitioner分区信息。
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"mapPartitions"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">mapPartitionsRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">mapPartitions</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)))</span>
+    <span class="n">mapPartitionsRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">)))</span>
+
+    <span class="cm">/**
+      * mapPartitionsWithIndex(func)
+      * Similar to mapPartitions, but also provides func with an integer value representing the index of the          partition,
+      * so func must be of type (Int, Iterator&lt;T&gt;) =&gt; Iterator&lt;U&gt; when running on an RDD of type T.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"mapPartitionsWithIndex"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">mapPartitionsWithIndexRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">,</span><span class="mi">2</span><span class="o">).</span><span class="n">mapPartitionsWithIndex</span><span class="o">((</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span> <span class="o">=&gt;{</span>
+      <span class="k">if</span><span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">println</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">""</span><span class="o">))</span>
+      <span class="o">}</span>
+      <span class="k">else</span> <span class="o">{</span>
+        <span class="n">println</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="o">)</span>
+    <span class="n">mapPartitionsWithIndexRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">)))</span>
+
+    <span class="cm">/**
+      * sample(withReplacement, fraction, seed)
+      * Sample a fraction fraction of the data, with or without replacement,
+      * using a given random number generator seed.
+      * 对RDD中的集合内元素进行采样，第一个参数withReplacement是true表示有放回取样，false表示无放回。
+      * 第二个参数表示比例，第三个参数是随机种子。
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"sample"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">sampleRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">sample</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span><span class="mf">0.5</span><span class="o">)</span>
+    <span class="n">sampleRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      *   union(otherDataset)
+      * 	Return a new dataset that contains the union of
+      * 	the elements in the source dataset and the argument.
+      */</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"union"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">unionRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">union</span><span class="o">(</span><span class="n">sampleRdd</span><span class="o">)</span>
+    <span class="n">unionRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * intersection(otherDataset)
+      * Return a new RDD that contains the intersection of
+      * elements in the source dataset and the argument.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"intersection"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">intersectionRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">intersection</span><span class="o">(</span><span class="n">sampleRdd</span><span class="o">)</span>
+    <span class="n">intersectionRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * distinct([numTasks]))
+      * Return a new dataset that contains the distinct elements of the source dataset.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"distinct"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">distinctRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">distinct</span><span class="o">()</span>
+    <span class="n">distinctRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      *   groupByKey([numTasks])
+      * 	When called on a dataset of (K, V) pairs, returns a dataset of (K, Iterable&lt;V&gt;) pairs.
+      * 	Note: If you are grouping in order to perform an aggregation (such as a sum or average) over each key,
+      * 	using reduceByKey or aggregateByKey will yield much better performance.
+      * 	Note: By default, the level of parallelism in the output depends on the number of
+      * 	partitions of the parent RDD. You can pass an optional numTasks argument to set a different number of tasks.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"groupByKey"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">groupByKeyRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="mi">1</span><span class="o">)).</span><span class="n">groupByKey</span><span class="o">()</span>
+    <span class="n">groupByKeyRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      *   reduceByKey(func, [numTasks])
+      * 	When called on a dataset of (K, V) pairs, returns a dataset of (K, V) pairs
+      * 	where the values for each key are aggregated using the given reduce function func,
+      * 	which must be of type (V,V) =&gt; V. Like in groupByKey,
+      * 	the number of reduce tasks is configurable through an optional second argument.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"reduceByKey"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">reduceByKeyRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="mi">1</span><span class="o">)).</span><span class="n">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="n">reduceByKeyRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * aggregateByKey(zeroValue)(seqOp, combOp, [numTasks])
+      * Aggregate the values of each key, using given combine functions and a neutral "zero value".
+      * This function can return a different result type, U, than the type of the values in this RDD, V.
+      * Thus, we need one operation for merging a V into a U and one operation for merging two U's, as in scala.
+      * TraversableOnce. The former operation is used for merging values within a partition,
+      * and the latter is used for merging values between partitions. To avoid memory allocation,
+      * both of these functions are allowed to modify and return their first argument instead of creating a new U.
+      * 聚合键值对的value，通过seqOp方法可以聚合不同类型的value。例如(K,V)，zerovalue类型为U，通过seqOp方法返回U类型的值。
+      * 最终通过comOp方法将所有value聚合。
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"aggregateByKey"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">aggregateByKeyRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="s">"a"</span><span class="o">)).</span><span class="n">aggregateByKey</span><span class="o">(</span><span class="mi">1</span><span class="o">)((</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span><span class="o">,</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="n">aggregateByKeyRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * sortByKey([ascending], [numTasks])
+      * When called on a dataset of (K, V) pairs where K implements Ordered,
+      * returns a dataset of (K, V) pairs sorted by keys in ascending or descending order,
+      * as specified in the boolean ascending argument.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"sortByKey"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">sortByKeyRdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">,</span><span class="mi">1</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="s">"a"</span><span class="o">)).</span><span class="n">sortByKey</span><span class="o">()</span>
+    <span class="n">sortByKeyRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * join(otherDataset, [numTasks])
+      * When called on datasets of type (K, V) and (K, W), returns a dataset of (K, (V, W)) pairs
+      * with all pairs of elements for each key. Outer joins are supported through leftOuterJoin,
+      * rightOuterJoin, and fullOuterJoin.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"join"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">stringDataTestJoin</span> <span class="k">=</span> <span class="s">"pi huai yu"</span>
+    <span class="k">val</span> <span class="n">joinRdd1</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringArrayData</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="s">"a"</span><span class="o">))</span>
+    <span class="k">val</span> <span class="n">joinRdd2</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringDataTestJoin</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="mi">1</span><span class="o">))</span>
+    <span class="k">val</span> <span class="n">joinRdd3</span> <span class="k">=</span> <span class="n">joinRdd1</span><span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">joinRdd2</span><span class="o">)</span>
+    <span class="n">joinRdd3</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      *   cogroup(otherDataset, [numTasks])
+      * 	When called on datasets of type (K, V) and (K, W), returns a dataset of
+      * 	(K, (Iterable&lt;V&gt;, Iterable&lt;W&gt;)) tuples. This operation is also called groupWith.
+      *   相比于join，cogroup会将Key相同的元素全部聚合
+      */</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"cogroup"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">cogroupRdd</span> <span class="k">=</span> <span class="n">joinRdd1</span><span class="o">.</span><span class="n">cogroup</span><span class="o">(</span><span class="n">joinRdd2</span><span class="o">)</span>
+    <span class="n">cogroupRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * cartesian(otherDataset)
+      * When called on datasets of types T and U, returns a dataset of (T, U) pairs (all pairs of elements).
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"cartesian"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">cartesianRdd</span> <span class="k">=</span> <span class="n">stringRdd</span><span class="o">.</span><span class="n">cartesian</span><span class="o">(</span><span class="n">numRdd</span><span class="o">)</span>
+    <span class="n">cartesianRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * pipe(command, [envVars])
+      * Pipe each partition of the RDD through a shell command,
+      * e.g. a Perl or bash script. RDD elements are written to the process's stdin and lines output to
+      * its stdout are returned as an RDD of strings.
+      * 如何使用？
+      */</span>
+
+    <span class="cm">/**
+      * coalesce(numPartitions)
+      * Decrease the number of partitions in the RDD to numPartitions.
+      * Useful for running operations more efficiently after filtering down a large dataset.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"coalesce"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">coalesceRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">).</span><span class="n">coalesce</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="n">coalesceRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      *   repartition(numPartitions)
+      * 	Reshuffle the data in the RDD randomly to create either more or fewer partitions and balance it across them.
+      * 	This always shuffles all data over the network.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"repartition"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">repatitionRdd</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">repartition</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="n">repatitionRdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * repartitionAndSortWithinPartitions(partitioner)
+      * Repartition the RDD according to the given partitioner and, within each resulting partition,
+      * sort records by their keys. This is more efficient than calling repartition and then
+      * sorting within each partition because it can push the sorting down into the shuffle machinery.
+      * api中没看见？
+      */</span>
+
+    <span class="c1">//Actions
+</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"============="</span><span class="o">+</span><span class="s">"Actions"</span><span class="o">+</span><span class="s">"============"</span><span class="o">)</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"reduce"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">reduceArray</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">reduce</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="n">println</span><span class="o">(</span><span class="n">reduceArray</span><span class="o">)</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"count"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">count</span> <span class="k">=</span> <span class="n">numRdd</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+    <span class="n">println</span><span class="o">(</span><span class="n">count</span><span class="o">)</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"first"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="n">println</span><span class="o">(</span><span class="n">numRdd</span><span class="o">.</span><span class="n">first</span><span class="o">())</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"take"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="n">numRdd</span><span class="o">.</span><span class="n">take</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * takeSample(withReplacement, num, [seed])
+      * Return an array with a random sample of num elements of the dataset,
+      * with or without replacement, optionally pre-specifying a random number generator seed.
+      */</span>
+
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"takeSample"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="n">numRdd</span><span class="o">.</span><span class="n">takeSample</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span><span class="mi">2</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+    <span class="cm">/**
+      * takeOrdered(n, [ordering])
+      * Return the first n elements of the RDD using either their natural order or a custom comparator.
+      */</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"takeOrdered"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="n">numRdd</span><span class="o">.</span><span class="n">takeOrdered</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+
+<span class="c1">//    println("---------"+"saveAsTextFile"+"----------")
+//    numRdd.saveAsTextFile("/home/pi/doc/sparkout/TextFile")
+//
+//    println("---------"+"saveAsObjectFile"+"----------")
+//    numRdd.saveAsObjectFile("/home/pi/doc/sparkout/ObjectFile")
+//
+//    println("---------"+"saveAsSequenceFile"+"----------")
+//    sc.parallelize(stringData.split(" ")).map((_,1)).saveAsSequenceFile("/home/pi/doc/sparkout/SequenceFile")
+</span>
+    <span class="n">println</span><span class="o">(</span><span class="s">"---------"</span><span class="o">+</span><span class="s">"countByKey"</span><span class="o">+</span><span class="s">"----------"</span><span class="o">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">stringData</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="n">map</span><span class="o">((</span><span class="k">_</span><span class="o">,</span><span class="mi">1</span><span class="o">)).</span><span class="n">countByKey</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span></code></pre></div>
 
 </article>
 <p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
