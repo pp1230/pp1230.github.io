@@ -5,14 +5,21 @@ description: 逻辑回归(Logistic Regression, LR)模型其实仅在线性回归
 keywords: logistic regression,spark
 ---
 
+> 逻辑回归就是一种减小预测范围，将预测值限定为[0,1]间的一种回归模型，其回归方程与回归曲线如图2所示。逻辑曲线在z=0时，十分敏感，在z>>0或z<<0处，都不敏感，将预测值限定为(0,1)。
+
+
+
 1.逻辑回归算法原理
 ------------
 <p>
     &nbsp;&nbsp;&nbsp; 逻辑回归其实仅为在线性回归的基础上，套用了一个逻辑函数，但也就由于这个逻辑函数，逻辑回归成为了机器学习领域一颗耀眼的明星，更是计算广告学的核心。对于多元逻辑回归，可用如下公式似合分类，其中公式(4)的变换，将在逻辑回归模型参数估计时，化简公式带来很多益处，y={0,1}为分类结果。    <a href="file:///C:\Users\wensaiping\AppData\Local\Temp\WindowsLiveWriter1286139640\supfilesCE8402E\image811.png" rel="nofollow">
       <br/>
     </a>
-    <img title="clip_image006" border="0" alt="clip_image006" src="http://img0.tuicool.com/6FBZB3.gif" class="alignCenter" />
+
   </p>
+  
+  ![pic](../../../static/images/lor1.gif)
+  
   <p>
     &nbsp;&nbsp;&nbsp; 对于训练数据集，特征数据x={x    <sub>1</sub>
     , x    <sub>2</sub>
@@ -21,17 +28,18 @@ keywords: logistic regression,spark
     , y    <sub>2</sub>
     , … , y    <sub>m</sub>
     }。构建逻辑回归模型f(θ)，最典型的构建方法便是应用极大似然估计。首先，对于单个样本，其后验概率为：  </p>
+    
+![pic](../../../static/images/lor2.gif)
   <p>
 
-      <img title="clip_image008" border="0" alt="clip_image008" src="http://img0.tuicool.com/7ZVnMb.gif" width="218" height="54" class="alignLeft0" />
         &nbsp;&nbsp;&nbsp; 那么，极大似然函数为：  </p>
+  ![pic](../../../static/images/lor3.gif)
   <p>
 
-      <img title="clip_image010" border="0" alt="clip_image010" src="http://img1.tuicool.com/iiAFJf.gif" width="193" height="97" class="alignLeft" />
         &nbsp;&nbsp;&nbsp; log似然是：  </p>
+![pic](../../../static/images/lor4.gif)
   <p>
 
-      <img title="clip_image012" border="0" alt="clip_image012" src="http://img2.tuicool.com/Mje67b.gif" class="alignCenter" />
       </p>
   <h4>
     <b>2</b>
@@ -39,18 +47,14 @@ keywords: logistic regression,spark
     <b></b>
   </h4>
   <p>&nbsp;&nbsp;&nbsp; 由第1节可知，求逻辑回归模型f(θ)，等价于：</p>
+![pic](../../../static/images/lor5.gif)
   <p>
-
-      <img title="clip_image014" border="0" alt="clip_image014" src="http://img2.tuicool.com/jEnYby.gif" width="161" height="42" class="alignLeft" />
         &nbsp;&nbsp;&nbsp; 采用梯度下降法：  </p>
+![pic](../../../static/images/lor6.gif)
   <p>
 
-      <img title="clip_image016" border="0" alt="clip_image016" src="http://img1.tuicool.com/MjayQz.gif" class="alignCenter" />
         &nbsp;&nbsp;&nbsp;&nbsp; 从而迭代θ至收敛即可：  </p>
-  <p>
-
-      <img title="clip_image018" border="0" alt="clip_image018" src="http://img1.tuicool.com/IB736r.gif" width="194" height="30" />
-      </p>
+![pic](../../../static/images/lor7.gif)
 
 2.sparkML测试
 
