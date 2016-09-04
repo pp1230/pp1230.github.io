@@ -1,0 +1,244 @@
+---
+layout: post
+title: 机器学习算法之决策树和随机森林
+description: 决策树这种算法有着很多良好的特性，比如说训练时间复杂度较低，预测的过程比较快速，模型容易展示（容易将得到的决策树做成图片展示出来）等。但是同时，单决策树又有一些不好的地方，比如说容易over-fitting，虽然有一些方法，如剪枝可以减少这种情况，但是还是不够的。逻辑回归(Logistic Regression, LR)模型其实仅在线性回归的基础上，套用了一个逻辑函数，但也就由于这个逻辑函数，使得逻辑回归模型成为了机器学习领域一颗耀眼的明星，更是计算广告学的核心。
+keywords: random forest,decision tree
+---
+
+> 决策树（Decision Tree）是一种简单但是广泛使用的分类器。通过训练数据构建决策树，可以高效的对未知的数据进行分类。决策数有两大优点：1）决策树模型可以读性好，具有描述性，有助于人工分析；2）效率高，决策树只需要一次构建，反复使用，每一次预测的最大计算次数不超过决策树的深度。但是同时，单决策树又有一些不好的地方，比如说容易over-fitting，虽然有一些方法，如剪枝可以减少这种情况，但是还是不够的。
+
+1.决策树
+----------
+
+<p>决策树实际上是将空间用超平面进行划分的一种方法，每次分割的时候，都将当前的空间一分为二，比如说下面的决策树：</p>
+<p><img class="aligncenter size-full wp-image-21037" src="http://www.36dsj.com/wp-content/uploads/2015/01/113.png" alt="随机森林" width="240" height="169" /></p>
+<p>就是将空间划分成下面的样子：</p>
+<p><img class="aligncenter size-full wp-image-21038" src="http://www.36dsj.com/wp-content/uploads/2015/01/26.png" alt="随机森林" width="240" height="221" /></p>
+<p>这样使得每一个叶子节点都是在空间中的一个不相交的区域，在进行决策的时候，会根据输入样本每一维feature的值，一步一步往下，最后使得样本落入N个区域中的一个（假设有N个叶子节点）</p>
+
+**基本步骤**
+
+决策树构建的基本步骤如下：
+
+* 1. 开始，所有记录看作一个节点
+
+* 2. 遍历每个变量的每一种分割方式，找到最好的分割点
+
+* 3. 分割成两个节点N1和N2
+
+* 4. 对N1和N2分别继续执行2-3步，直到每个节点足够“纯”为止
+
+**决策树的变量可以有两种**：
+
+1） 数字型（Numeric）：变量类型是整数或浮点数，如前面例子中的“年收入”。用“>=”，“>”,“<”或“<=”作为分割条件（排序后，利用已有的分割情况，可以优化分割算法的时间复杂度）。
+
+2） 名称型（Nominal）：类似编程语言中的枚举类型，变量只能重有限的选项中选取，比如前面例子中的“婚姻情况”，只能是“单身”，“已婚”或“离婚”。使用“=”来分割。
+
+如何评估分割点的好坏？如果一个分割点可以将当前的所有节点分为两类，使得每一类都很“纯”，也就是同一类的记录较多，那么就是一个好分割点。比如上面的例子，“拥有房产”，可以将记录分成了两类，“是”的节点全部都可以偿还债务，非常“纯”；“否”的节点，可以偿还贷款和无法偿还贷款的人都有，不是很“纯”，但是两个节点加起来的纯度之和与原始节点的纯度之差最大，所以按照这种方法分割。构建决策树采用贪心算法，只考虑当前纯度差最大的情况作为分割点。
+
+2.随机森林
+--------------
+
+随机森林是一个最近比较火的算法，它有很多的优点：
+
+* 在数据集上表现良好
+* 在当前的很多数据集上，相对其他算法有着很大的优势
+* 它能够处理很高维度（feature很多）的数据，并且不用做特征选择
+* 在训练完后，它能够给出哪些feature比较重要
+* 在创建随机森林的时候，对generlization error使用的是无偏估计
+* 训练速度快
+* 在训练过程中，能够检测到feature间的互相影响
+* 容易做成并行化方法
+* 实现比较简单
+随机森林顾名思义，是用随机的方式建立一个森林，森林里面有很多的决策树组成，随机森林的每一棵决策树之间是没有关联的。在得到森林之后，当有一个新的输 入样本进入的时候，就让森林中的每一棵决策树分别进行一下判断，看看这个样本应该属于哪一类（对于分类算法），然后看看哪一类被选择最多，就预测这个样本 为那一类。
+
+在建立每一棵决策树的过程中，有两点需要注意 - 采样与完全分裂。首先是两个随机采样的过程，random forest对输入的数据要进行行、列的采样。对于行采样，采用有放回的方式，也就是在采样得到的样本集合中，可能有重复的样本。假设输入样本为N个，那 么采样的样本也为N个。这样使得在训练的时候，每一棵树的输入样本都不是全部的样本，使得相对不容易出现over-fitting。然后进行列采样，从M 个feature中，选择m个(m << M)。之后就是对采样之后的数据使用完全分裂的方式建立出决策树，这样决策树的某一个叶子节点要么是无法继续分裂的，要么里面的所有样本的都是指向的同一 个分类。一般很多的决策树算法都一个重要的步骤 - 剪枝，但是这里不这样干，由于之前的两个随机采样的过程保证了随机性，所以就算不剪枝，也不会出现over-fitting。
+
+按这种算法得到的随机森林中的每一棵都是很弱的，但是大家组合起来就很厉害了。我觉得可以这样比喻随机森林算法：每一棵决策树就是一个精通于某一个窄领域 的专家（因为我们从M个feature中选择m让每一棵决策树进行学习），这样在随机森林中就有了很多个精通不同领域的专家，对一个新的问题（新的输入数 据），可以用不同的角度去看待它，最终由各个专家，投票得到结果。
+
+3.SparkML测试
+
+{%highlight scala%}
+
+    println("----------Decision Tree Classifier Test------------")
+    //读取数据含有标记和特征的数据
+    val decisionTreeData = ss.read.format("libsvm").load("/home/pi/doc/Spark/spark-2.0.0-bin-hadoop2.7/data/mllib/test_decisiontreeclassification_data.txt")
+    //转化为ML Index
+    val label = new StringIndexer()
+      .setInputCol("label")
+      .setOutputCol("indexedLabel")
+        .fit(decisionTreeData)
+    val feature = new VectorIndexer()
+      .setInputCol("features")
+      .setOutputCol("indexedFeatures")
+      .fit(decisionTreeData)
+    //将ML Index 转成String
+    val convertor = new IndexToString()
+      .setInputCol("prediction")
+      .setOutputCol("predictionLabel")
+      .setLabels(label.labels)
+    //决策树模型
+    val dtc = new DecisionTreeClassifier()
+      .setLabelCol("indexedLabel")
+      .setFeaturesCol("indexedFeatures")
+    //将数据随机分为训练集和测试集
+    val Array(decisionTrainingData,decisionTestData) = decisionTreeData.randomSplit(Array(0.8,0.2))
+    //使用Pipline进行计算
+    val decisionPipline = new Pipeline()
+        .setStages(Array(label,feature,dtc,convertor))
+    //训练决策树模型
+    val decisionModel = decisionPipline.fit(decisionTrainingData)
+    //使用决策树模型进行预测
+    val decisionPredictions = decisionModel.transform(decisionTestData)
+    //输出预测结果
+    decisionPredictions.select("predictionLabel","label","features").show()
+    val decisionTreeModel = decisionModel.stages(2).asInstanceOf[DecisionTreeClassificationModel]
+    println("Learned classification tree model:\n" + decisionTreeModel.toDebugString)
+
+    //误差评估
+    val decisionEvaluator = new MulticlassClassificationEvaluator()
+      .setLabelCol("indexedLabel")
+      .setPredictionCol("prediction")
+      .setMetricName("accuracy")
+    val decisionAccuracy = decisionEvaluator.evaluate(decisionPredictions)
+    println("Test Error = " + (1.0 - decisionAccuracy))
+
+    println("----------Random Forest Classifier------------")
+
+    val rfc = new RandomForestClassifier()
+      .setLabelCol("indexedLabel")
+      .setFeaturesCol("indexedFeatures")
+      .setNumTrees(5)
+    val randomModel = new Pipeline()
+      .setStages(Array(label,feature,rfc,convertor))
+      .fit(decisionTrainingData)
+    val randomPredictions = randomModel.transform(decisionTestData)
+    randomPredictions.select("predictionLabel","label","features").show()
+    val randomForestModel = randomModel.stages(2).asInstanceOf[RandomForestClassificationModel]
+    println("Learned classification tree model:\n" + randomForestModel.toDebugString)
+    //误差评估
+    val randomEvaluator = new MulticlassClassificationEvaluator()
+      .setLabelCol("indexedLabel")
+      .setPredictionCol("prediction")
+      .setMetricName("accuracy")
+    val randomAccuracy = randomEvaluator.evaluate(randomPredictions)
+    println("Test Error = " + (1.0 - randomAccuracy))
+{%endhighlight%}
+
+
+测试结果:
+
+{%highlight c%}
+----------Decision Tree Classifier Test------------
++---------------+-----+--------------------+
+|predictionLabel|label|            features|
++---------------+-----+--------------------+
+|            0.0|  0.0| (3,[0,1],[0.2,6.3])|
+|            0.0|  0.0| (3,[0,1],[0.8,1.5])|
+|            0.0|  0.0|(3,[0,1,2],[0.2,6...|
+|            0.0|  0.0|(3,[0,1,2],[0.7,5...|
+|            0.0|  0.0| (3,[0,2],[0.5,2.4])|
+|            0.0|  0.0| (3,[0,2],[0.8,3.2])|
+|            1.0|  1.0|(3,[0,1,2],[0.1,3...|
+|            1.0|  1.0|(3,[0,1,2],[0.3,4...|
+|            1.0|  1.0|(3,[0,1,2],[0.5,5...|
+|            1.0|  1.0|(3,[0,1,2],[1.1,1...|
+|            1.0|  1.0|(3,[0,1,2],[1.1,1...|
++---------------+-----+--------------------+
+
+Learned classification tree model:
+DecisionTreeClassificationModel (uid=dtc_c0a4ddb1e0bc) of depth 2 with 7 nodes
+  If (feature 1 in {3.0,4.0,7.0,8.0,10.0,11.0,12.0,13.0,14.0})
+   If (feature 0 in {1.0,2.0,3.0,5.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+    Predict: 0.0
+   Else (feature 0 not in {1.0,2.0,3.0,5.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+    Predict: 1.0
+  Else (feature 1 not in {3.0,4.0,7.0,8.0,10.0,11.0,12.0,13.0,14.0})
+   If (feature 0 in {9.0,14.0})
+    Predict: 0.0
+   Else (feature 0 not in {9.0,14.0})
+    Predict: 1.0
+
+Test Error = 0.0
+
+----------Random Forest Classifier------------
+
++---------------+-----+--------------------+
+|predictionLabel|label|            features|
++---------------+-----+--------------------+
+|            0.0|  0.0| (3,[0,1],[0.2,6.3])|
+|            0.0|  0.0| (3,[0,1],[0.8,1.5])|
+|            0.0|  0.0|(3,[0,1,2],[0.2,6...|
+|            0.0|  0.0|(3,[0,1,2],[0.7,5...|
+|            0.0|  0.0| (3,[0,2],[0.5,2.4])|
+|            0.0|  0.0| (3,[0,2],[0.8,3.2])|
+|            1.0|  1.0|(3,[0,1,2],[0.1,3...|
+|            1.0|  1.0|(3,[0,1,2],[0.3,4...|
+|            1.0|  1.0|(3,[0,1,2],[0.5,5...|
+|            1.0|  1.0|(3,[0,1,2],[1.1,1...|
+|            1.0|  1.0|(3,[0,1,2],[1.1,1...|
++---------------+-----+--------------------+
+
+Learned classification tree model:
+RandomForestClassificationModel (uid=rfc_daac961a24b6) with 5 trees
+  Tree 0 (weight 1.0):
+    If (feature 1 in {3.0,4.0,7.0,8.0,10.0,12.0,13.0,14.0})
+     Predict: 0.0
+    Else (feature 1 not in {3.0,4.0,7.0,8.0,10.0,12.0,13.0,14.0})
+     If (feature 2 <= 0.1)
+      If (feature 0 in {9.0,14.0})
+       Predict: 0.0
+      Else (feature 0 not in {9.0,14.0})
+       Predict: 1.0
+     Else (feature 2 > 0.1)
+      If (feature 2 <= 1.1)
+       If (feature 0 in {14.0})
+        Predict: 0.0
+       Else (feature 0 not in {14.0})
+        Predict: 1.0
+      Else (feature 2 > 1.1)
+       Predict: 1.0
+  Tree 1 (weight 1.0):
+    If (feature 0 in {1.0,8.0,9.0,10.0,11.0,13.0,14.0,15.0})
+     Predict: 0.0
+    Else (feature 0 not in {1.0,8.0,9.0,10.0,11.0,13.0,14.0,15.0})
+     If (feature 1 in {8.0,11.0,12.0,13.0,14.0})
+      Predict: 0.0
+     Else (feature 1 not in {8.0,11.0,12.0,13.0,14.0})
+      Predict: 1.0
+  Tree 2 (weight 1.0):
+    If (feature 0 in {1.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     Predict: 0.0
+    Else (feature 0 not in {1.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     If (feature 2 <= 3.1)
+      Predict: 1.0
+     Else (feature 2 > 3.1)
+      If (feature 0 in {2.0,5.0})
+       Predict: 0.0
+      Else (feature 0 not in {2.0,5.0})
+       Predict: 1.0
+  Tree 3 (weight 1.0):
+    If (feature 0 in {1.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     Predict: 0.0
+    Else (feature 0 not in {1.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     If (feature 2 <= 4.9)
+      If (feature 1 in {11.0})
+       Predict: 0.0
+      Else (feature 1 not in {11.0})
+       Predict: 1.0
+     Else (feature 2 > 4.9)
+      Predict: 0.0
+  Tree 4 (weight 1.0):
+    If (feature 0 in {1.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     Predict: 0.0
+    Else (feature 0 not in {1.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0})
+     If (feature 2 <= 3.1)
+      Predict: 1.0
+     Else (feature 2 > 3.1)
+      If (feature 1 in {8.0,11.0,12.0,13.0,14.0})
+       Predict: 0.0
+      Else (feature 1 not in {8.0,11.0,12.0,13.0,14.0})
+       Predict: 1.0
+       
+Test Error = 0.0
+{%endhighlight%}
