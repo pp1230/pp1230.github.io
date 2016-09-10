@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            Spark DataFrames and Datasets
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="Dataset is a new interface added in Spark 1.6 that provides the benefits of RDDs (strong typing, ability to use powerful lambda functions) with the benefits of Spark SQL’s optimized execution engine." />
+    <meta name="keywords" content="Spark DataFrames,Spark Datasets" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="../../../static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/love/shuwei.html" rel="bookmark" title="love shuwei">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    Spark DataFrames and Datasets
+</p>
+<h1 class="lotus-pagetit">Spark DataFrames and Datasets</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="September 10, 2016">September 10, 2016</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h2 id="datasets-and-dataframes">Datasets and DataFrames</h2>
+
+<blockquote>
+  <p>摘自：<a href="http://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes">Spark Datasets and DataFrames Guid</a>
+<a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Dataset">Datasets Scala API</a></p>
+</blockquote>
+
+<h1 id="section">1.简介</h1>
+
+<p>A Dataset is a distributed collection of data. Dataset is a new interface added in Spark 1.6 that provides the benefits of RDDs (strong typing, ability to use powerful lambda functions) with the benefits of Spark SQL’s optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java. Python does not have the support for the Dataset API. But due to Python’s dynamic nature, many of the benefits of the Dataset API are already available (i.e. you can access the field of a row by name naturally row.columnName). The case for R is similar.</p>
+
+<p>A DataFrame is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. While, in Java API, users need to use Dataset<row> to represent a DataFrame.</row></p>
+
+<p>Datasets是一个在1.6版本后添加的新接口，它结合了SparkSQL优化引擎和RDD的优势。DataFrame是Dataset的集合形式，在ScalaAPI中表示为Dataset[Row]。</p>
+
+<h1 id="section-1">2.初始化</h1>
+
+<p>首先初始化SparkSession，然后对数据进行筛选处理</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">//初始化SparkSession
+</span>    <span class="k">val</span> <span class="n">ss</span> <span class="k">=</span> <span class="nc">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">().</span><span class="n">appName</span><span class="o">(</span><span class="s">"Yelp Test"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">master</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">).</span><span class="n">getOrCreate</span><span class="o">()</span>
+     <span class="c1">//获得json数据并生成DataFrame
+</span>    <span class="k">val</span> <span class="n">yelpData</span> <span class="k">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="o">(</span><span class="s">"/home/pi/doc/dataset/yelp_dataset/yelp_academic_dataset_business.json"</span><span class="o">)</span>
+    <span class="n">yelpData</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
+    <span class="c1">//提取需要使用的列
+</span>    <span class="k">val</span> <span class="n">yelpSimpleData</span> <span class="k">=</span> <span class="n">yelpData</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span><span class="s">"stars"</span><span class="o">,</span><span class="s">"state"</span><span class="o">)</span>
+    <span class="n">yelpSimpleData</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
+    
+    <span class="c1">//SQL测试，使用更加灵活的sql筛选数据
+</span>    <span class="k">val</span> <span class="n">yelpSimpleView</span> <span class="k">=</span> <span class="n">yelpSimpleData</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="o">(</span><span class="s">"yelpdata"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">yelpSqlTest</span> <span class="k">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">"select * from yelpdata where state = 'PA' order by stars DESC"</span><span class="o">)</span>
+    <span class="n">yelpSqlTest</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+    
+    <span class="c1">//输出
+</span><span class="o">+--------------------+-----+-----+</span>
+<span class="o">|</span>                <span class="n">name</span><span class="o">|</span><span class="n">stars</span><span class="o">|</span><span class="n">state</span><span class="o">|</span>
+<span class="o">+--------------------+-----+-----+</span>
+<span class="o">|</span>           <span class="nc">Mr</span> <span class="nc">Hoagie</span><span class="o">|</span>  <span class="mf">3.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>        <span class="nc">Clancy</span><span class="ss">'s </span><span class="nc">Pub</span><span class="o">|</span>  <span class="mf">3.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Cool</span> <span class="nc">Springs</span> <span class="nc">Golf</span><span class="o">...|</span>  <span class="mf">2.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>       <span class="nc">Emil</span><span class="ss">'s </span><span class="nc">Lounge</span><span class="o">|</span>  <span class="mf">4.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Grand</span> <span class="nc">View</span> <span class="nc">Golf</span> <span class="nc">Club</span><span class="o">|</span>  <span class="mf">5.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Alexion</span><span class="ss">'s </span><span class="nc">Bar</span> <span class="o">&amp;</span> <span class="n">G</span><span class="o">...|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Flynn</span><span class="ss">'s </span><span class="nc">Tire</span> <span class="o">&amp;</span> <span class="nc">Au</span><span class="o">...|</span>  <span class="mf">2.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Forsythe</span> <span class="nc">Miniatur</span><span class="o">...|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Quaker</span> <span class="nc">State</span> <span class="nc">Cons</span><span class="o">...|</span>  <span class="mf">2.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Greentree</span> <span class="nc">Animal</span> <span class="o">...|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Carnegie</span> <span class="nc">Free</span> <span class="nc">Lib</span><span class="o">...|</span>  <span class="mf">4.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">Advance</span> <span class="nc">Auto</span> <span class="nc">Parts</span><span class="o">|</span>  <span class="mf">3.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Kings</span> <span class="nc">Family</span> <span class="nc">Rest</span><span class="o">...|</span>  <span class="mf">3.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>        <span class="nc">Shop</span> <span class="n">N</span><span class="o">'</span> <span class="nc">Save</span><span class="o">|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Knorr</span><span class="ss">'s </span><span class="nc">Sunoco</span> <span class="nc">Se</span><span class="o">...|</span>  <span class="mf">3.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Rossi</span> <span class="nc">Tailoring</span> <span class="o">&amp;...|</span>  <span class="mf">3.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>      <span class="nc">Heidelberg</span> <span class="n">B</span> <span class="n">P</span><span class="o">|</span>  <span class="mf">3.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>      <span class="nc">Rocky</span><span class="ss">'s </span><span class="nc">Lounge</span><span class="o">|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span>           <span class="nc">Gab</span> <span class="o">&amp;</span> <span class="nc">Eat</span><span class="o">|</span>  <span class="mf">4.5</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">|</span><span class="nc">Barb</span><span class="ss">'s </span><span class="nc">Country</span> <span class="nc">Ju</span><span class="o">...|</span>  <span class="mf">4.0</span><span class="o">|</span>   <span class="nc">PA</span><span class="o">|</span>
+<span class="o">+--------------------+-----+-----+</span>
+<span class="n">only</span> <span class="n">showing</span> <span class="n">top</span> <span class="mi">20</span> <span class="n">rows</span></code></pre></div>
+
+<p>2.数据处理和计算</p>
+
+<p>和RDD类似，使用map，reduce，groupBy等方法对数据进行处理，然后用agg等函数计算。</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">//将state相同的行合并，并计算不同地区的平均评分
+</span>    <span class="k">var</span> <span class="n">coundf</span> <span class="k">=</span> <span class="n">yelpSimpleData</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">$</span><span class="s">"state"</span><span class="o">).</span><span class="n">avg</span><span class="o">(</span><span class="s">"stars"</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+
+<span class="c1">//输出
+</span><span class="o">+-----+------------------+</span>
+<span class="o">|</span><span class="n">state</span><span class="o">|</span>        <span class="n">avg</span><span class="o">(</span><span class="n">stars</span><span class="o">)|</span>
+<span class="o">+-----+------------------+</span>
+<span class="o">|</span>   <span class="nc">SC</span><span class="o">|</span><span class="mf">3.5707692307692307</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">AZ</span><span class="o">|</span><span class="mf">3.7104383561643837</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">BW</span><span class="o">|</span> <span class="mf">3.771090047393365</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">MN</span><span class="o">|</span>               <span class="mf">5.0</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">KHL</span><span class="o">|</span>               <span class="mf">3.5</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">NTH</span><span class="o">|</span>               <span class="mf">2.0</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">NW</span><span class="o">|</span>               <span class="mf">4.5</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">SCB</span><span class="o">|</span>              <span class="mf">4.25</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">HAM</span><span class="o">|</span>               <span class="mf">4.5</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">QC</span><span class="o">|</span> <span class="mf">3.692809873010195</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">NV</span><span class="o">|</span><span class="mf">3.6909838497732186</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">WI</span><span class="o">|</span> <span class="mf">3.662426614481409</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">CA</span><span class="o">|</span>               <span class="mf">3.0</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">NC</span><span class="o">|</span><span class="mf">3.5856620336503293</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">MLN</span><span class="o">|</span><span class="mf">3.8043478260869565</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">IL</span><span class="o">|</span>  <span class="mf">3.55259900990099</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">XGL</span><span class="o">|</span>               <span class="mf">3.0</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">AL</span><span class="o">|</span>               <span class="mf">2.0</span><span class="o">|</span>
+<span class="o">|</span>  <span class="nc">FIF</span><span class="o">|</span>               <span class="mf">3.6</span><span class="o">|</span>
+<span class="o">|</span>   <span class="nc">NM</span><span class="o">|</span>               <span class="mf">3.0</span><span class="o">|</span>
+<span class="o">+-----+------------------+</span>
+<span class="n">only</span> <span class="n">showing</span> <span class="n">top</span> <span class="mi">20</span> <span class="n">rows</span></code></pre></div>
+
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2016/09/04/randomforest.html" rel="prev">&laquo;&nbsp;机器学习算法之决策树和随机森林</a></div>
+    
+    
+</section>
+
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/09/10/sparkdatasets" data-title="Spark DataFrames and Datasets" data-url="/2016/09/10/sparkdatasets.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pp1230"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>

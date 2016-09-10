@@ -1,0 +1,107 @@
+---
+layout: post
+title: Spark DataFrames and Datasets
+description: Dataset is a new interface added in Spark 1.6 that provides the benefits of RDDs (strong typing, ability to use powerful lambda functions) with the benefits of Spark SQL’s optimized execution engine.
+keywords: Spark DataFrames,Spark Datasets
+---
+
+Datasets and DataFrames
+-------------------------
+
+> 摘自：[Spark Datasets and DataFrames Guid](http://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes)
+> [Datasets Scala API](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Dataset)
+
+1.简介
+========
+
+A Dataset is a distributed collection of data. Dataset is a new interface added in Spark 1.6 that provides the benefits of RDDs (strong typing, ability to use powerful lambda functions) with the benefits of Spark SQL’s optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java. Python does not have the support for the Dataset API. But due to Python’s dynamic nature, many of the benefits of the Dataset API are already available (i.e. you can access the field of a row by name naturally row.columnName). The case for R is similar.
+
+A DataFrame is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. While, in Java API, users need to use Dataset<Row> to represent a DataFrame.
+
+Datasets是一个在1.6版本后添加的新接口，它结合了SparkSQL优化引擎和RDD的优势。DataFrame是Dataset的集合形式，在ScalaAPI中表示为Dataset[Row]。
+
+2.初始化
+=========
+
+首先初始化SparkSession，然后对数据进行筛选处理
+
+{%highlight scala%}
+    //初始化SparkSession
+    val ss = SparkSession.builder().appName("Yelp Test")
+      .master("local[*]").getOrCreate()
+     //获得json数据并生成DataFrame
+    val yelpData = ss.read.json("/home/pi/doc/dataset/yelp_dataset/yelp_academic_dataset_business.json")
+    yelpData.show(20)
+    //提取需要使用的列
+    val yelpSimpleData = yelpData.select("name","stars","state")
+    yelpSimpleData.show(20)
+    
+    //SQL测试，使用更加灵活的sql筛选数据
+    val yelpSimpleView = yelpSimpleData.createOrReplaceTempView("yelpdata")
+    val yelpSqlTest = ss.sql("select * from yelpdata where state = 'PA' order by stars DESC")
+    yelpSqlTest.show(10)
+    
+    //输出
++--------------------+-----+-----+
+|                name|stars|state|
++--------------------+-----+-----+
+|           Mr Hoagie|  3.5|   PA|
+|        Clancy's Pub|  3.0|   PA|
+|Cool Springs Golf...|  2.5|   PA|
+|       Emil's Lounge|  4.5|   PA|
+|Grand View Golf Club|  5.0|   PA|
+|Alexion's Bar & G...|  4.0|   PA|
+|Flynn's Tire & Au...|  2.5|   PA|
+|Forsythe Miniatur...|  4.0|   PA|
+|Quaker State Cons...|  2.5|   PA|
+|Greentree Animal ...|  4.0|   PA|
+|Carnegie Free Lib...|  4.5|   PA|
+|  Advance Auto Parts|  3.5|   PA|
+|Kings Family Rest...|  3.5|   PA|
+|        Shop N' Save|  4.0|   PA|
+|Knorr's Sunoco Se...|  3.5|   PA|
+|Rossi Tailoring &...|  3.0|   PA|
+|      Heidelberg B P|  3.0|   PA|
+|      Rocky's Lounge|  4.0|   PA|
+|           Gab & Eat|  4.5|   PA|
+|Barb's Country Ju...|  4.0|   PA|
++--------------------+-----+-----+
+only showing top 20 rows
+{%endhighlight%}
+
+2.数据处理和计算
+
+和RDD类似，使用map，reduce，groupBy等方法对数据进行处理，然后用agg等函数计算。
+
+{%highlight scala%}
+    //将state相同的行合并，并计算不同地区的平均评分
+    var coundf = yelpSimpleData.groupBy($"state").avg("stars").show()
+
+//输出
++-----+------------------+
+|state|        avg(stars)|
++-----+------------------+
+|   SC|3.5707692307692307|
+|   AZ|3.7104383561643837|
+|   BW| 3.771090047393365|
+|   MN|               5.0|
+|  KHL|               3.5|
+|  NTH|               2.0|
+|   NW|               4.5|
+|  SCB|              4.25|
+|  HAM|               4.5|
+|   QC| 3.692809873010195|
+|   NV|3.6909838497732186|
+|   WI| 3.662426614481409|
+|   CA|               3.0|
+|   NC|3.5856620336503293|
+|  MLN|3.8043478260869565|
+|   IL|  3.55259900990099|
+|  XGL|               3.0|
+|   AL|               2.0|
+|  FIF|               3.6|
+|   NM|               3.0|
++-----+------------------+
+only showing top 20 rows
+
+{%endhighlight%}
