@@ -1,9 +1,8 @@
 ---
 layout: post
 title: 单纯形方法
-description: 单纯形方法的基本思想，就是从一个基本可行解出发，求一个使目标函数值有所改善的基本可行解。
-通过不断改进基本可行解，力图达到最优基本可行解。
-keywords: simplex algorithm
+description: 单纯形方法的基本思想，就是从一个基本可行解出发，求一个使目标函数值有所改善的基本可行解。通过不断改进基本可行解，力图达到最优基本可行解
+keywords: simplex,algorithm
 ---
 
 基本可行解和单纯形方法
