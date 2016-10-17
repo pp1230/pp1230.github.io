@@ -1,19 +1,18 @@
-﻿---
+---
 layout: post
 title: Formal Methods: Practice and Experience
-description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of specification and design. We do this by reporting on a new survey of industrial use, comparing the situation in 2009 with the most significant surveys carried out over the last 20 years. We describe some of the highlights of our survey by presenting a series of industrial projects, and we draw some observations from these surveys and records of experience. Based on this, we discuss the issues surrounding the industrial adoption of formal methods. Finally, we look to the future and describe the development of a Verified Software Repository, part of the worldwide Verified Software Initiative. We introduce the initial projects being used to populate the repository, and describe the challenges they address.
-keywords: specification
+description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of specification and design. 
+keywords: specification,formal
 ---
 
-
 软件工程形式化方法综述
--------------
+--------
 
-1.	introduction
+1.introduction
 形式化方法可以分析和验证软件生命周期中的任何部分，同样也可以在硬件开发设计中使用。可以说形式化方法用途非常广泛，从软件的需求工程、表示、架构、设计、实现和测试甚至评价和维护中，都可以使用形式化方法。软件的需求工程是设计软件的重要部分，使用形式化方法来辅助进行需求分析可以提高软件文档的逻辑性和正确性。在软件开发的过程中，沟通非常重要。在较大的软件项目中，每个开发者都要理解其他模块的代码逻辑。如果采用形式化方法辨析文档，那么开发者就能够较好的理解上一个开发者完成的工作。可以说，这样就构建了软件开发者之间的沟通桥梁。形式化方法还能极大的简化实现的工作，代码可以在形式化模型的基础上自动生成。代码的自动生成虽然可以实现，但需要在特定的条件下，其实形式化方法更加广泛的使用微软的软件测试中。同时，在微软的一些成功产品中，形式化方法也用来维护和评价旧的软件代码。
 在这篇文章中，我们主要总结和调查了软件工程形式化方法在现代软件工业中的应用。既有对之前使用过形式化方法软件系统的回访，也包含了现在正在使用形式化方法开发的软件的现状。现在突出的问题就是缺少大量的软件开发资料和降低软件开销的实际例子来证明形式化方法和验证的有效性。
 
-2.	Surveys of formal methods practice
+2.Surveys of formal methods practice
 形式化方法作为一项技术向软件工业中的转化已经持续了几十年了，目的就是为了减少软件中大量和复杂的错误，降低软件成本，使得形式化方法能真正的有益于软件工业的发展。在大量的调查中，形式化方法在软件生命周期主要使用的环节是软件的说明，而在软件的验证中使用的较少。而且大部分文章中所提到的软件系统规模都比较小。在形式化工具方面，相关的开发工具基本上停留在学术研究的水平上而缺少真正可以使用在工业开发中的成熟工具。形成这种情况的原因就是，大部分形式化方法都在软件说明书中使用，工具并不是必要和决定整个软件项目是否成功的关键。形式化方法的表示方式有很多，Bowen和Hinchey编著了一本介绍使用不同形式化表示方式来设计软件应用的书籍，它包含了15款不同的应用软件，它们都使用了不同的表示方式。
 很多优秀的软件使用了形式化方法，使用形式化方法软件的技术模型的分享对于形式化方法在软件工业中的使用具有很大的帮助。一些使用形式化方法设计的软件最终失败了，因为设计者不能很好的生产环境中使用它。所以，形式化方法在软件工业的使用的一个巨大的阻碍就是它在真正生产环境中的适应性。
 
