@@ -8,5 +8,6 @@ keywords: simplex,algorithm
 基本可行解和单纯形方法
 ---------------
 
-
+<div id="Layer1" style="position:absolute; width:100%; height:100%">
 ![dcxff](../../../static/images/dcxff.png)
+</div>
