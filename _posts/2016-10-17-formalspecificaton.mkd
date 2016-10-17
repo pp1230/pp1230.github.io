@@ -1,9 +1,8 @@
-
 ---
 layout: post
 title: Formal Methods Practice and Experience
 description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of specification and design. 
-keywords: specification,formal,Z.B-method
+keywords: specification,formal,Z,B-method
 ---
 
 软件工程形式化方法综述
