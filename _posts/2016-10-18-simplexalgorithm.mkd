@@ -9,4 +9,4 @@ keywords: simplex,algorithm
 ---------------
 
 
-<img src="../../../static/images/dcxff.png" width = "300" alt="dcxff" />
+<img src="../../../static/images/dcxff.png" width = "750" alt="dcxff" />
