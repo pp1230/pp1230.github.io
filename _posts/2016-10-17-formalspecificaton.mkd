@@ -1,7 +1,7 @@
 ﻿---
 layout: post
 title: Formal Methods: Practice and Experience
-description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of speciﬁcation and design. We do this by reporting on a new survey of industrial use, comparing the situation in 2009 with the most significant surveys carried out over the last 20 years. We describe some of the highlights of our survey by presenting a series of industrial projects, and we draw some observations from these surveys and records of experience. Based on this, we discuss the issues surrounding the industrial adoption of formal methods. Finally, we look to the future and describe the development of a Veriﬁed Software Repository, part of the worldwide Veriﬁed Software Initiative. We introduce the initial projects being used to populate the repository, and describe the challenges they address.
+description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of specification and design. We do this by reporting on a new survey of industrial use, comparing the situation in 2009 with the most significant surveys carried out over the last 20 years. We describe some of the highlights of our survey by presenting a series of industrial projects, and we draw some observations from these surveys and records of experience. Based on this, we discuss the issues surrounding the industrial adoption of formal methods. Finally, we look to the future and describe the development of a Verified Software Repository, part of the worldwide Verified Software Initiative. We introduce the initial projects being used to populate the repository, and describe the challenges they address.
 keywords: specification
 ---
 
@@ -33,5 +33,5 @@ keywords: specification
 软件工程形式化方法是如今非常活跃的研究领域，每年都有数以十万记的相关文章发表。形式化领域的研究专家和学者数量也很多，包括了大学学教授、学生以及来自Microsoft、Intel等国际公司的研究人员。在二十多年前，使用形式化方法构建的软件极少，那时候几乎没有可用的工具，使用形式化的表示方法来设计软件需要极大的勇气。现如今，人们几乎无法想象不使用形式化方法的相关工具来进行软件的构建。通过多年的不断积累，工程师也有了更多的经验，并将这些经验应用到工具集的开发中。在一些特定的领域，已经出现了可用性较强的工具集。在软件的证明和验证方面，自动化的定理证明工具在过去的十年得到了快速的发展，接下来就是将这些工具广泛的应用到工业开发中。随着软件工业的不断发展，形式化方法作为控制软件成本，保证软件的质量的理论，将会得到更加广泛的应用。
 
 参考文献：
-JIM WOODCOCK.Formal Methods: Practice and Experience
+JIM WOODCOCK.Formal Methods: Practice and Experience.
 ACM Computing Surveys, Vol. 41, No. 4, October 2009, Pages 1–40.
