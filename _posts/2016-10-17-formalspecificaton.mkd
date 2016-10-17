@@ -1,7 +1,7 @@
 ﻿---
 layout: post
-title: 软件工程形式化方法
-description: 软件工程形式化方法是基于朴素集合论的表示方法。可以应用于软件项目的所有生命周期。目的是为了使用严谨可推理的符号控制软件的质量，减少软件中的错误
+title: Formal Methods: Practice and Experience
+description: Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of speciﬁcation and design. We do this by reporting on a new survey of industrial use, comparing the situation in 2009 with the most significant surveys carried out over the last 20 years. We describe some of the highlights of our survey by presenting a series of industrial projects, and we draw some observations from these surveys and records of experience. Based on this, we discuss the issues surrounding the industrial adoption of formal methods. Finally, we look to the future and describe the development of a Veriﬁed Software Repository, part of the worldwide Veriﬁed Software Initiative. We introduce the initial projects being used to populate the repository, and describe the challenges they address.
 keywords: specification
 ---
 
