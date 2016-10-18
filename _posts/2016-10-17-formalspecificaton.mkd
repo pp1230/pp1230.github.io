@@ -41,4 +41,4 @@ keywords: specification,formal,Z,B-method
 
 **参考文献：**
 [IM WOODCOCK.Formal Methods: Practice and Experience.
-ACM Computing Surveys, Vol. 41, No. 4, October 2009, Pages 1–40.](pp1230.github.io/static/images/J.Woodcock_Formal.Methods.Practice.&.Eexperience_ACM_CS_2009.pdf)
+ACM Computing Surveys, Vol. 41, No. 4, October 2009, Pages 1–40.](http://pp1230.github.io/static/images/J.Woodcock_Formal.Methods.Practice.&.Eexperience_ACM_CS_2009.pdf)
