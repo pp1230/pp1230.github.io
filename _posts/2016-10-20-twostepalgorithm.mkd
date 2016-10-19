@@ -1,0 +1,12 @@
+---
+layout: post
+title: 最优化方法之两阶段法
+description: 求解线性规划问题时，系数矩阵中不包含单位矩阵时，通过引入人工变量的方式构造一个单位矩阵并求出基本可行解。
+keywords: simplex,algorithm
+---
+
+两阶段法
+---------------
+
+
+<img src="../../../static/images/ljdf.png" width = "750" alt="dcxff" />
