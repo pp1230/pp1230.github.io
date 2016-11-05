@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html id="J-html" class="">
+<head>
+    <meta charset="UTF-8" />
+    <title>
+        
+            Formal Methods Practice and Experience
+        
+    </title>
+    <meta name="generator" content="Jekyll" />
+    <meta name="author" content="phy" />
+    <meta name="description" content="Formal methods use mathematical models for analysis and verification at any part of the program life-cycle. We describe the state of the art in the industrial use of formal methods, concentrating on their increasing use at the earlier stages of specification and design." />
+    <meta name="keywords" content="specification,formal,Z,B-method" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" type="text/css" media="all" href="../../../static/style.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../static/pygments.css" />
+
+    <!--[if lt IE 9]>
+    <script src="http://pp1230.github.io/static/js/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://pp1230.github.io/static/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" class="home blog lotus index">
+    <nav class="lotus-nav">
+        <ul>
+            
+            
+            
+            
+            
+                
+            
+            <li class="home ">
+                <a href="/index.html" rel="bookmark" title="首页">
+                    <i class="icon-home"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/archives.html" rel="bookmark" title="文章归档">
+                    <i class="icon-reorder"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/contact.html" rel="bookmark" title="关于我">
+                    <i class="icon-envelope-alt"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/love/shuwei.html" rel="bookmark" title="love shuwei">
+                    <i class="icon-heart"></i>
+                </a>
+                
+            </li>
+            
+            
+            
+            
+            
+            <li class="">
+                <a href="/resource.html" rel="bookmark" title="资源">
+                    <i class="icon-github"></i>
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+
+    <p class="lotus-breadcrub">
+    <a href="http://pp1230.github.io/index.html" rel="nofollow" rel="nofollow" title="首页">Home</a>
+    <span> &gt; </span>
+    <a href="http://pp1230.github.io/archives.html" rel="nofollow" >Archives</a>
+    <span> &gt; </span>
+    Formal Methods Practice and Experience
+</p>
+<h1 class="lotus-pagetit">Formal Methods Practice and Experience</h1>
+<p class="lotus-meta">Publish: <time class="date" pubdate="October 17, 2016">October 17, 2016</time></p>
+<article  itemscope itemtype="http://schema.org/Article" class="lotus-post">
+<h2 id="section">软件工程形式化方法综述</h2>
+
+<h3 id="introduction">1.introduction</h3>
+<p>形式化方法可以分析和验证软件生命周期中的任何部分，同样也可以在硬件开发设计中使用。可以说形式化方法用途非常广泛，从软件的需求工程、表示、架构、设计、实现和测试甚至评价和维护中，都可以使用形式化方法。软件的需求工程是设计软件的重要部分，使用形式化方法来辅助进行需求分析可以提高软件文档的逻辑性和正确性。在软件开发的过程中，沟通非常重要。在较大的软件项目中，每个开发者都要理解其他模块的代码逻辑。如果采用形式化方法辨析文档，那么开发者就能够较好的理解上一个开发者完成的工作。可以说，这样就构建了软件开发者之间的沟通桥梁。形式化方法还能极大的简化实现的工作，代码可以在形式化模型的基础上自动生成。代码的自动生成虽然可以实现，但需要在特定的条件下，其实形式化方法更加广泛的使用微软的软件测试中。同时，在微软的一些成功产品中，形式化方法也用来维护和评价旧的软件代码。</p>
+
+<p>在这篇文章中，我们主要总结和调查了软件工程形式化方法在现代软件工业中的应用。既有对之前使用过形式化方法软件系统的回访，也包含了现在正在使用形式化方法开发的软件的现状。现在突出的问题就是缺少大量的软件开发资料和降低软件开销的实际例子来证明形式化方法和验证的有效性。</p>
+
+<h3 id="surveys-of-formal-methods-practice">2.Surveys of formal methods practice</h3>
+<p>形式化方法作为一项技术向软件工业中的转化已经持续了几十年了，目的就是为了减少软件中大量和复杂的错误，降低软件成本，使得形式化方法能真正的有益于软件工业的发展。在大量的调查中，形式化方法在软件生命周期主要使用的环节是软件的说明，而在软件的验证中使用的较少。而且大部分文章中所提到的软件系统规模都比较小。在形式化工具方面，相关的开发工具基本上停留在学术研究的水平上而缺少真正可以使用在工业开发中的成熟工具。形成这种情况的原因就是，大部分形式化方法都在软件说明书中使用，工具并不是必要和决定整个软件项目是否成功的关键。形式化方法的表示方式有很多，Bowen和Hinchey编著了一本介绍使用不同形式化表示方式来设计软件应用的书籍，它包含了15款不同的应用软件，它们都使用了不同的表示方式。</p>
+
+<p>很多优秀的软件使用了形式化方法，使用形式化方法软件的技术模型的分享对于形式化方法在软件工业中的使用具有很大的帮助。一些使用形式化方法设计的软件最终失败了，因为设计者不能很好的生产环境中使用它。所以，形式化方法在软件工业的使用的一个巨大的阻碍就是它在真正生产环境中的适应性。</p>
+
+<h3 id="a-survey-of-current-use-and-trends">3.A Survey of current use and trends</h3>
+<p>文章通过对62个工业级的软件项目的调查，得到了软件工业使用形式化方法的状况，也现在形式化方法使用的趋势做了分析。通过调查和分析，发现了形式化方法在软件中使用的重点发生了改变。比如，在10年和更久以前，形式化模型的检查是很少使用的，但是在今天的软件项目中的使用频率得到了很大的提升。特别是在交通运输和电力系统中，它的使用尤为广泛。在统计分析中，形式化方法使用的行业也有显著的特点。交通运输行业和金融领域，是形式化方法使用最为集中的部分。其中交通运输行业占到了总数的15%以上，说明软件工程形式化方法的使用能够在某些情况下具有改善软件的质量或者是降低软件的成本的优势。通过分析，我们发现在安全要求特别高的领域，使用形式化方法最为有效。从数量上看，使用形式化方法的软件呈现逐年增加的趋势，说明形式化方法在近些年得到了更加广泛的应用。文章还统计了各个项目的代码行数，发现调查的项目主要是一些中小型软件，说明形式化方法离真正的工业化推广还有一段距离。但是它的效果非常明显，因为92%使用了形式化方法的软件系统的质量，都得到了不同程度的提升。虽然在软件设计的阶段，形式化的表示需要耗费额外的时间，但是在后来的阶段，时间往往会缩减，最后软件往往能提前完成。当然，软件也有使用形式化方法失败的例子，他们的主要问题是缺乏必要的训练和形式化方法工具的不完善。总体来说，被调查的开发人员和软件设计师都非常推崇形式化方法，也表示在今后的项目中还会使用它。这说明形式化方法的使用确实对软件的开发有益。</p>
+
+<h3 id="highlighted-projects-and-observations">4.Highlighted projects and Observations</h3>
+<p>文章第四节主要介绍了一些重要的项目。在这些项目进行的过程中，既发现了使用形式化方法的好处，也遇到了很多形式化方法的问题。从中我们发现，一些可视化的定理证明工具已经在一些工程中广泛使用。这些例子包含了有关计算机芯片程序、地铁控制系统、智能芯片卡嵌入式程序、飞机控制系统、防洪系统和安全门禁系统。
+在之前的晶体电脑的开发中，测试工作往往是一个重要而繁杂的工作，它将耗费大量的时间和精力。所以，形式化方法的尝试就在项目中开始了。1986年，由于晶体电脑中浮点模块的复杂性，T800的开发按照惯例将持续测试数月，为了检查开发和设计中的各种错误。但是这一次，工程师在项目中使用了Z语言进行形式化表示，这样的尝试使得工程的进度至少提前了三个月时间完成，而每提前一个月都将节省一百万美元的开销。这无疑是一个极为成功的例子。</p>
+
+<p>在地铁系统的开发中，项目使用了B语言进行形式化的开发，并且完成了交互式的验证。整个验证花费了100个工程师1年的时间。一般来说，在地铁这种安全性要求极高，对错误的容忍很低的系统中，才会对整个项目的正确性做完整的验证。虽然代价很大，但是完成验证之后，系统的测试工作就变得非常简单，单元测试被省略了，而只进行了系统的整体测试。而且，这些测试都无一例外地成功了。这对整个项目的成本的降低有很重要的意义。</p>
+
+<p>在Mondex Smart Card的例子中，作为一个以智能卡为基础的电力缴费系统，安全性不言而喻。为了保证系统的安全性，他们同样对系统进行了验证。系统中设计了高层级的抽象且符合标准的安全模型和低层级的具体结构模型，并使用形式化的证明来验证低层级的结构模型是否符合高层级的安全标准模型。在使用形式化的表示和证明的过程中，对具体结构模型的形式化表示和文档的编写，对于工程师来说没什么困难，但是，抽象标准安全模型和他的属性的设计过程就要复杂和困难得多。设计中一些简单的改变可能使抽象模型简化很多，但是实现的代价却非常大，比如对于并行的实现。所以我们在设计的过程中，应该考虑和权衡在使用形式化验证过程中的成本和效率的问题。通过统计，Z语言的证明的工作量大概相当于整个项目开发过程的10%，其他语言也大致如此。</p>
+
+<p>在AAMP的例子中，一些项目使用RAISE 表示法来设计系统，然而这种设计并不成功。原因包括了语言本身和的复杂性和工程人员培训的缺乏，还有工具本身对开发和管理证明的支持不好。AMMP5项目的最大问题在于它的开销太高了。但AMMP5项目表明了证明微芯片代码正确性的技术可行性还有工程师对形式化方法的适应性。在洪水防控屏的例子中，数据和进程使用Z语言建立模型。最后的程序中使用了29个形式化表示的程序，大概20000行Z语言代码。最后的实现使用的是C++语言，并没有做形式化代码验证。</p>
+
+<p>通过这些例子，我们从中看到了不同领域的软件工程项目对于形式化方法的不同使用方式。通过调查发现，在一些软件项目中，对整个形式化模型进行了交互式的证明，取得了很好的效果。但是在一些项目中，由于缺乏经验和工具支持等原因，证明和验证部分消耗太大，导致项目并不成功。这表明，在使用形式化方法设计软件的时候，应该对项目适合使用形式化方法的部分进行分析。特别是对于安全性要求较高而且修改的代价较大的模块可以考虑优先使用形式化方法。而其他的部分，尽量轻度的使用形式化方法。合理在软件项目中使用形式化，可以对项目产生好的影响，降低软件成本。同时也启发了我们，不能盲目地在软件项目的整个生命周期中使用形式化方法，完整的使用形式化方法并不一定会降低软件的成本。</p>
+
+<h3 id="verification">5.Verification</h3>
+<p>验证作为形式化方法的重要部分，在一些项目中已经成功应用，并在许多项目中即将采用。文中包括了POSIX文件系统、FreeRTOS等。一个软件项目最终可能会有几百个程序和模型，上百万行代码组成。在软件的生命周期中，他们将通过形式化表示、设计、测试、组合和评价来完成，还将留下形式化和非形式化的文档。对软件项目中的全部内容进行检查将是一项非常庞大的工程，所以，验证一般是对于一个大的软件系统中的一个非常重要的模块进行的。比如在空间飞行器的程序中，需要对飞行器发生电力的中断的情况进行处理。一旦飞行器发生电力故障，需要对硬件设备进行重启。还有，飞行器上的文件系统需要具有恢复功能，一旦发生电力中断，文件必须已经保存，或者回到之前的状态。</p>
+
+<h3 id="conclusions">6.Conclusions</h3>
+<p>软件工程形式化方法是如今非常活跃的研究领域，每年都有数以十万记的相关文章发表。形式化领域的研究专家和学者数量也很多，包括了大学学教授、学生以及来自Microsoft、Intel等国际公司的研究人员。在二十多年前，使用形式化方法构建的软件极少，那时候几乎没有可用的工具，使用形式化的表示方法来设计软件需要极大的勇气。现如今，人们几乎无法想象不使用形式化方法的相关工具来进行软件的构建。通过多年的不断积累，工程师也有了更多的经验，并将这些经验应用到工具集的开发中。在一些特定的领域，已经出现了可用性较强的工具集。在软件的证明和验证方面，自动化的定理证明工具在过去的十年得到了快速的发展，接下来就是将这些工具广泛的应用到工业开发中。随着软件工业的不断发展，形式化方法作为控制软件成本，保证软件的质量的理论，将会得到更加广泛的应用。</p>
+
+<p><strong>参考文献：</strong>
+<a href="http://pp1230.github.io/static/images/J.Woodcock_Formal.Methods.Practice.&amp;.Eexperience_ACM_CS_2009.pdf">IM WOODCOCK.Formal Methods: Practice and Experience.
+ACM Computing Surveys, Vol. 41, No. 4, October 2009, Pages 1–40.</a></p>
+
+</article>
+<p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>
+<section class="lotus-nextpage fn-clear">
+    
+    <div class="lotus-nextpage-left"><a class="prev" href="/2016/09/10/sparkdatasets.html" rel="prev">&laquo;&nbsp;Spark DataFrames and Datasets</a></div>
+    
+    
+    <div class="lotus-nextpage-right"><a class="next" href="/2016/10/18/simplexalgorithm.html" rel="next">最优化理论之单纯形方法&nbsp;&raquo;</a></div>
+    
+</section>
+
+<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="/2016/10/17/formalspecificaton" data-title="Formal Methods Practice and Experience" data-url="/2016/10/17/formalspecificaton.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pp1230"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<footer class="lotus-footer">
+	<p>Copyright © 2010–2015 PHY的博客 All rights reserved. Design by <a href="https://github.com/qq472220372" target="_blank">phy</a>.</p>
+</footer>
+<script src="http://pp1230.github.io/static/js/jquery.scrollTo.js" type="text/javascript"></script>
+<script src="http://pp1230.github.io/static/js/iLotus.js" type="text/javascript"></script>
+</body>
+</html>

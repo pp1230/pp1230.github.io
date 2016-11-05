@@ -59,7 +59,8 @@ $(document).ready(function() {
         _changeRight: function() {
             var that = this, right;
             if(jQuery(window).width() > 1440) {
-                right = parseInt((jQuery(window).width() - that.contenBigtWidth + 1)/2 - that.linkWidth - that.linkRight, 10);
+                /*right = parseInt((jQuery(window).width() - that.contenBigtWidth + 1)/2 - that.linkWidth - that.linkRight, 10);
+*/                right = parseInt((jQuery(window).width() - that.contentWidth + 1)/2 - that.linkWidth - that.linkRight, 10);
             } else {
 
                 right = parseInt((jQuery(window).width() - that.contentWidth + 1)/2 - that.linkWidth - that.linkRight, 10);

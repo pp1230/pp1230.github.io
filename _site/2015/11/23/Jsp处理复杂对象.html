@@ -108,101 +108,7 @@
 
 <p>User和Role的关联类，User类。（Role类省略）</p>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95</pre></td><td class="code"><pre><span class="nd">@Entity</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Entity</span>
 <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"security_user"</span><span class="o">)</span>
 <span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"SecurityUser.findAll"</span><span class="o">,</span> <span class="n">query</span><span class="o">=</span><span class="s">"SELECT s FROM SecurityUser s"</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUser</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
@@ -296,46 +202,9 @@
 	<span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityUserRole</span><span class="o">&gt;</span> <span class="n">securityUserRoles</span><span class="o">;</span>
 	<span class="c1">//省略setter、getter</span>
 	<span class="o">.........</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table>
+<span class="o">}</span></code></pre></div>
 
-
-
-<div class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35</pre></td><td class="code"><pre><span class="nd">@Entity</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Entity</span>
 <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"security_user_role"</span><span class="o">)</span>
 <span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"SecurityUserRole.findAll"</span><span class="o">,</span> <span class="n">query</span><span class="o">=</span><span class="s">"SELECT s FROM SecurityUserRole s"</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUserRole</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
@@ -365,129 +234,27 @@
 	<span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"user_uid"</span><span class="o">,</span><span class="n">referencedColumnName</span><span class="o">=</span><span class="s">"uid"</span><span class="o">)</span>
 	<span class="kd">private</span> <span class="n">SecurityUser</span> <span class="n">securityUser</span><span class="o">;</span>
 
-	<span class="kd">public</span> <span class="n">SecurityUserRole</span><span class="o">()</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="nf">SecurityUserRole</span><span class="o">()</span> <span class="o">{</span>
 	<span class="o">}</span>
 	<span class="c1">//省略setter、getter</span>
 	<span class="o">.........</span>
-	<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table>
+	<span class="o">}</span></code></pre></div>
 
+<p>视图类：</p>
 
-	
-视图类：
-	
-<div class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7</pre></td><td class="code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRoleList</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRoleList</span> <span class="o">{</span>
 
 	<span class="kd">private</span> <span class="n">SecurityUser</span> <span class="n">user</span><span class="o">;</span>
 	<span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityRole</span><span class="o">&gt;</span> <span class="n">roles</span><span class="o">;</span>
 	<span class="c1">//省略setter、getter</span>
 	<span class="o">.........</span>
-	<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table>
+	<span class="o">}</span></code></pre></div>
 
+<h2 id="handler">3.Handler页面跳转类</h2>
 
-     
-##3.Handler页面跳转类
+<p>使用SpringMVC架构，此为Controller层。前台写的较为臃肿，最好可以将复杂逻辑放入Service层。</p>
 
-使用SpringMVC架构，此为Controller层。前台写的较为臃肿，最好可以将复杂逻辑放入Service层。
-
-<div class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91</pre></td><td class="code"><pre><span class="nd">@Controller</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Controller</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUserRoleHandler</span> <span class="o">{</span>
 
 	<span class="nd">@Autowired</span>
@@ -501,7 +268,7 @@
 
 <span class="c1">//保存用户信息</span>
 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">"/backui/userrole/save"</span><span class="o">,</span><span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
-	<span class="kd">public</span> <span class="n">String</span> <span class="n">input</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
+	<span class="kd">public</span> <span class="n">String</span> <span class="nf">input</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
 		<span class="c1">//传递所有角色到页面</span>
         <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"securityroles"</span><span class="o">,</span><span class="n">securityRoleService</span><span class="o">.</span><span class="na">getAll</span><span class="o">());</span>
 		<span class="k">return</span> <span class="s">"backui/userrole/input"</span><span class="o">;</span>
@@ -509,7 +276,7 @@
 
 	<span class="c1">//接收用户信息</span>
 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">"/backui/userrole/save"</span><span class="o">,</span><span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
-	<span class="kd">public</span> <span class="n">String</span> <span class="n">save</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
+	<span class="kd">public</span> <span class="n">String</span> <span class="nf">save</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
 		<span class="c1">//先保存user</span>
 		<span class="n">securityUserService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
 		<span class="k">if</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getRoles</span><span class="o">()!=</span><span class="kc">null</span><span class="o">)</span>
@@ -533,7 +300,7 @@
 	
 	<span class="c1">//更新用户</span>
 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">"/backui/userrole/update/{useruid}"</span><span class="o">,</span> <span class="n">method</span><span class="o">=</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
-	<span class="kd">public</span> <span class="n">String</span> <span class="n">preUpdate</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"useruid"</span><span class="o">)</span> <span class="n">String</span> <span class="n">useruid</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
+	<span class="kd">public</span> <span class="n">String</span> <span class="nf">preUpdate</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"useruid"</span><span class="o">)</span> <span class="n">String</span> <span class="n">useruid</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
 		<span class="n">SecurityUser</span> <span class="n">user</span> <span class="o">=</span> <span class="n">securityUserService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">useruid</span><span class="o">);</span>
 		<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"securityuser"</span><span class="o">,</span> <span class="n">user</span><span class="o">);</span>
 		<span class="n">List</span><span class="o">&lt;</span><span class="n">SecurityUserRole</span><span class="o">&gt;</span> <span class="n">userroles</span> <span class="o">=</span> <span class="n">securityUserRoleService</span><span class="o">.</span><span class="na">findBySecurityUser</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
@@ -557,7 +324,7 @@
 	
 	<span class="c1">//前台返回</span>
 	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">"/backui/userrole/update/{useruid}"</span><span class="o">,</span><span class="n">method</span><span class="o">={</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">PUT</span><span class="o">,</span><span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">})</span>
-	<span class="kd">public</span> <span class="n">String</span> <span class="n">update</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
+	<span class="kd">public</span> <span class="n">String</span> <span class="nf">update</span><span class="o">(</span><span class="n">UserRoleList</span> <span class="n">userRoleList</span><span class="o">){</span>
 		<span class="c1">//先保存用户</span>
 		<span class="n">securityUserService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">userRoleList</span><span class="o">.</span><span class="na">getUser</span><span class="o">());</span>
 		<span class="c1">//清除以前的用户角色</span>
@@ -577,168 +344,13 @@
 		<span class="k">return</span> <span class="s">"backui/users/list"</span><span class="o">;</span>
 	<span class="o">}</span>
 	
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table>
+<span class="o">}</span></code></pre></div>
 
+<h2 id="jsp">4.前台JSP页面处理复杂对象</h2>
 
+<p>Jsp页面接收时，需要在Handler中的Map里放入需要的对象，而在回传时，复杂对象是由后台进行组装的，不需要Map中有此对象。例如：SecurityUserRoleHandler的save方法并没有传入UserRoleList，后台依然可以接收到此对象。</p>
 
-##4.前台JSP页面处理复杂对象
-
-Jsp页面接收时，需要在Handler中的Map里放入需要的对象，而在回传时，复杂对象是由后台进行组装的，不需要Map中有此对象。例如：SecurityUserRoleHandler的save方法并没有传入UserRoleList，后台依然可以接收到此对象。
-
-<div class="highlight"><pre><code class="language-jsp" data-lang="jsp"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153</pre></td><td class="code"><pre>&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+<div class="highlight"><pre><code class="language-jsp" data-lang="jsp">&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%&gt;
 &lt;%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%&gt;
 &lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
@@ -890,18 +502,14 @@ Jsp页面接收时，需要在Handler中的Map里放入需要的对象，而在�
 		&lt;/div&gt;
 	&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;<span class="w">
-</span></pre></td></tr></tbody></table>
+&lt;/html&gt;</code></pre></div>
 
+<p>以下是添加用户并选择角色的页面，其实是把一个SecurityUser和多个SecurityRole组装成一个复杂类UserRoleList回传给后台处理。</p>
 
+<p><img src="../../../static/images/userrolelist.png" alt="junit" /></p>
 
-以下是添加用户并选择角色的页面，其实是把一个SecurityUser和多个SecurityRole组装成一个复杂类UserRoleList回传给后台处理。
-
-![junit](../../../static/images/userrolelist.png)
-
-用到的技术：
-JSP+SpringMVC+SpringDate+JPA
-</code></pre></div></code></pre></div></code></pre></div></code></pre></div></code></pre></div>
+<p>用到的技术：
+JSP+SpringMVC+SpringDate+JPA</p>
 
 </article>
 <p class="lotus-anno">声明: 本文采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="nofollow" target="_blank" title="自由转载-非商用-非衍生-保持署名">BY-NC-SA</a> 授权。转载请注明转自: <a href="" title="" rel="nofollow">phy</a></p>

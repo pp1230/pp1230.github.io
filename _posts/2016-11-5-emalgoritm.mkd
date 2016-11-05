@@ -1,0 +1,22 @@
+---
+layout: post
+title: EM Algorithm
+description: EM algorithm, show how it can be applied to a large family of estimation problems with latent variables
+keywords: EM,algorithm
+---
+
+
+
+
+
+
+
+
+
+
+# EM algorithm
+
+<img src="../../../static/images/empic1.gif" width = "300" alt="dcxff" /><br/>
+<img src="../../../static/images/em1.png" width = "550" alt="dcxff" />
+<img src="../../../static/images/em2.png" width = "550" alt="dcxff" />
+<img src="../../../static/images/em3.png" width = "550" alt="dcxff" />

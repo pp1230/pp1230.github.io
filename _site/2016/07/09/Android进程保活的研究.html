@@ -149,7 +149,7 @@
     <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">GRAY_SERVICE_ID</span> <span class="o">=</span> <span class="mi">1001</span><span class="o">;</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">int</span> <span class="n">onStartCommand</span><span class="o">(</span><span class="n">Intent</span> <span class="n">intent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> <span class="kt">int</span> <span class="n">startId</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">onStartCommand</span><span class="o">(</span><span class="n">Intent</span> <span class="n">intent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> <span class="kt">int</span> <span class="n">startId</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="mi">18</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">startForeground</span><span class="o">(</span><span class="n">GRAY_SERVICE_ID</span><span class="o">,</span> <span class="k">new</span> <span class="n">Notification</span><span class="o">());</span><span class="c1">//API &amp;lt; 18 ，此方法能有效隐藏Notification上的图标</span>
         <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
@@ -170,7 +170,7 @@
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">GrayInnerService</span> <span class="kd">extends</span> <span class="n">Service</span> <span class="o">{</span>
 
         <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="kt">int</span> <span class="n">onStartCommand</span><span class="o">(</span><span class="n">Intent</span> <span class="n">intent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> <span class="kt">int</span> <span class="n">startId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">onStartCommand</span><span class="o">(</span><span class="n">Intent</span> <span class="n">intent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> <span class="kt">int</span> <span class="n">startId</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">startForeground</span><span class="o">(</span><span class="n">GRAY_SERVICE_ID</span><span class="o">,</span> <span class="k">new</span> <span class="n">Notification</span><span class="o">());</span>
             <span class="n">stopForeground</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
             <span class="n">stopSelf</span><span class="o">();</span>
