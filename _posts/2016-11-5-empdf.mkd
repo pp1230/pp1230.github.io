@@ -1,0 +1,11 @@
+---
+layout: pdfpost
+title: EM Algorithm PDF
+description: EM algorithm, show how it can be applied to a large family of estimation problems with latent variables
+keywords: EM,algorithm
+---
+
+# EM
+
+<script>PDFObject.embed("../../../static/pdf/emalgorithm.pdf",document.body);
+</script>
