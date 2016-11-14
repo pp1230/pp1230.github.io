@@ -1,0 +1,11 @@
+---
+layout: pdfpost
+title: Text Mining Note 1
+description: An overview of natural language processing techniques and text representation, which are the foundation for all kinds of text-mining applications, and word association mining with a particular focus on mining one of the two basic forms of word associations (i.e., paradigmatic relations).
+keywords: text-mining,algorithm
+---
+
+# EM
+
+<script>PDFObject.embed("../../../static/pdf/textmining_note1.pdf",document.body);
+</script>
