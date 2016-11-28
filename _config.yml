@@ -58,7 +58,7 @@ nav:
     url: /contact.html
     icon: icon-envelope-alt
     class: none
-  - text: love shuwei
+  - text: love
     url: /love/pwd.html
     icon: icon-heart
     class: none
