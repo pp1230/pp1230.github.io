@@ -34,7 +34,9 @@ displayed as '*' and a marker size of 10.
 
 ## 2.使用梯度下降计算参数
     
- <pre bgcolor="yellow"><code>
+    
+<div style="background:#FFFF00; color:#FFFF00">
+ <pre><code>
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
     theta = [0;0];
@@ -50,6 +52,7 @@ displayed as '*' and a marker size of 10.
     plot(x(:,2),x*theta,'-')
     legend("Training Data","Linear Regression")
 </code></pre>
+</div>
 
 <img src="https://pp1230.github.io/static/images/tdxj.png" width = "500" alt="dcxff" />
 
