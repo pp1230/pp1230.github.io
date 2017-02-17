@@ -30,7 +30,7 @@ This command will plot the data in the variable 'b', with points
 
 displayed as '*' and a marker size of 10.
 
-<img src="../../../static/images/sdt.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/sdt.png" width = "500" alt="dcxff" />
 
 ## 2.使用梯度下降计算参数
     
@@ -51,4 +51,4 @@ displayed as '*' and a marker size of 10.
     legend("Training Data","Linear Regression")
 </code></pre>
 
-<img src="../../../static/images/tdxj.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/tdxj.png" width = "500" alt="dcxff" />
