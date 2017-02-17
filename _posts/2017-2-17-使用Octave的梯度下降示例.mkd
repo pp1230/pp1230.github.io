@@ -34,7 +34,7 @@ displayed as '*' and a marker size of 10.
 
 ## 2.使用梯度下降计算参数
     
- <pre color="white"><code>
+ <pre color="white"><code color="white">
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
     theta = [0;0];
