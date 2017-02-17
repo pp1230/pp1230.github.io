@@ -1,4 +1,5 @@
-  ---
+
+---
 layout: post
 title: 使用Octave的梯度下降示例
 description: 机器学习视频之梯度下降练习一
@@ -18,10 +19,19 @@ ylabel('Profit in $10,000s'); % Set the y−axis label
 xlabel('Population of City in 10,000s'); % Set the x−axis label 
 {%endhighlight matlab%}
 
+doc eg:
+ 'x'  cross
+ 'r'  Red
+ 
+plot (b, "*", "markersize", 10)
+This command will plot the data in the variable 'b', with points 
+displayed as '*' and a marker size of 10.
+
 <img src="../../../static/images/sdt.png" width = "500" alt="dcxff" />
 
 ## 2.使用梯度下降计算参数
     
+ <code>
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
     theta = [0;0];
@@ -36,5 +46,5 @@ xlabel('Population of City in 10,000s'); % Set the x−axis label
     hold on;
     plot(x(:,2),x*theta,'-')
     legend("Training Data","Linear Regression")
-    
+</code>
 <img src="../../../static/images/tuxj.png" width = "500" alt="dcxff" />
