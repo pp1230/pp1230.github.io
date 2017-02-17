@@ -34,7 +34,7 @@ displayed as '*' and a marker size of 10.
 
 ## 2.使用梯度下降计算参数
     
- <pre color="yellow"><code>
+ <pre bgcolor="yellow"><code>
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
     theta = [0;0];
@@ -52,3 +52,5 @@ displayed as '*' and a marker size of 10.
 </code></pre>
 
 <img src="https://pp1230.github.io/static/images/tdxj.png" width = "500" alt="dcxff" />
+
+
