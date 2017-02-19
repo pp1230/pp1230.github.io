@@ -87,5 +87,5 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 使用线性回归和梯度下降拟合测试数据。随着迭代次数的增加，参数离极小值越来越近。
 
-<img src="https://pp1230.github.io/static/images/gdex.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/lrgd.png" width = "500" alt="dcxff" />
 
