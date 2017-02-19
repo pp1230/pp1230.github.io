@@ -124,5 +124,17 @@ t =
 代价函数中的h(x)与图像形态有关。根据图像的形态可选择线性回归或非线性回归，根据特征的数量选择一元或多元回归，都可以使用梯度下降法。
 
 例子2：多元线性回归，房价与面积、房间数的关系
+{%highlight matlab%}
+plot3(data1,data2,data3,".")
+hold on; 
+x1 = linspace(0,5,100);
+y1 = linspace(1,5,100);
+plot3(x1,y1,[ones(100,1),x1',y1']*t);
+legend("real data","linear regression");
+xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
+{%endhighlight matlab%}
 
 <img src="https://pp1230.github.io/static/images/mlr.png" width = "500" alt="dcxff" />
+
+### 4.3特征缩放
+在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2中，坐标轴的数据范围和实际数据有出入导致图像不能很好地拟合。
