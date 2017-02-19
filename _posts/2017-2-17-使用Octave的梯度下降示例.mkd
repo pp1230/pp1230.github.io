@@ -34,9 +34,7 @@ displayed as '*' and a marker size of 10.
 
 ## 2.使用梯度下降计算参数
     
-    
-<div style="background:#FFFF00; color:#FFFF00">
- <pre><code>
+{%highlight matlab%}
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
     theta = [0;0];
@@ -46,14 +44,42 @@ displayed as '*' and a marker size of 10.
     theta(2) = theta(2) - alpha*(1/m)*sum(j.*x(:,2));
     end;
     
-    %调用
+    %调用画图函数
     theta = gradientDescent1(x,y,m,alpha,1500);
     hold on;
     plot(x(:,2),x*theta,'-')
-    legend("Training Data","Linear Regression")
-</code></pre>
-</div>
+    legend("Training Data","Linear Regression") %图例
+{%endhighlight matlab%}
 
 <img src="https://pp1230.github.io/static/images/tdxj.png" width = "500" alt="dcxff" />
+## 3.绘制三维和等高图像
 
+{%highlight matlab%}
+% Fill out J vals 
+for i = 1:length(theta0 vals) 
+for j = 1:length(theta1 vals) 
+t = [theta0 vals(i); theta1 vals(j)]; 
+J vals(i,j) = computeCost(x, y, t); 
+end 
+end
+
+% Because of the way meshgrids work in the surf command, we need to 
+% transpose J_vals before calling surf, or else the axes will be flipped
+J_vals = J_vals';
+% Surface plot
+figure;
+surf(theta0_vals, theta1_vals, J_vals)
+xlabel('\theta_0'); ylabel('\theta_1');
+
+% Contour plot
+figure;
+% Plot J_vals as 15 contours spaced logarithmically between 0.01 and 100
+contour(theta0_vals, theta1_vals, J_vals, logspace(-2, 3, 20))
+xlabel('\theta_0'); ylabel('\theta_1');
+hold on;
+plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
+
+{%endhighlight matlab%}
+
+<img src="https://pp1230.github.io/static/images/swt.png" width = "500" alt="dcxff" />
 
