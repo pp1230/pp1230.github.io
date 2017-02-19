@@ -6,7 +6,7 @@ keywords: gradient descent
 ---
 
 
-# 一个参数的线性回归
+## 一个参数的线性回归
 ## 1.描绘数据散点图
 {%highlight matlab%}
 data = load('ex1data1.txt'); % read comma separated 
@@ -16,7 +16,7 @@ m = length(y); % number of training example
 plot(x, y, 'rx', 'MarkerSize', 10); % Plot the data 
 ylabel('Profit in $10,000s'); % Set the y−axis label 
 xlabel('Population of City in 10,000s'); % Set the x−axis label 
-{%endhighlight matlab%}
+#{%endhighlight matlab%}
 
 doc eg:
 
@@ -24,6 +24,7 @@ doc eg:
 'r'  Red
 
 plot (b, "*", "markersize", 10)
+
 
 This command will plot the data in the variable 'b', with points 
 
@@ -36,8 +37,8 @@ displayed as '*' and a marker size of 10.
 {%highlight matlab%}
     %梯度下降算法函数，储存在.m文件中
     function theta = gradientDescent1(x,y,m,alpha,iteraNum)
-    theta = [0;0];
-    for i=1:iteraNum
+    theta = [0;0];
+j    for i=1:iteraNum
     j = x*theta- y;
     theta(1) = theta(1) - alpha*(1/m)*sum(j.*x(:,1));
     theta(2) = theta(2) - alpha*(1/m)*sum(j.*x(:,2));
@@ -80,5 +81,10 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 {%endhighlight matlab%}
 
-<img src="https://pp1230.github.io/static/images/swt.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/swt.png" width = "800" alt="dcxff" />
 
+## 实践
+
+使用线性回归和梯度下降拟合测试数据
+<img src="https://pp1230.github.io/static/images/gdex.png" width = "500" alt="dcxff" />
+随着迭代次数的增加，参数离极小值越来越近。
