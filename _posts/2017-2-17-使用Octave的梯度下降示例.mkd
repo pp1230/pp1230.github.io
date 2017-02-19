@@ -89,3 +89,4 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 <img src="https://pp1230.github.io/static/images/lrgd.png" width = "500" alt="dcxff" />
 
+步长为0.001，迭代5000步后的图像
