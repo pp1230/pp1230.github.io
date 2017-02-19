@@ -83,10 +83,42 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 <img src="https://pp1230.github.io/static/images/swt.png" width = "800" alt="dcxff" />
 
-## 实践
+## 4.实践
+### 4.1梯度下降与迭代次数的关系
 
+例子1：
 使用线性回归和梯度下降拟合测试数据。随着迭代次数的增加，参数离极小值越来越近。
 
 <img src="https://pp1230.github.io/static/images/lrgd.png" width = "500" alt="dcxff" />
 
-步长为0.001，迭代5000步后的图像
+图为步长为0.001，迭代5000步后的图像。
+
+例子2：
+多元线性回归，面积、房间数和房屋价格的关系
+
+{%highlight matlab%}
+data = load("ex1data2.txt");
+data1 = data(:,1)/1000;
+data2 = data(:,2);
+data3 = data(:,3)/100000;
+m = length(data(:,1));
+t = [0;0;0];
+% Fill out J_vals
+for i = 1:100
+	  t = gradientDescent1([ones(m,1),data1,data2],data3,t,0.1,1);
+	  J_vals(i) = computeCost([ones(m,1),data1,data2],
+data3,t);
+    end;
+plot(linspace(1,100,100),J_vals);
+
+t =
+0.383085
+1.350005
+0.093650
+{%endhighlight matlab%}
+随着迭代次数增加，cost不断减少。
+
+<img src="https://pp1230.github.io/static/images/costf.png" width = "500" alt="dcxff" />
+
+### 4.2梯度下降与代价函数的关系
+代价函数中的h(x)与图像形态有关。根据图像的形态可选择线性回归或非线性回归，根据特征的数量选择一元或多元回归，都可以使用梯度下降法。
