@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 使用Octave的梯度下降示例
-description: 机器学习视频之梯度下降练习一
+description: 机器学习视频之梯度下降练习一,包含了使用梯度下降法需要注意的问题。
 keywords: gradient descent
 ---
 
@@ -265,3 +265,5 @@ xlabel("Area");ylabel("Room Number");zlabel("Price");
 <img src="https://pp1230.github.io/static/images/flr3d.png" width = "500" alt="dcxff" />
 
 <img src="https://pp1230.github.io/static/images/fcost3d.png" width = "500" alt="dcxff" />
+
+最后计算得cost = 0.0075178，和线性回归比较代价较小，故非线性回归更好地拟合了目标数据。
