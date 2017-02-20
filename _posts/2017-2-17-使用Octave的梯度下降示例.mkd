@@ -108,7 +108,7 @@ for i = 1:100
 	  t = gradientDescent1([ones(m,1),data1,data2],data3,t,0.1,1);
 	  J_vals(i) = computeCost([ones(m,1),data1,data2],
 data3,t);
-    end;
+g    end;
 plot(linspace(1,100,100),J_vals);
 
 t =
@@ -137,4 +137,81 @@ xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
 <img src="https://pp1230.github.io/static/images/mlr.png" width = "500" alt="dcxff" />
 
 ### 4.3特征缩放
-在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2中，坐标轴的数据范围和实际数据有出入导致图像不能很好地拟合。
+在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2和4.1中，将特征进行了粗略的缩放，也可以达到相同的效果。根据特征缩放公式，下面将特征范围都缩放到[0,1]。
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <msup>
+    <mi>x</mi>
+    <mo>&#x2032;</mo>
+  </msup>
+  <mo>=</mo>
+  <mfrac>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2212;<!-- − --></mo>
+      <mi>m</mi>
+      <mi>i</mi>
+      <mi>n</mi>
+      <mo stretchy="false">(</mo>
+      <mi>x</mi>
+      <mo stretchy="false">)</mo>
+    </mrow>
+    <mrow>
+      <mi>m</mi>
+      <mi>a</mi>
+      <mi>x</mi>
+      <mo stretchy="false">(</mo>
+      <mi>x</mi>
+      <mo stretchy="false">)</mo>
+      <mo>&#x2212;<!-- − --></mo>
+      <mi>m</mi>
+      <mi>i</mi>
+      <mi>n</mi>
+      <mo stretchy="false">(</mo>
+      <mi>x</mi>
+      <mo stretchy="false">)</mo>
+    </mrow>
+  </mfrac>
+</math>
+
+{%highlight matlab%}
+data = load("ex1data2.txt");
+scala1 = max(data(:,1))-min(data(:,1));
+scala2 = max(data(:,2))-min(data(:,2));
+scala3 = max(data(:,3))-min(data(:,3));
+min1 = min(data(:,1));
+min2 = min(data(:,2));
+min3 = min(data(:,3));
+data1 = (data(:,1).-min1)/scala1;
+data2 = (data(:,2).-min2)/scala2;
+data3 = (data(:,3).-min3)/scala3;
+m = length(data(:,1));
+t = [0;0;0];
+% Fill out J_vals
+for i = 1:6000
+	  t = gradientDescent1([ones(m,1),data1,data2],data3,t,0.01,1);
+	  J_vals(i) = computeCost([ones(m,1),data1,data2],
+data3,t);
+    end;
+plot(linspace(1,6000,6000),J_vals);
+
+figure
+x1 = linspace(0,1,100);
+y1 = linspace(0,1,100);
+plot3(data1,data2,data3,"r.")
+hold on; 
+%plot3(x1,y1,[ones(100,1),x1',y1']*t);
+v = zeros(100);
+for i=1:100
+	for j = 1:100
+		v(i,j) = [1,x1(i),y1(j)]*t;
+end
+end
+surf(x1,y1,v); 
+legend("real data","linear regression");
+xlabel("Area");ylabel("Room Number");zlabel("Price");
+{%endhighlight matlab%}
+
+<img src="https://pp1230.github.io/static/images/lr3d.png" width = "500" alt="dcxff" />
+
+<img src="https://pp1230.github.io/static/images/cpst3d.png" width = "500" alt="dcxff" />
