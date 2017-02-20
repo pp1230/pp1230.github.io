@@ -82,7 +82,7 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 <img src="https://pp1230.github.io/static/images/swt.png" width = "800" alt="dcxff" />
 
-## 4.实践
+## 4.线性回归实验
 ### 4.1梯度下降与迭代次数的关系
 
 例子1：
@@ -211,6 +211,57 @@ legend("real data","linear regression");
 xlabel("Area");ylabel("Room Number");zlabel("Price");
 {%endhighlight matlab%}
 
-<img src="https://pp1230.github.io/static/images/lr3d.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/lr3d1.png" width = "500" alt="dcxff" />
 
 <img src="https://pp1230.github.io/static/images/cost3d.png" width = "500" alt="dcxff" />
+
+最后计算得cost = 0.0077040
+
+## 5.非线性回归实验
+例二中房间数和价格的关系并不能使用线性关系很好地拟合，所以使用非线性回归。
+
+{%highlight matlab%}
+
+data = load("ex1data2.txt");
+scala1 = max(data(:,1))-min(data(:,1));
+scala2 = max(data(:,2))-min(data(:,2));
+scala3 = max(data(:,3))-min(data(:,3));
+min1 = min(data(:,1));
+min2 = min(data(:,2));
+min3 = min(data(:,3));
+data1 = (data(:,1).-min1)/scala1;
+data2 = ((data(:,2).-min2)/scala2).^(1/3);
+%data2 = (data(:,2).-min2)/scala2;
+data3 = (data(:,3).-min3)/scala3;
+m = length(data(:,1));
+t = [0;0;0];
+% Fill out J_vals
+for i = 1:6000
+	  t = gradientDescent1([ones(m,1),data1,data2],data3,t,0.01,1);
+	  J_vals(i) = computeCost([ones(m,1),data1,data2],
+data3,t);
+    end;
+plot(linspace(1,6000,6000),J_vals);
+
+figure
+x1 = linspace(0,1,50);
+y1 = linspace(0,1,50);
+plot3(data1,data2,data3,"r.")
+hold on; 
+%plot3(x1,y1,[ones(50,1),x1',y1']*t);
+v = zeros(50);
+%注意v(j,i)而不是v(i,j)
+for i=1:50
+	for j = 1:50
+		v(j,i) = [1,x1(i),y1(j)^(1/3)]*t;
+		%v(j,i) = [1,x1(i),y1(j)]*t;
+end
+end
+surf(x1,y1,v); 
+legend("real data","linear regression");
+xlabel("Area");ylabel("Room Number");zlabel("Price");
+
+{%endhighlight matlab%}
+<img src="https://pp1230.github.io/static/images/flr3d.png" width = "500" alt="dcxff" />
+
+<img src="https://pp1230.github.io/static/images/fcost3d.png" width = "500" alt="dcxff" />
