@@ -262,6 +262,7 @@ legend("real data","linear regression");
 xlabel("Area");ylabel("Room Number");zlabel("Price");
 
 {%endhighlight matlab%}
+
 <img src="https://pp1230.github.io/static/images/flr3d.png" width = "500" alt="dcxff" />
 
 <img src="https://pp1230.github.io/static/images/fcost3d.png" width = "500" alt="dcxff" />
