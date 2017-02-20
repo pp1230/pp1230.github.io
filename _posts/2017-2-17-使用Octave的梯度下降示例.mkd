@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 使用Octave的梯度下降示例
+title: Octave线性回归与梯度下降示例
 description: 机器学习视频之梯度下降练习一,包含了使用梯度下降法需要注意的问题。
 keywords: gradient descent
 ---
