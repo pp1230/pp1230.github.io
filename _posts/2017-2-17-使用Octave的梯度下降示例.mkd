@@ -158,8 +158,7 @@ xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
     </mrow>
     <mrow>
       <mi>m</mi>
-      <mi>a</mi>
-      <mi>x</mi>
+      <mi>a</mi>      <mi>x</mi>
       <mo stretchy="false">(</mo>
       <mi>x</mi>
       <mo stretchy="false">)</mo>
@@ -214,4 +213,4 @@ xlabel("Area");ylabel("Room Number");zlabel("Price");
 
 <img src="https://pp1230.github.io/static/images/lr3d.png" width = "500" alt="dcxff" />
 
-<img src="https://pp1230.github.io/static/images/cpst3d.png" width = "500" alt="dcxff" />
+<img src="https://pp1230.github.io/static/images/cost3d.png" width = "500" alt="dcxff" />
