@@ -114,6 +114,7 @@ t =
 0.093650
 {%endhighlight matlab%}
 随着迭代次数增加，cost不断减少。
+
 <img src="https://pp1230.github.io/static/images/costf.png" width = "500" alt="dcxff" />
 
 ### 4.2梯度下降与代价函数的关系
