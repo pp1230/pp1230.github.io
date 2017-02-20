@@ -70,7 +70,6 @@ figure;
 
 surf(theta0_vals, theta1_vals, J_vals)
 xlabel('\theta_0'); ylabel('\theta_1');
-
 % Contour plot
 figure;
 d% Plot J_vals as 15 contours spaced logarithmically between 0.01 and 100
@@ -91,8 +90,7 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 <img src="https://pp1230.github.io/static/images/lrgd.png" width = "500" alt="dcxff" />
 
-图为步长为0.001，迭代5000步后的图像。
-
+图为步长为0.001，迭代5000步后的图像。t
 例子2：
 多元线性回归，面积、房间数和房屋价格的关系
 
@@ -106,8 +104,7 @@ t = [0;0;0];
 % Fill out J_vals
 for i = 1:100
 	  t = gradientDescent1([ones(m,1),data1,data2],data3,t,0.1,1);
-	  J_vals(i) = computeCost([ones(m,1),data1,data2],
-data3,t);
+	  J_vals(i) = computeCost([ones(m,1),data1,data2],data3,t);
 g    end;
 plot(linspace(1,100,100),J_vals);
 
@@ -117,7 +114,6 @@ t =
 0.093650
 {%endhighlight matlab%}
 随着迭代次数增加，cost不断减少。
-
 <img src="https://pp1230.github.io/static/images/costf.png" width = "500" alt="dcxff" />
 
 ### 4.2梯度下降与代价函数的关系
@@ -137,7 +133,7 @@ xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
 <img src="https://pp1230.github.io/static/images/mlr.png" width = "500" alt="dcxff" />
 
 ### 4.3特征缩放
-在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2和4.1中，将特征进行了粗略的缩放，也可以达到相同的效果。根据特征缩放公式，下面将特征范围都缩放到[0,1]。
+在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2和4.1中，将特征进行了粗略的缩放，也可以达到相同的效果。下面为特征缩放公式：
 
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <msup>
@@ -172,6 +168,9 @@ xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
     </mrow>
   </mfrac>
 </math>
+
+x是最初的特征值， x′是缩放后的值。
+根据特征缩放公式，下面将特征范围都缩放到[0,1]。
 
 {%highlight matlab%}
 data = load("ex1data2.txt");
