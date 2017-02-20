@@ -5,9 +5,8 @@ description: 机器学习视频之梯度下降练习一,包含了使用梯度下
 keywords: gradient descent
 ---
 
-
-## 一个参数的线性回归
-## 1.描绘数据散点图
+## 1.基本绘图
+### 1.1描绘数据散点图
 {%highlight matlab%}
 data = load('ex1data1.txt'); % read comma separated 
 X = data(:, 1); 
@@ -31,7 +30,7 @@ This command will plot the data in the variable 'b', with points
 displayed as '*' and a marker size of 10.
 
 <img src="https://pp1230.github.io/static/images/sdt.png" width = "500" alt="dcxff" />y
-## 2.使用梯度下降计算参数
+### 1.2使用梯度下降计算参数
     
 {%highlight matlab%}
     %梯度下降算法函数，储存在.m文件中
@@ -51,7 +50,7 @@ j    for i=1:iteraNum
 {%endhighlight matlab%}
 
 <img src="https://pp1230.github.io/static/images/tdxj.png" width = "500" alt="dcxff" />
-## 3.绘制三维和等高图像uo
+### 1.3绘制三维和等高图像
 {%highlight matlab%}
 % Fill out J vals 
 for i = 1:length(theta0 vals) 
@@ -82,8 +81,8 @@ plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
 
 <img src="https://pp1230.github.io/static/images/swt.png" width = "800" alt="dcxff" />
 
-## 4.线性回归实验
-### 4.1梯度下降与迭代次数的关系
+## 2.线性回归实验
+### 2.1梯度下降与迭代次数的关系
 
 例子1：
 使用线性回归和梯度下降拟合测试数据。随着迭代次数的增加，参数离极小值越来越近。
@@ -117,7 +116,7 @@ t =
 
 <img src="https://pp1230.github.io/static/images/costf.png" width = "500" alt="dcxff" />
 
-### 4.2梯度下降与代价函数的关系
+### 2.2梯度下降与代价函数的关系
 代价函数中的h(x)与图像形态有关。根据图像的形态可选择线性回归或非线性回归，根据特征的数量选择一元或多元回归，都可以使用梯度下降法。
 
 例子2：多元线性回归，房价与面积、房间数的关系
@@ -133,7 +132,7 @@ xlabel("Area(1000m^2)");ylabel("Room Number");zlabel("Price($100,000)");
 
 <img src="https://pp1230.github.io/static/images/mlr.png" width = "500" alt="dcxff" />
 
-### 4.3特征缩放
+### 2.3特征缩放
 在数据集中，数据的单位往往不同，数据的范围也差距很大。将数据缩放到相同的范围，一般为[0,1]或[-1,1]使得梯度下降法更容易收敛，还可以统一坐标轴的度量单位，更加准确表达函数图形。在4.2和4.1中，将特征进行了粗略的缩放，也可以达到相同的效果。下面为特征缩放公式：
 
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -217,7 +216,7 @@ xlabel("Area");ylabel("Room Number");zlabel("Price");
 
 最后计算得cost = 0.0077040
 
-## 5.非线性回归实验
+## 3.非线性回归实验
 例二中房间数和价格的关系并不能使用线性关系很好地拟合，所以使用非线性回归。
 
 {%highlight matlab%}
