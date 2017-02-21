@@ -6,6 +6,7 @@ keywords: gradient descent
 ---
 
 > 使用了机器学习视频的练习数据集ex2data：[](https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf)
+
 ## 1.逻辑回归分类
 
 ### 1.2使用线性函数的逻辑回归分类问题
