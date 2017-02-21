@@ -1,0 +1,48 @@
+---
+layout: post
+title: Octave分类示例
+description: 机器学习视频之分类练习一,包含了逻辑回归解决分类问题。
+keywords: gradient descent
+---
+
+> 使用了机器学习视频的练习数据集ex2data：https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf
+
+## 1.逻辑回归分类
+
+### 1.2使用线性函数的逻辑回归分类问题
+
+逻辑回归的核心公式是sigmoid函数，使用线性函数可以线性划分类别。使用Octave的fminunc方法可以自动选取最优化方法求解，
+不需要自己再编写梯度下降或共轭梯度等复杂的优化算法。我们只需要写出代价函数和导数即可。
+
+{%highlight matlab%}
+data = load("ex2data1.txt");
+m = length(data(:,1));
+class1 = [];
+class2 = [];
+for i = 1:m
+	x = data(i,:);
+	if x(3) == 0
+	class1 = [class1;x(1),x(2)];
+	else 
+	class2 = [class2;x(1),x(2)];
+	hold on;
+	end
+end
+plot(class1(:,1),class1(:,2),"bo",'LineWidth', 1.5,"markersize",10);
+hold on;
+plot(class2(:,1),class2(:,2),"rs",'LineWidth', 1.5,"markersize",10);
+
+inittheta = [0;0;0];
+x = [ones(m,1),data(:,1),data(:,2)];
+y = data(:,3);
+options = optimset("GradObj","on","MaxIter",1000);
+[theta,cost] = fminunc(@(t)logisticCostFunction(t,x,y),inittheta,options);
+x1 = linspace(30,100,100);
+y1 = -(x1*theta(2) + theta(1))/theta(3);
+plot(x1,y1,"LineWidth", 1.5);
+xlabel("x1");
+ylabel("x2");
+legend("class1","class2","decision boundary");
+{%endhighlight matlab%}
+
+<img src="https://pp1230.github.io/static/images/classpic1.png" width = "500" alt="dcxff" />
