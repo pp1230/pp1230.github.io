@@ -5,7 +5,7 @@ description: 机器学习视频之分类练习一,包含了逻辑回归解决分
 keywords: gradient descent
 ---
 
-> 使用了机器学习视频的练习数据集ex2data：[](https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf)
+> 使用了机器学习视频的练习数据集[ex2data](https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf)
 
 ## 1.逻辑回归分类
 
