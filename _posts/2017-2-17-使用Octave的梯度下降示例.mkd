@@ -5,7 +5,7 @@ description: 机器学习视频之梯度下降练习一,包含了使用梯度下
 keywords: gradient descent
 ---
 
-> 使用了机器学习视频的练习数据集ex1data：https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf
+> 使用了机器学习视频的练习数据集[ex1data](https://github.com/pp1230/pp1230.github.io/tree/master/static/pdf)
 
 ## 1.基本绘图
 ### 1.1描绘数据散点图
