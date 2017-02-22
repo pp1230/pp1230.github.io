@@ -46,3 +46,60 @@ legend("class1","class2","decision boundary");
 {%endhighlight matlab%}
 
 <img src="https://pp1230.github.io/static/images/classpic1.png" width = "500" alt="dcxff" />
+
+### 1.3使用非线性函数的逻辑回归分类问题
+
+逻辑回归的sigmoid函数中使用非线性函数作为变量，可以更好的拟合复杂的分类问题。高阶函数使用的关键点有：高阶函数的形式和次方；高阶函数的正则化。
+因为在函数拟合中，可能出现过拟合现象，为了使函数能够良好地拟合真实的数据，我们使用惩罚函数地方法来防止过拟合和现象的发生。
+
+{%highlight matlab%}
+data = load("ex2data2.txt");
+m = length(data(:,1));
+class1 = [];
+class2 = [];
+for i = 1:m
+	x = data(i,:);
+	if x(3) == 0
+	class1 = [class1;x(1),x(2)];
+	else 
+	class2 = [class2;x(1),x(2)];
+	hold on;
+	end
+end
+plot(class1(:,1),class1(:,2),"ko","markerfacecolor","y",'LineWidth', 1,"markersize",8);
+hold on;
+plot(class2(:,1),class2(:,2),"rs",'LineWidth', 1.5,"markersize",8);
+%高阶函数自定义计算方法
+X = regMapFeature(data(:,1),data(:,2),6);
+y = data(:,3);
+inittheta = zeros(size(X,2),1);
+%罚函数变量
+lambda = 1;
+[initcost, grad] = regLogisticCostFunction(inittheta, X, y, lambda);
+options = optimset("GradObj","on","MaxIter",400);
+[theta,cost,exit_flag] = ...
+	fminunc(@(t)regLogisticCostFunction(t,X,y,lambda),inittheta,options);
+x1 = linspace(-1,1.2,50);
+y1 = linspace(-1,1.2,50);
+z1 = zeros(length(x1),length(y1));
+for i=1:length(x1)
+	for j=1:length(y1)
+		 z1(j,i) = regMapFeature(x1(i),y1(j),6)*theta;
+	end
+end
+%边界绘制
+contour(x1,y1,z1,[0,0],"LineWidth",2);
+xlabel("x1");
+ylabel("x2");
+legend("class1","class2","decision boundary");
+{%endhighlight matlab%}
+
+<img src="https://pp1230.github.io/static/images/regclass1.png" width = "500" alt="dcxff" />
+
+通过改变lambda,函数的拟合度会发生改变。令lambda = 0，函数图象过拟合：
+
+<img src="https://pp1230.github.io/static/images/regclassla.png" width = "500" alt="dcxff" />
+
+通过改变高阶函数的维度，函数图像也会发生改变。让高阶函数从28维变为6维，函数图像变化如下：
+
+<img src="https://pp1230.github.io/static/images/regclassdim.png" width = "500" alt="dcxff" />
