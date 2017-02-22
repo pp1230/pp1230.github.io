@@ -50,7 +50,9 @@ legend("class1","class2","decision boundary");
 ### 1.3使用非线性函数的逻辑回归分类问题
 
 逻辑回归的sigmoid函数中使用非线性函数作为变量，可以更好的拟合复杂的分类问题。高阶函数使用的关键点有：高阶函数的形式和次方；高阶函数的正则化。
-因为在函数拟合中，可能出现过拟合现象，为了使函数能够良好地拟合真实的数据，我们使用惩罚函数地方法来防止过拟合和现象的发生。
+因为在函数拟合中，可能出现过拟合现象，为了使函数能够良好地拟合真实的数据，我们使用惩罚函数地方法来防止过拟合和现象的发生。本实验使用的高阶函数为：
+
+<img src="https://pp1230.github.io/static/images/mapFeature.png" width = "500" alt="dcxff" />
 
 {%highlight matlab%}
 data = load("ex2data2.txt");
