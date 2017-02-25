@@ -9,7 +9,7 @@ keywords: gradient descent
 
 ## 1.逻辑回归分类
 
-### 1.2使用线性函数的逻辑回归分类问题
+### 1.1使用线性函数的逻辑回归二分类问题
 
 逻辑回归的核心公式是sigmoid函数，使用线性函数可以线性划分类别。使用Octave的fminunc方法可以自动选取最优化方法求解，
 不需要自己再编写梯度下降或共轭梯度等复杂的优化算法。我们只需要写出代价函数和导数即可。
@@ -47,7 +47,7 @@ legend("class1","class2","decision boundary");
 
 <img src="https://pp1230.github.io/static/images/classpic1.png" width = "500" alt="dcxff" />
 
-### 1.3使用非线性函数的逻辑回归分类问题
+### 1.2使用非线性函数的逻辑回归二分类问题
 
 逻辑回归的sigmoid函数中使用非线性函数作为变量，可以更好的拟合复杂的分类问题。高阶函数使用的关键点有：高阶函数的形式和次方；高阶函数的正则化。
 因为在函数拟合中，可能出现过拟合现象，为了使函数能够良好地拟合真实的数据，我们使用惩罚函数地方法来防止过拟合和现象的发生。本实验使用的高阶函数为：
@@ -105,3 +105,63 @@ legend("class1","class2","decision boundary");
 通过改变高阶函数的维度，函数图像也会发生改变。让高阶函数从28维变为6维，函数图像变化如下：
 
 <img src="https://pp1230.github.io/static/images/regclassdim.png" width = "500" alt="dcxff" />
+
+### 1.3逻辑回归的多分类问题
+
+逻辑回归本身用来处理二分类问题，将 **theta'x** 的值投射到[0,1]区间上。处理多分类问题时，应将其划归为二分类问题，也就是onVsAll。
+本例展示了逻辑回归处理手写识别的效果，使用了线性函数，特征维数为400。若使用非线性函数，那么维数将指数增长，效果不好。
+
+{%highlight matlab%}
+load("ex3data1.mat");
+m = size(X,1);
+pics = randperm(m);
+test = X(pics(1:100),:);
+displayData(test);
+
+lambda = 0.1;
+classNumber = 10;
+alltheta = multiClassFunction(X,y,10,lambda);
+pred = predictOneVsAll(alltheta, X);
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
+
+testdata = [ones(100,1),test];
+result = testdata*alltheta';
+final = zeros(100,1);
+matrix = zeros(10);
+{%endhighlight matlab%}
+
+将多分类问题转换为二分类问题，每个类别和其他类别进行一次逻辑回归分类。
+
+{%highlight matlab%}
+function allTheta = multiClassFunction(x,y,classNumber,lambda)
+m = size(x,2);
+n = size(x,1);
+inittheta = zeros(m+1,1);
+x = [ones(n,1),x];
+options = optimset('GradObj', 'on', 'MaxIter', 80);
+for c = 1:classNumber
+    [allTheta(c,:)] =fminunc (@(t)(logCostFunction(t, x, (y == c), lambda)),inittheta, options);
+end
+{%endhighlight matlab%}
+
+100个测试数据
+
+<img src="https://pp1230.github.io/static/images/multilognum.png" width = "500" alt="dcxff" />
+
+总体精度和测试数据结果
+
+{%highlight matlab%}
+Training Set Accuracy: 94.500000
+>> matrix
+matrix =
+2   6   1   5   1   7   9   1   1   5
+4   8   6   2   9   6   8   9   7   0
+9   4   0   9   0   2   8   7   5   5
+7   0   4   2   9   6   8   5   1   2
+7   6   7   5   0   9   1   0   1   8
+3   8   2   2   3   8   4   2   5   4
+2   1   7   9   7   0   7   5   9   3
+9   5   2   2   9   2   5   8   7   8
+4   5   0   6   0   8   4   9   8   1
+7   4   0   6   3   8   6   5   4   6
+{%endhighlight matlab%}
