@@ -164,3 +164,23 @@ matrix =
 4   5   0   6   0   8   4   9   8   1
 7   4   0   6   3   8   6   5   4   6
 {%endhighlight%}
+
+## 2.神经网络分类
+
+在遇到特征维度较大时，使用逻辑回归分类的计算量较大。如上个例子所示，使用逻辑回归若要提高精度，需要使用高阶函数，但特征维度太大，无法计算。所以在特征维度较大时，选用神经网络分类效果较好。训练神经网络需要使用反向传播算法，将在后续单独的文章中描述。此例使用训练好的模型参数，计算精度。
+
+{%highlight matlab%}
+load("ex3weights.mat");
+load("ex3data1.mat");
+len = length(X(:,1));
+w1 = [ones(len,1),X]*Theta1';
+a1 = sigmoid(w1);
+w2 = [ones(len,1),a1]*Theta2';
+a2 = sigmoid(w2);
+[~,result] = max(a2,[],2);
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(result == y)) * 100);
+{%endhighlight%}
+
+计算结果：
+
+Training Set Accuracy: 97.520000
