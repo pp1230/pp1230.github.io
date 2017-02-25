@@ -150,7 +150,7 @@ end
 
 总体精度和测试数据结果
 
-{%highlight bash%}
+{%highlight c%}
 Training Set Accuracy: 94.500000
 >> matrix
 matrix =
@@ -164,4 +164,4 @@ matrix =
 9   5   2   2   9   2   5   8   7   8
 4   5   0   6   0   8   4   9   8   1
 7   4   0   6   3   8   6   5   4   6
-{%endhighlight bash%}
+{%endhighlight%}
