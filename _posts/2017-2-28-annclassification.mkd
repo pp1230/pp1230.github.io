@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Octave神经网络分类示例
-description: 机器学习视频之分类练习一,包含了逻辑回归解决分类问题。
-keywords: gradient descent
+description: 机器学习视频之分类练习一,包含了逻辑回归解决分类问题
+keywords: ann, classification
 ---
 
 ## 神经网络分类
