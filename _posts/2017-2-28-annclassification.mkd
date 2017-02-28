@@ -1,0 +1,96 @@
+---
+layout: post
+title: Octave神经网络分类示例
+description: 机器学习视频之分类练习一,包含了逻辑回归解决分类问题。
+keywords: gradient descent
+---
+
+## 神经网络分类
+
+从之前的实验可以看出，维度较大时，普通的逻辑回归难以精确划分类别。人工神经网络通过模拟人类神经结构，可以较好地分类，不过训练时耗时较长。
+
+### 1.神经网络的结构
+
+神经网络的结构如下图所示（来自Andrew Ng课程练习），最普遍的神经网络分为三层：输入层、隐藏层和输出层。一般隐藏层节点数应该大于或等于特征数。
+
+<img src="https://pp1230.github.io/static/images/annmodel.png" width = "500" alt="dcxff" />
+
+### 2.神经网络的算法
+
+神经网络的输入节点代表了初始输入的数据，隐藏层可以有多层，每一层都代表通过上一层经过一定计算后产生的结果。代价函数表示为输出层节点和真实结果的误差。从输入节点开始，到输出节点，数据通过神经网络正向传播，得到了最终的结果。每个theta的梯度通过反向传播算法来实现。由于算法较为复杂，我们通常使用梯度检验算法来验证梯度的正确性。
+
+需要注意的是，在反向传播算法和正则化式子中，不需要theta中额外的常数项（+1），而在正向传播和代价函数中需要计算他。反向传播算法其实是为了简化梯度的计算，使用delta来表示每一个节点的误差，最终将每一层的梯度表示为**Δ(l) := Δ(l) + δ(l+1)a(l)T**。
+
+### 3.神经网络分类示例
+
+使用神经网络进行手写数字识别核心算法，代价函数和梯度表示（反向传播）
+
+{%highlight matlab%}
+function [J, gradient] = annCostFunction(nn_params, ...
+inputLayerSize,hiddenLayerSize,outputLayerSize,x,y,lambda)
+
+theta1 = reshape(nn_params(1:hiddenLayerSize * (inputLayerSize + 1)), ...
+                 hiddenLayerSize, (inputLayerSize + 1));
+
+theta2 = reshape(nn_params((1 + (hiddenLayerSize * (inputLayerSize + 1))):end), ...
+                 outputLayerSize, (hiddenLayerSize + 1));
+				 
+m1 = size(x,1);
+x = [ones(m1,1),x];
+
+%-----------------------正向传播------------------------
+z1 = x * theta1';
+a1 = sigmoid(z1);
+m2 = size(a1,1);
+a1 = [ones(m2,1),a1];
+z2 = a1 * theta2';
+a2 = sigmoid(z2);
+
+c = 1:outputLayerSize;
+for i = 1:m1
+yt(i,:) = (c==y(i));
+end
+
+theta12 = theta1(:,2:end);	%25*400
+theta22 = theta2(:,2:end);	%10*25
+
+%一般代价函数
+J = (1/m1)* sum(sum(-yt.*log(a2)-(1-yt).*log(1-a2)));
+%正则化
+reg1 = (lambda/(2*m1))*(sum((theta12.^2)(:)) + sum((theta22.^2)(:)));
+J = J + reg1;
+
+%----------------------反向传播-------------------------
+delta3 = a2 - yt;	%5000*10
+delta2 = (delta3 * theta22).*(a1(:,2:end).*(1-a1(:,2:end)));	%5000*25
+
+D1 = (1/m1)*delta2' * x;	%25*401
+D2 = (1/m1)*delta3' * a1;	%10*26
+
+D1 = D1 + (lambda/m1)*theta1;
+D2 = D2 + (lambda/m1)*theta2;
+
+gradient = [D1(:);D2(:)];
+
+{%highlight%}
+
+注意，a和delta都是多维向量。识别结果：
+
+<img src="https://pp1230.github.io/static/images/annresult.png" width = "500" alt="dcxff" />
+
+Training Set Accuracy: 96.600000
+
+matrix =
+
+    9    9    6    6    8    4    8    7    2    8
+    6    8    4    3   10    2    6    7    4    6
+    2    9    2   10    3    1    1    9    2    4
+    6    5    7    5    7    8    7    8    1    3
+    4   10    4    4    1    8    8    5    2    4
+    1    6    6    5    9    7    6    5    3    2
+    3    8    2    2    7    3    7    7    8    5
+    5    3    8    4    6    1    3    8    2    4
+    3    6    3    7    5    7    3    9    8    8
+    8    1    9    7    2    9    1   10    6    4
+    
+
