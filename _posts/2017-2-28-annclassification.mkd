@@ -78,6 +78,8 @@ gradient = [D1(:);D2(:)];
 
 <img src="https://pp1230.github.io/static/images/annresult.png" width = "500" alt="dcxff" />
 
+{%highlight matlab%}
+
 Iteration    60 | Cost: 4.289551e-001
 
 Training Set Accuracy: 96.600000
@@ -98,6 +100,8 @@ matrix =
 	5    3    8    4    6    1    3    8    2    4
 	3    6    3    7    5    7    3    9    8    8
 	8    1    9    7    2    9    1   10    6    4
+
+{%endhighlight matlab%}
 
 迭代60次精度为96.6%，当迭代100次时，精度将达到98.5%。
 下面是神经网络训练参数theta1的可视化表示
