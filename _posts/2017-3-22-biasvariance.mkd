@@ -2,19 +2,20 @@
 layout: post
 title: 训练过程的误差和方差分析
 description: 在训练过程中，我们可以通过调节训练集的规模，特征的数量和参数的大小来得到最优的函数。
-keywords: ann, classification
+keywords: training, error,regularization
 ---
 
 ## 1.线性回归的误差和方差分析
 
-使用线性回归拟合数据，通过增大训练样本即m的，在其他不变的情况下，训练集的误差逐渐增大，但是交叉验证集的误差逐渐减小。q
+使用线性回归拟合数据，通过增大训练样本即m的，在其他不变的情况下，训练集的误差逐渐增大，但是交叉验证集的误差逐渐减小。
+
 {%highlight matlab%}
 %% 计算最佳的拟合直线
 costFunction = @(t) linearCostFunction([ones(m, 1) X], y, t, lambda);
 options = optimset('MaxIter', 200, 'GradObj', 'on');
 init_theta = zeros(size([ones(m, 1) X],2),1);
 [theta,J] = fminunc(costFunction, init_theta, options);
-plot(X,[ones(m,1) X]*theta,'--','LineWidth',2);
+plot(X,[ones(m,1) X]\*theta,'--','LineWidth',2);
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 hold off;
@@ -59,7 +60,7 @@ costFunction = @(t) linearCostFunction(X_poly, y, t, lambda);
 options = optimset('MaxIter', 200, 'GradObj', 'on');
 [theta,J] = fminunc(costFunction, test_theta, options);
 x1 = linspace(min(X),max(X),50);
-y1 = [ones(length(x1), 1),featureNormalize(polyFeatures(x1',p))]*theta;
+y1 = [ones(length(x1), 1),featureNormalize(polyFeatures(x1',p))]\*theta;
 plot(x1,y1,'-','LineWidth',2);
 fprintf('Program paused. Press enter to continue.\n');
 pause;
