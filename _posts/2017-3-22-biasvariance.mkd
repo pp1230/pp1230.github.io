@@ -1,9 +1,10 @@
 ---
 layout: post
 title: 训练过程的误差和方差分析
-description: 在训练过程中，我们可以通过调节训练集的规模，特征的数量和参数的大小来得到最优的函数。
-keywords: training, error,regularization
+description: 在训练过程中，我们可以通过调节训练集的规模，特征的数量和参数的大小来得到最优的函数
+keywords: training, error, regularization
 ---
+
 
 ## 1.线性回归的误差和方差分析
 
@@ -38,17 +39,23 @@ for i = 1:m
     %%[theta,train_error(i)] = fminunc(costFunction, init_theta, options);
     %%cv_error(i) = linearCostFunction(Xval,yval,theta,0);
     theta = fminunc(costFunction, init_theta, options);
-    train_error(i) = 1/(2*m)*sum((trainingDataX*theta- trainingDataY).^2);
-    cv_error(i) = 1/(2*m)*sum((Xval*theta- yval).^2);
+    train_error(i) = 1/(2\*m)\*sum((trainingDataX\*theta- trainingDataY).^2);
+    cv_error(i) = 1/(2\*m)\*sum((Xval\*theta- yval).^2);
 end
 {%endhighlight%}
+
+<img src="https://pp1230.github.io/static/images/ex5lr.png" width = "500" alt="dcxff" />
+
+<img src="https://pp1230.github.io/static/images/ex5lrte.png" width = "500" alt="dcxff" />
 
 ## 2.使用正则化的非线性回归误差和方差分析
 
 使用非线性函数拟合数据集：
+
 * 不使用正则化时，会出现过拟合现象，如果样本数据集足够大，交叉验证集的误差逐渐减小，但是最终误差和训练集接近。
 * 如果数据集数量有限，需要使用正则化来减小误差，我们要找到一个使得交叉验证集误差较小的lambda
 * 增大特征数的效果和减小lambda对训练误差和交叉验证集误差的趋势的影响是相同的
+
 随着lambda的不断增大，训练集的误差会不断增大，但是交叉验证集的误差会呈现一个凸函数的形状，这时取得最低点即可。
 
 {%highlight matlab%}
@@ -83,4 +90,23 @@ numla = 10;
 [ltrain_error,lcv_error] = lambdaLearningCurve(X_poly,y,X_poly_val,yval,maxla,numla);
 plot(1:length(lcv_error),lcv_error,'-','LineWidth',1);
 hold on;
+
+function [train_error,cv_error] = lambdaLearningCurve(X,y,Xval,yval,m,n)
+train_error = zeros(n,1);
+cv_error = zeros(n,1);
+len = size(X,1);
+for i = 1:n
+    costFunction = @(t) linearCostFunction(X, y, t, i*m/n);
+    options = optimset('MaxIter', 200, 'GradObj', 'on');
+    init_theta = zeros(size(X, 2), 1);
+    theta = fminunc(costFunction, init_theta, options);
+    train_error(i) = 1/(2*len)*sum((X*theta- y).^2);
+    cv_error(i) = 1/(2*len)*sum((Xval*theta- yval).^2);
+end
 {%highlight%}
+
+<img src="https://pp1230.github.io/static/images/ex5pr.png" width = "500" alt="dcxff" />
+
+<img src="https://pp1230.github.io/static/images/ex5prle.png" width = "500" alt="dcxff" />
+
+<img src="https://pp1230.github.io/static/images/ex5prte.png" width = "500" alt="dcxff" />
