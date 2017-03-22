@@ -12,7 +12,7 @@ keywords: training, error, regularization
 
 {%highlight matlab%}
 
-%计算最佳的拟合直线
+//计算最佳的拟合直线
 costFunction = @(t) linearCostFunction([ones(m, 1) X], y, t, lambda);
 options = optimset('MaxIter', 200, 'GradObj', 'on');
 init_theta = zeros(size([ones(m, 1) X],2),1);
@@ -25,7 +25,7 @@ hold off;
 plot(1:m,cv_error,'-','LineWidth',1);
 hold on;
 
-%计算训练集不断增大时，误差的变化
+//计算训练集不断增大时，误差的变化
 function [train_error,cv_error]= learningCurves(X,y,Xval,yval)
 m = size(X,1);
 n = size(Xval,1);
@@ -62,7 +62,7 @@ end
 
 {%highlight matlab%}
 
-%计算最佳拟合曲线
+//计算最佳拟合曲线
 test_theta = zeros(size(X_poly, 2), 1);
 [J, grad] = linearCostFunction(X_poly, y, test_theta, 1);
 lambda = 0;
@@ -75,7 +75,7 @@ plot(x1,y1,'-','LineWidth',2);
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 hold off;
-% 计算随着样本数变化误差的变化
+//计算随着样本数变化误差的变化
 [ptrain_error,pcv_error] = learningCurves(X_poly,y,X_poly_val,yval);
 plot(1:m,pcv_error,'-','LineWidth',1);
 hold on;
@@ -89,7 +89,7 @@ pause;
 hold off;
 maxla = 10;
 numla = 10;
-% 随着lambda不断增大误差的变化
+//随着lambda不断增大误差的变化
 [ltrain_error,lcv_error] = lambdaLearningCurve(X_poly,y,X_poly_val,yval,maxla,numla);
 plot(1:length(lcv_error),lcv_error,'-','LineWidth',1);
 hold on;
