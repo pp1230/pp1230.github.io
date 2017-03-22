@@ -49,6 +49,7 @@ end
 
 <img src="https://pp1230.github.io/static/images/ex5lrte.png" width = "500" alt="dcxff" />
 
+
 ### 2.使用正则化的非线性回归误差和方差分析
 
 使用非线性函数拟合数据集：
@@ -105,7 +106,7 @@ for i = 1:n
     train_error(i) = 1/(2*len)*sum((X*theta- y).^2);
     cv_error(i) = 1/(2*len)*sum((Xval*theta- yval).^2);
 end
-{%highlight%}
+{%endhighlight%}
 
 <img src="https://pp1230.github.io/static/images/ex5pr.png" width = "500" alt="dcxff" />
 
