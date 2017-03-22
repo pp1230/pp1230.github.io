@@ -1,0 +1,84 @@
+---
+layout: post
+title: 训练过程的误差和方差分析
+description: 在训练过程中，我们可以通过调节训练集的规模，特征的数量和参数的大小来得到最优的函数。
+keywords: ann, classification
+---
+
+## 1.线性回归的误差和方差分析
+
+使用线性回归拟合数据，通过增大训练样本即m的，在其他不变的情况下，训练集的误差逐渐增大，但是交叉验证集的误差逐渐减小。q
+{%highlight matlab%}
+%% 计算最佳的拟合直线
+costFunction = @(t) linearCostFunction([ones(m, 1) X], y, t, lambda);
+options = optimset('MaxIter', 200, 'GradObj', 'on');
+init_theta = zeros(size([ones(m, 1) X],2),1);
+[theta,J] = fminunc(costFunction, init_theta, options);
+plot(X,[ones(m,1) X]*theta,'--','LineWidth',2);
+fprintf('Program paused. Press enter to continue.\n');
+pause;
+hold off;
+[train_error,cv_error] = learningCurves([ones(m,1) X],y,[ones(length(Xval),1) Xval],yval);
+plot(1:m,cv_error,'-','LineWidth',1);
+hold on;
+
+%% 计算训练集不断增大时，误差的变化
+function [train_error,cv_error]= learningCurves(X,y,Xval,yval)
+m = size(X,1);
+n = size(Xval,1);
+train_error = zeros(m,1);
+cv_error = zeros(m,1);
+for i = 1:m
+    trainingDataX = X(1:i,:);
+    trainingDataY = y(1:i,:);
+    costFunction = @(t) linearCostFunction(trainingDataX, trainingDataY, t, 0);
+    options = optimset('MaxIter', 200, 'GradObj', 'on');
+    init_theta = zeros(size(X, 2), 1);
+    %%[theta,train_error(i)] = fminunc(costFunction, init_theta, options);
+    %%cv_error(i) = linearCostFunction(Xval,yval,theta,0);
+    theta = fminunc(costFunction, init_theta, options);
+    train_error(i) = 1/(2*m)*sum((trainingDataX*theta- trainingDataY).^2);
+    cv_error(i) = 1/(2*m)*sum((Xval*theta- yval).^2);
+end
+{%endhighlight%}
+
+## 2.使用正则化的非线性回归误差和方差分析
+
+使用非线性函数拟合数据集：
+* 不使用正则化时，会出现过拟合现象，如果样本数据集足够大，交叉验证集的误差逐渐减小，但是最终误差和训练集接近。
+* 如果数据集数量有限，需要使用正则化来减小误差，我们要找到一个使得交叉验证集误差较小的lambda。
+随着lambda的不断增大，训练集的误差会不断增大，但是交叉验证集的误差会呈现一个凸函数的形状，这时取得最低点即可。
+
+{%hightlight matlab%}
+%%计算最佳拟合曲线
+test_theta = zeros(size(X_poly, 2), 1);
+[J, grad] = linearCostFunction(X_poly, y, test_theta, 1);
+lambda = 0;
+costFunction = @(t) linearCostFunction(X_poly, y, t, lambda);
+options = optimset('MaxIter', 200, 'GradObj', 'on');
+[theta,J] = fminunc(costFunction, test_theta, options);
+x1 = linspace(min(X),max(X),50);
+y1 = [ones(length(x1), 1),featureNormalize(polyFeatures(x1',p))]*theta;
+plot(x1,y1,'-','LineWidth',2);
+fprintf('Program paused. Press enter to continue.\n');
+pause;
+hold off;
+%% 计算随着样本数变化误差的变化
+[ptrain_error,pcv_error] = learningCurves(X_poly,y,X_poly_val,yval);
+plot(1:m,pcv_error,'-','LineWidth',1);
+hold on;
+plot(1:m,ptrain_error,'-','LineWidth',1);
+title('Learning curve for polynomial regression')
+legend('Cross Validation', 'Train')
+xlabel('Number of training examples')
+ylabel('Error')
+fprintf('Program paused. Press enter to continue.\n');
+pause;
+hold off;
+maxla = 10;
+numla = 10;
+%% 随着lambda不断增大误差的变化
+[ltrain_error,lcv_error] = lambdaLearningCurve(X_poly,y,X_poly_val,yval,maxla,numla);
+plot(1:length(lcv_error),lcv_error,'-','LineWidth',1);
+hold on;
+{%hightlight%}
