@@ -1,31 +1,30 @@
 ---
 layout: post
 title: 训练过程的误差和方差分析
-description: 在训练过程中，我们可以通过调节训练集的规模，特征的数量和参数的大小来得到最优的函数
-keywords: training, error, regularization
+description: 在训练过程中,我们可以通过调节训练集的规模,特征的数量和参数的大小来得到最优的函数
+keywords: training, error
 ---
 
 
 ### 1.线性回归的误差和方差分析
 
-使用线性回归拟合数据，通过增大训练样本即m的，在其他不变的情况下，训练集的误差逐渐增大，但是交叉验证集的误差逐渐减小。
+使用线性回归拟合数据，通过增大训练样本即m的大小，在其他不变的情况下，训练集的误差逐渐增大，但是交叉验证集的误差逐渐减小。
 
 {%highlight matlab%}
 
-//计算最佳的拟合直线
+%%计算最佳的拟合直线
 costFunction = @(t) linearCostFunction([ones(m, 1) X], y, t, lambda);
 options = optimset('MaxIter', 200, 'GradObj', 'on');
 init_theta = zeros(size([ones(m, 1) X],2),1);
 [theta,J] = fminunc(costFunction, init_theta, options);
-plot(X,[ones(m,1) X]\*theta,'--','LineWidth',2);
-fprintf('Program paused. Press enter to continue.\n');
+plot(X,[ones(m,1) X]\*theta,'--','LineWidth',2);fprintf('Program paused. Press enter to continue.\n');
 pause;
 hold off;
 [train_error,cv_error] = learningCurves([ones(m,1) X],y,[ones(length(Xval),1) Xval],yval);
 plot(1:m,cv_error,'-','LineWidth',1);
 hold on;
 
-//计算训练集不断增大时，误差的变化
+%%计算训练集不断增大时，误差的变化
 function [train_error,cv_error]= learningCurves(X,y,Xval,yval)
 m = size(X,1);
 n = size(Xval,1);
@@ -37,11 +36,11 @@ for i = 1:m
     costFunction = @(t) linearCostFunction(trainingDataX, trainingDataY, t, 0);
     options = optimset('MaxIter', 200, 'GradObj', 'on');
     init_theta = zeros(size(X, 2), 1);
-    %%[theta,train_error(i)] = fminunc(costFunction, init_theta, options);
-    %%cv_error(i) = linearCostFunction(Xval,yval,theta,0);
+    [theta,train_error(i)] = fminunc(costFunction, init_theta, options);
+    cv_error(i) = linearCostFunction(Xval,yval,theta,0);
     theta = fminunc(costFunction, init_theta, options);
-    train_error(i) = 1/(2\*m)\*sum((trainingDataX\*theta- trainingDataY).^2);
-    cv_error(i) = 1/(2\*m)\*sum((Xval\*theta- yval).^2);
+    train_error(i) = 1/(2*m)*sum((trainingDataX*theta- trainingDataY).^2);
+    cv_error(i) = 1/(2*m)*sum((Xval*theta- yval).^2);
 end
 
 {%endhighlight%}
@@ -62,7 +61,7 @@ end
 
 {%highlight matlab%}
 
-//计算最佳拟合曲线
+%%计算最佳拟合曲线
 test_theta = zeros(size(X_poly, 2), 1);
 [J, grad] = linearCostFunction(X_poly, y, test_theta, 1);
 lambda = 0;
@@ -75,7 +74,7 @@ plot(x1,y1,'-','LineWidth',2);
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 hold off;
-//计算随着样本数变化误差的变化
+%%计算随着样本数变化误差的变化
 [ptrain_error,pcv_error] = learningCurves(X_poly,y,X_poly_val,yval);
 plot(1:m,pcv_error,'-','LineWidth',1);
 hold on;
@@ -89,7 +88,7 @@ pause;
 hold off;
 maxla = 10;
 numla = 10;
-//随着lambda不断增大误差的变化
+%%随着lambda不断增大误差的变化
 [ltrain_error,lcv_error] = lambdaLearningCurve(X_poly,y,X_poly_val,yval,maxla,numla);
 plot(1:length(lcv_error),lcv_error,'-','LineWidth',1);
 hold on;
