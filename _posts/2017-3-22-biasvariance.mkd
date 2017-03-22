@@ -50,7 +50,7 @@ end
 * 增大特征数的效果和减小lambda对训练误差和交叉验证集误差的趋势的影响是相同的
 随着lambda的不断增大，训练集的误差会不断增大，但是交叉验证集的误差会呈现一个凸函数的形状，这时取得最低点即可。
 
-{%hightlight matlab%}
+{%highlight matlab%}
 %%计算最佳拟合曲线
 test_theta = zeros(size(X_poly, 2), 1);
 [J, grad] = linearCostFunction(X_poly, y, test_theta, 1);
@@ -82,4 +82,4 @@ numla = 10;
 [ltrain_error,lcv_error] = lambdaLearningCurve(X_poly,y,X_poly_val,yval,maxla,numla);
 plot(1:length(lcv_error),lcv_error,'-','LineWidth',1);
 hold on;
-{%hightlight%}
+{%highlight%}
