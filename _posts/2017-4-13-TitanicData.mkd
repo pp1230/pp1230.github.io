@@ -2,7 +2,7 @@
 layout: rawpost
 title: Titanic生存数据分析
 description: 在数据分析过程中，包含了特征分类理解，特征关联分析，特征转换，特征完整性正确性检查和填充，特征选取，特征构造等工作步骤
-keywords: Titanic, data mining
+keywords: Titanic, data mining, Kaggle
 ---
 
 <head><meta charset="utf-8" />
