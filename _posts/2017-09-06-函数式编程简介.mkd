@@ -1,7 +1,0 @@
----
-layout: post
-title: 函数式编程简介
-description: 函数式编程是种编程方式，它将电脑运算视为函数的计算。函数编程语言最重要的基础是λ演算（lambda calculus），
-而且λ演算的函数可以接受函数当作输入（参数）和输出（返回值）
-keywords: Functional Programming, scala 
----
