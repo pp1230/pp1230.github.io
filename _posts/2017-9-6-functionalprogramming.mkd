@@ -2,5 +2,6 @@
 layout: post
 title: 函数式编程简介
 description: 函数式编程是种编程方式,它将电脑运算视为函数的计算
-keywords: functional, programming, scala
+keywords: functional, scala
 ---
+
